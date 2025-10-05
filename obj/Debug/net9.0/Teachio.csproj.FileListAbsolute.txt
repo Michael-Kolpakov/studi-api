@@ -1,0 +1,14 @@
+D:\Projects\DotNet Core\Teachio\Teachio\bin\Debug\net9.0\Teachio.exe
+D:\Projects\DotNet Core\Teachio\Teachio\bin\Debug\net9.0\Teachio.deps.json
+D:\Projects\DotNet Core\Teachio\Teachio\bin\Debug\net9.0\Teachio.runtimeconfig.json
+D:\Projects\DotNet Core\Teachio\Teachio\bin\Debug\net9.0\Teachio.dll
+D:\Projects\DotNet Core\Teachio\Teachio\bin\Debug\net9.0\Teachio.pdb
+D:\Projects\DotNet Core\Teachio\Teachio\obj\Debug\net9.0\Teachio.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\DotNet Core\Teachio\Teachio\obj\Debug\net9.0\Teachio.AssemblyInfoInputs.cache
+D:\Projects\DotNet Core\Teachio\Teachio\obj\Debug\net9.0\Teachio.AssemblyInfo.cs
+D:\Projects\DotNet Core\Teachio\Teachio\obj\Debug\net9.0\Teachio.csproj.CoreCompileInputs.cache
+D:\Projects\DotNet Core\Teachio\Teachio\obj\Debug\net9.0\Teachio.dll
+D:\Projects\DotNet Core\Teachio\Teachio\obj\Debug\net9.0\refint\Teachio.dll
+D:\Projects\DotNet Core\Teachio\Teachio\obj\Debug\net9.0\Teachio.pdb
+D:\Projects\DotNet Core\Teachio\Teachio\obj\Debug\net9.0\Teachio.genruntimeconfig.cache
+D:\Projects\DotNet Core\Teachio\Teachio\obj\Debug\net9.0\ref\Teachio.dll
