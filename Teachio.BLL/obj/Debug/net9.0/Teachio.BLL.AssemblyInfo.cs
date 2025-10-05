@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Teachio.BLL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3327f57c040c120a9dc1c349a8fd5bb39e273149")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0c3a577ee5067965e8f4f10d5005d8ac84078ab4")]
 [assembly: System.Reflection.AssemblyProductAttribute("Teachio.BLL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Teachio.BLL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

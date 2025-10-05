@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Teachio.DAL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+69cd58c8fe6d59f5a64d730b0f26f86338cb7b7a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0c3a577ee5067965e8f4f10d5005d8ac84078ab4")]
 [assembly: System.Reflection.AssemblyProductAttribute("Teachio.DAL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Teachio.DAL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

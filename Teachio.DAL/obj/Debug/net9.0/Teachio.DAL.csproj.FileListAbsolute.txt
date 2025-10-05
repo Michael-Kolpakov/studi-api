@@ -1,0 +1,15 @@
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\bin\Debug\net9.0\Teachio.DAL.deps.json
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\bin\Debug\net9.0\Teachio.DAL.runtimeconfig.json
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\bin\Debug\net9.0\Teachio.DAL.dll
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\bin\Debug\net9.0\Teachio.DAL.pdb
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\obj\Debug\net9.0\Teachio.DAL.csproj.AssemblyReference.cache
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\obj\Debug\net9.0\Teachio.DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\obj\Debug\net9.0\Teachio.DAL.AssemblyInfoInputs.cache
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\obj\Debug\net9.0\Teachio.DAL.AssemblyInfo.cs
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\obj\Debug\net9.0\Teachio.DAL.csproj.CoreCompileInputs.cache
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\obj\Debug\net9.0\Teachio.DAL.sourcelink.json
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\obj\Debug\net9.0\Teachio.DAL.dll
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\obj\Debug\net9.0\refint\Teachio.DAL.dll
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\obj\Debug\net9.0\Teachio.DAL.pdb
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\obj\Debug\net9.0\Teachio.DAL.genruntimeconfig.cache
+D:\Projects\DotNetCore\Teachio\Teachio.DAL\obj\Debug\net9.0\ref\Teachio.DAL.dll

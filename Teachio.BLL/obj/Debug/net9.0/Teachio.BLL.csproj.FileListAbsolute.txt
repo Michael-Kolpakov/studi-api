@@ -1,0 +1,16 @@
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\bin\Debug\net9.0\Teachio.BLL.deps.json
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\bin\Debug\net9.0\Teachio.BLL.dll
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\bin\Debug\net9.0\Teachio.BLL.pdb
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\bin\Debug\net9.0\Teachio.DAL.dll
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\bin\Debug\net9.0\Teachio.DAL.pdb
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\obj\Debug\net9.0\Teachio.BLL.csproj.AssemblyReference.cache
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\obj\Debug\net9.0\Teachio.BLL.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\obj\Debug\net9.0\Teachio.BLL.AssemblyInfoInputs.cache
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\obj\Debug\net9.0\Teachio.BLL.AssemblyInfo.cs
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\obj\Debug\net9.0\Teachio.BLL.csproj.CoreCompileInputs.cache
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\obj\Debug\net9.0\Teachio.BLL.sourcelink.json
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\obj\Debug\net9.0\Teachio..27B37856.Up2Date
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\obj\Debug\net9.0\Teachio.BLL.dll
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\obj\Debug\net9.0\refint\Teachio.BLL.dll
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\obj\Debug\net9.0\Teachio.BLL.pdb
+D:\Projects\DotNetCore\Teachio\Teachio.BLL\obj\Debug\net9.0\ref\Teachio.BLL.dll
