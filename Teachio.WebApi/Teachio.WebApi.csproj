@@ -23,4 +23,9 @@
       <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Teachio.BLL\Teachio.BLL.csproj" />
+      <ProjectReference Include="..\Teachio.DAL\Teachio.DAL.csproj" />
+    </ItemGroup>
+
 </Project>
