@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Entities\" />
+      <Folder Include="Helpers\" />
+      <Folder Include="Persistence\Migrations\" />
+      <Folder Include="Persistence\Seed\" />
+      <Folder Include="Repositories\Interfaces\Base\" />
+      <Folder Include="Repositories\Realizations\Base\" />
+    </ItemGroup>
+
+</Project>

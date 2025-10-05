@@ -1,6 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teachio", "Teachio\Teachio.csproj", "{CE19A9C8-60A0-4D6C-B6A9-2A1DE53E6BCF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teachio.WebApi", "Teachio.WebApi\Teachio.WebApi.csproj", "{A25D43E9-D345-444B-BAA8-C013CF94E63C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teachio.DAL", "Teachio.DAL\Teachio.DAL.csproj", "{0A4B5E37-7112-4434-84C5-BFE10EB4F656}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teachio.BLL", "Teachio.BLL\Teachio.BLL.csproj", "{D5FDC318-BDDA-4826-8EC1-F8BF0D8793F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +12,17 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CE19A9C8-60A0-4D6C-B6A9-2A1DE53E6BCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE19A9C8-60A0-4D6C-B6A9-2A1DE53E6BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE19A9C8-60A0-4D6C-B6A9-2A1DE53E6BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE19A9C8-60A0-4D6C-B6A9-2A1DE53E6BCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A25D43E9-D345-444B-BAA8-C013CF94E63C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A25D43E9-D345-444B-BAA8-C013CF94E63C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A25D43E9-D345-444B-BAA8-C013CF94E63C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A25D43E9-D345-444B-BAA8-C013CF94E63C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A4B5E37-7112-4434-84C5-BFE10EB4F656}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A4B5E37-7112-4434-84C5-BFE10EB4F656}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A4B5E37-7112-4434-84C5-BFE10EB4F656}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A4B5E37-7112-4434-84C5-BFE10EB4F656}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5FDC318-BDDA-4826-8EC1-F8BF0D8793F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5FDC318-BDDA-4826-8EC1-F8BF0D8793F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5FDC318-BDDA-4826-8EC1-F8BF0D8793F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5FDC318-BDDA-4826-8EC1-F8BF0D8793F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
