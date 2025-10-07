@@ -2,7 +2,11 @@
 
 public class PaginationResponse<T>
 {
-    private PaginationResponse(IEnumerable<T> items, ushort count, ushort pageNumber, ushort pageSize)
+    private PaginationResponse(
+        IEnumerable<T> items,
+        ushort count,
+        ushort pageNumber,
+        ushort pageSize)
     {
         TotalItems = count;
         PageSize = pageSize;
@@ -22,9 +26,12 @@ public class PaginationResponse<T>
 
     public IEnumerable<T> Entities { get; set; }
 
-    public static PaginationResponse<T> Create(IQueryable<T> source, ushort? pageNumber = null, ushort? pageSize = null)
+    public static PaginationResponse<T> Create(
+        IQueryable<T> source,
+        ushort? pageNumber = null,
+        ushort? pageSize = null)
     {
-        ushort count = (ushort)(source?.Count() ?? 0);
+        var count = (ushort)(source?.Count() ?? 0);
 
         if (pageNumber is null && pageSize is null)
         {
