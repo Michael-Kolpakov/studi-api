@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\Teachio.WebApi.props" />
-</Project>

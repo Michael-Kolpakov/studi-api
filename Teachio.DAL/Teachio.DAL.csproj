@@ -8,10 +8,8 @@
 
     <ItemGroup>
       <Folder Include="Entities\" />
-      <Folder Include="Helpers\" />
       <Folder Include="Persistence\Migrations\" />
       <Folder Include="Persistence\Seed\" />
-      <Folder Include="Repositories\Interfaces\Base\" />
       <Folder Include="Repositories\Realizations\Base\" />
     </ItemGroup>
 
