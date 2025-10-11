@@ -15,6 +15,7 @@ public static class ApplicationServicesExtension
             options.Filters.Add(new ConsumesAttribute("application/json"));
         });
         services.AddCustomDbContext(configuration);
+        services.AddSwagger();
         services.AddCors();
 
         return services;
