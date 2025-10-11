@@ -15,7 +15,23 @@ public static class ApplicationServicesExtension
             options.Filters.Add(new ConsumesAttribute("application/json"));
         });
         services.AddCustomDbContext(configuration);
+        services.AddCors();
 
         return services;
+    }
+
+    private static void AddCors(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            { 
+                policy
+                    .WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            });
+        });
     }
 }

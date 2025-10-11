@@ -14,6 +14,7 @@ public static class Program
 
         app.UseHttpsRedirection();
         app.UseRouting();
+        app.UseCors();
         app.MapControllers();
 
         DatabaseExtension.InitializeDatabase(app);
