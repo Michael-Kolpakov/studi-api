@@ -12,6 +12,10 @@ public static class Program
 
         var app = builder.Build();
 
+        app.UseHttpsRedirection();
+        app.UseRouting();
+        app.MapControllers();
+
         DatabaseExtension.InitializeDatabase(app);
 
         app.Run();

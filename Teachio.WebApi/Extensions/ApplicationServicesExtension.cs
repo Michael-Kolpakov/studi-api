@@ -1,4 +1,6 @@
-﻿namespace Teachio.WebApi.Extensions;
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace Teachio.WebApi.Extensions;
 
 public static class ApplicationServicesExtension
 {
@@ -7,6 +9,11 @@ public static class ApplicationServicesExtension
         IConfiguration configuration,
         IWebHostEnvironment environment)
     {
+        services.AddControllers(options =>
+        {
+            options.Filters.Add(new ProducesAttribute("application/json"));
+            options.Filters.Add(new ConsumesAttribute("application/json"));
+        });
         services.AddCustomDbContext(configuration);
 
         return services;
