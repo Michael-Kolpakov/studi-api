@@ -1,3 +1,4 @@
+using Serilog;
 using Teachio.WebApi.Extensions;
 
 namespace Teachio.WebApi;
@@ -8,7 +9,10 @@ public static class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddApplicationServices(builder.Configuration, builder.Environment);
+        builder.Host.UseSerilog((context, services, loggerConfiguration) =>
+            loggerConfiguration.ReadFrom.Configuration(context.Configuration).ReadFrom.Services(services));
+        
+        builder.Services.AddApplicationServices(builder.Configuration);
 
         var app = builder.Build();
 

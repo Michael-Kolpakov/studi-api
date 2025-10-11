@@ -6,8 +6,7 @@ public static class ApplicationServicesExtension
 {
     public static IServiceCollection AddApplicationServices(
         this IServiceCollection services,
-        IConfiguration configuration,
-        IWebHostEnvironment environment)
+        IConfiguration configuration)
     {
         services.AddControllers(options =>
         {
@@ -16,6 +15,7 @@ public static class ApplicationServicesExtension
         });
         services.AddCustomDbContext(configuration);
         services.AddSwagger();
+        services.AddSerilogLogging();
         services.AddCors();
 
         return services;
