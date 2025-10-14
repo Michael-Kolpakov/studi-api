@@ -8,6 +8,8 @@ public static class ApplicationServicesExtension
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+
         services.AddControllers(options =>
         {
             options.Filters.Add(new ProducesAttribute("application/json"));
@@ -16,6 +18,7 @@ public static class ApplicationServicesExtension
         services.AddCustomDbContext(configuration);
         services.AddSwagger();
         services.AddSerilogLogging();
+        services.AddAutoMapper(currentAssemblies);
         services.AddCors();
 
         return services;
