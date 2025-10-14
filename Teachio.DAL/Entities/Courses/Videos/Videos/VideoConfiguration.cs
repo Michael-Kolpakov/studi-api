@@ -12,6 +12,9 @@ public static class VideoConfiguration
 
         builder.Entity<Video>(typeBuilder =>
         {
+            typeBuilder.Property(s => s.Id)
+                .ValueGeneratedOnAdd();
+
             typeBuilder.Property(v => v.Title)
                 .IsRequired()
                 .HasMaxLength(60);

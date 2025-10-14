@@ -12,6 +12,9 @@ public static class VideoProgressConfiguration
 
         builder.Entity<VideoProgress>(typeBuilder =>
         {
+            typeBuilder.Property(s => s.Id)
+                .ValueGeneratedOnAdd();
+
             typeBuilder.Property(vp => vp.VideoId)
                 .IsRequired();
 
