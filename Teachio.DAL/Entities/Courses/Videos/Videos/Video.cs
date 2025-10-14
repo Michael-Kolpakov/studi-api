@@ -22,9 +22,9 @@ public class Video
 
     public int? DurationSeconds { get; set; }
 
-    public string? ThumbnailName { get; set; }
+    public string ThumbnailName { get; set; } = null!;
 
-    public string? ThumbnailRelativePath { get; set; }
+    public string ThumbnailRelativePath { get; set; } = null!;
 
     public VideoStatus Status { get; set; }
 

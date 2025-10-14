@@ -45,6 +45,7 @@ public static class VideoConfiguration
                 .HasMaxLength(60);
 
             typeBuilder.Property(v => v.ThumbnailRelativePath)
+                .IsRequired()
                 .HasMaxLength(500);
 
             typeBuilder.Property(v => v.Status)
