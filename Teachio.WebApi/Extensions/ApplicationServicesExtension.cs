@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Teachio.BLL.Services.Interfaces;
+using Teachio.BLL.Services.Realizations;
 
 namespace Teachio.WebApi.Extensions;
 
@@ -9,6 +11,8 @@ public static class ApplicationServicesExtension
         IConfiguration configuration)
     {
         var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+        services.AddScoped<ILoggerService, LoggerService>();
 
         services.AddControllers(options =>
         {
