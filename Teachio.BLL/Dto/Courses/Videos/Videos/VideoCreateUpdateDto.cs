@@ -1,4 +1,6 @@
-﻿namespace Teachio.BLL.Dto.Courses.Videos.Videos;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Teachio.BLL.Dto.Courses.Videos.Videos;
 
 public abstract class VideoCreateUpdateDto
 {
@@ -7,4 +9,6 @@ public abstract class VideoCreateUpdateDto
     public Guid SectionId { get; set; }
 
     public int? OrderIndex { get; set; }
+
+    public IFormFile File { get; set; } = null!;
 }
