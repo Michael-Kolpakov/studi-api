@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.Services.Realizations;
+using Teachio.DAL.Repositories.Interfaces.Base;
+using Teachio.DAL.Repositories.Realizations.Base;
 
 namespace Teachio.WebApi.Extensions;
 
@@ -22,6 +24,7 @@ public static class ApplicationServicesExtension
         services.AddCustomDbContext(configuration);
         services.AddSwagger();
         services.AddSerilogLogging();
+        services.AddRepositoryServices();
         services.AddAutoMapper(currentAssemblies);
         services.AddCors();
 
@@ -41,5 +44,10 @@ public static class ApplicationServicesExtension
                     .AllowCredentials();
             });
         });
+    }
+
+    private static void AddRepositoryServices(this IServiceCollection services)
+    {
+        services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
     }
 }
