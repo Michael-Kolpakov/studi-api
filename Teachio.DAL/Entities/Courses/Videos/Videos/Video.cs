@@ -8,11 +8,9 @@ public class Video
 
     public string Title { get; set; } = null!;
 
-    public string OriginalFileName { get; set; } = null!;
+    public string VideoName { get; set; } = null!;
 
-    public string FileName { get; set; } = null!;
-
-    public string RelativePath { get; set; } = null!;
+    public string VideoRelativePath { get; set; } = null!;
 
     public string? ContentType { get; set; }
 
@@ -24,7 +22,9 @@ public class Video
 
     public int? DurationSeconds { get; set; }
 
-    public string? ThumbnailFileName { get; set; }
+    public string? ThumbnailName { get; set; }
+
+    public string? ThumbnailRelativePath { get; set; }
 
     public VideoStatus Status { get; set; }
 
