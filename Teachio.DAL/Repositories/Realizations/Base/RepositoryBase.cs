@@ -97,8 +97,8 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
             predicate,
             include,
             selector,
-            orderByASC: ascendingSortKeySelector,
-            orderByDESC: descendingSortKeySelector);
+            ascendingSortKeySelector,
+            descendingSortKeySelector);
 
         var paginationResponse = PaginationResponse<T>.Create(
             query,
@@ -134,19 +134,26 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         Expression<Func<T, T>> selector,
         Expression<Func<T, bool>>? predicate = default,
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default,
-        Expression<Func<T, object>>? orderByASC = default,
-        Expression<Func<T, object>>? orderByDESC = default,
+        Expression<Func<T, object>>? ascendingSortKeySelector = default,
+        Expression<Func<T, object>>? descendingSortKeySelector = default,
         int? offset = null)
     {
-        return await GetQueryable(predicate, include, selector, orderByASC, orderByDESC, offset: offset).FirstOrDefaultAsync();
+        return await GetQueryable(
+            predicate,
+            include,
+            selector,
+            ascendingSortKeySelector,
+            descendingSortKeySelector,
+            offset: offset)
+            .FirstOrDefaultAsync();
     }
 
     private IQueryable<T> GetQueryable(
         Expression<Func<T, bool>>? predicate = default,
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default,
         Expression<Func<T, T>>? selector = default,
-        Expression<Func<T, object>>? orderByASC = default,
-        Expression<Func<T, object>>? orderByDESC = default,
+        Expression<Func<T, object>>? ascendingSortKeySelector = default,
+        Expression<Func<T, object>>? descendingSortKeySelector = default,
         int? limit = null,
         int? offset = null)
     {
@@ -167,14 +174,14 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
             query = query.Select(selector);
         }
 
-        if (orderByASC is not null)
+        if (ascendingSortKeySelector is not null)
         {
-            query = query.OrderBy(orderByASC);
+            query = query.OrderBy(ascendingSortKeySelector);
         }
 
-        if (orderByDESC is not null)
+        if (descendingSortKeySelector is not null)
         {
-            query = query.OrderByDescending(orderByDESC);
+            query = query.OrderByDescending(descendingSortKeySelector);
         }
 
         if (offset is >= 0)

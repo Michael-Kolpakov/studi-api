@@ -58,8 +58,8 @@ public interface IRepositoryBase<T>
         Expression<Func<T, T>> selector,
         Expression<Func<T, bool>>? predicate = default,
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default,
-        Expression<Func<T, object>>? orderByAsc = default,
-        Expression<Func<T, object>>? orderByDesc = default,
+        Expression<Func<T, object>>? ascendingSortKeySelector = default,
+        Expression<Func<T, object>>? descendingSortKeySelector = default,
         int? offset = null);
 
     IQueryable<T> FindAll(
