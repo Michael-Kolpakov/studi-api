@@ -1,6 +1,6 @@
 ﻿using Teachio.BLL.Dto.Courses.Videos.VideoProgress;
 
-namespace Teachio.BLL.Dto.Courses.Videos;
+namespace Teachio.BLL.Dto.Courses.Videos.Videos;
 
 public class VideoResponseDto
 {

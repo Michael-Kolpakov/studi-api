@@ -1,4 +1,4 @@
-﻿using Teachio.BLL.Dto.Courses.Videos;
+﻿using Teachio.BLL.Dto.Courses.Videos.Videos;
 
 namespace Teachio.BLL.Dto.Courses.Sections;
 
