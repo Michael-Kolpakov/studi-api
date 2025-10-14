@@ -6,13 +6,13 @@ public abstract class AppUserCreateUpdateDto
 {
     [Required(ErrorMessage = "'{0}' field is required")]
     [StringLength(20, ErrorMessage = "Length of '{0}' must be not longer than {1} characters")]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     [Required(ErrorMessage = "'{0}' field is required")]
     [StringLength(30, ErrorMessage = "Length of '{0}' must be not longer than {1} characters")]
-    public string? Surname { get; set; }
+    public string Surname { get; set; } = null!;
 
     [Required(ErrorMessage = "'{0}' field is required")]
     [StringLength(20, ErrorMessage = "Length of '{0}' must be not longer than {1} characters")]
-    public string? Role { get; set; }
+    public string Role { get; set; } = null!;
 }
