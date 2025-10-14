@@ -52,9 +52,9 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         _dbContext.Set<T>().UpdateRange(items);
     }
 
-    public void Delete(T entity)
+    public T Delete(T entity)
     {
-        _dbContext.Set<T>().Remove(entity);
+        return _dbContext.Set<T>().Remove(entity).Entity;
     }
 
     public void DeleteRange(IEnumerable<T> items)
