@@ -32,9 +32,9 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
 
     public async Task<T> CreateAsync(T entity)
     {
-        var tmp = await _dbContext.Set<T>().AddAsync(entity);
+        var entityEntry = await _dbContext.Set<T>().AddAsync(entity);
 
-        return tmp.Entity;
+        return entityEntry.Entity;
     }
 
     public Task CreateRangeAsync(IEnumerable<T> items)
@@ -42,9 +42,9 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return _dbContext.Set<T>().AddRangeAsync(items);
     }
 
-    public EntityEntry<T> Update(T entity)
+    public T Update(T entity)
     {
-        return _dbContext.Set<T>().Update(entity);
+        return _dbContext.Set<T>().Update(entity).Entity;
     }
 
     public void UpdateRange(IEnumerable<T> items)

@@ -14,7 +14,7 @@ public interface IRepositoryBase<T>
 
     Task CreateRangeAsync(IEnumerable<T> items);
 
-    EntityEntry<T> Update(T entity);
+    T Update(T entity);
 
     public void UpdateRange(IEnumerable<T> items);
 
