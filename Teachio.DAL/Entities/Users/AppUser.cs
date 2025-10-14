@@ -5,8 +5,6 @@ namespace Teachio.DAL.Entities.Users;
 
 public class AppUser : IdentityUser
 {
-    public Guid Id { get; set; }
-
     public string Name { get; set; } = null!;
 
     public string Surname { get; set; } = null!;
