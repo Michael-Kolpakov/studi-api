@@ -6,7 +6,7 @@ namespace Teachio.WebApi.Extensions;
 
 public static class SerilogExtension
 {
-    private const string _consoleLogTemplate = "[{Timestamp:HH:mm:ss.fff} [{Level}] {SourceContext} {Message}{NewLine}{Exception}";
+    private const string _consoleLogTemplate = "[{Timestamp:HH:mm:ss.fff zzz} [{Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}";
 
     public static void AddSerilogLogging(this IServiceCollection _)
     {
