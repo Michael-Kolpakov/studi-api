@@ -4,5 +4,5 @@ using Teachio.BLL.Dto.Courses.Courses;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.GetPaginated;
 
-public record GetPaginatedCoursesQuery(ushort? pageNumber = null, ushort? pageSize = null)
+public record GetPaginatedCoursesQuery(ushort pageNumber, ushort pageSize)
     : IRequest<Result<GetAllCoursesResponseDto>>;

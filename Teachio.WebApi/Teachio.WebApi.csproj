@@ -24,4 +24,9 @@
       <ProjectReference Include="..\Teachio.DAL\Teachio.DAL.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Controllers\Courses\Videos\VideoProgress\" />
+      <Folder Include="Controllers\Courses\Videos\Videos\" />
+    </ItemGroup>
+
 </Project>
