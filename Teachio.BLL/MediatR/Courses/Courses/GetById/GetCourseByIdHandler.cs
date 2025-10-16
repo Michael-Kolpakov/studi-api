@@ -7,13 +7,13 @@ using Teachio.DAL.Repositories.Interfaces.Base;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.GetById;
 
-public class GetByIdCourseHandler : IRequestHandler<GetCourseByIdQuery, Result<CourseResponseDto>>
+public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<CourseResponseDto>>
 {
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
 
-    public GetByIdCourseHandler(
+    public GetCourseByIdHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger)
