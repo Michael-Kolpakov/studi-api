@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.Services.Realizations;
 using Teachio.DAL.Repositories.Interfaces.Base;
@@ -8,11 +9,14 @@ namespace Teachio.WebApi.Extensions;
 
 public static class ApplicationServicesExtension
 {
+    private const string BllAssemblyName = "Teachio.BLL";
+
     public static IServiceCollection AddApplicationServices(
         this IServiceCollection services,
         IConfiguration configuration)
     {
         var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+        var bllAssembly = Assembly.Load(BllAssemblyName);
 
         services.AddScoped<ILoggerService, LoggerService>();
 
@@ -25,7 +29,8 @@ public static class ApplicationServicesExtension
         services.AddSwagger();
         services.AddSerilogLogging();
         services.AddRepositoryServices();
-        services.AddAutoMapper(currentAssemblies);
+        services.AddAutoMapper(_ => { }, currentAssemblies);
+        services.AddMediatR(config => config.RegisterServicesFromAssemblies(bllAssembly));
         services.AddCors();
 
         return services;
