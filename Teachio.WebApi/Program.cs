@@ -1,5 +1,6 @@
 using Serilog;
 using Teachio.WebApi.Extensions;
+using Teachio.WebApi.Middlewares;
 
 namespace Teachio.WebApi;
 
@@ -11,7 +12,7 @@ public static class Program
 
         builder.Host.UseSerilog((context, services, loggerConfiguration) =>
             loggerConfiguration.ReadFrom.Configuration(context.Configuration).ReadFrom.Services(services));
-        
+
         builder.Services.AddApplicationServices(builder.Configuration);
 
         var app = builder.Build();
@@ -21,6 +22,8 @@ public static class Program
         app.UseCors();
         app.UseCustomSwagger();
         app.MapControllers();
+
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
 
         DatabaseExtension.InitializeDatabase(app);
 

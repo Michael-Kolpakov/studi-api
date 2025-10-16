@@ -8,5 +8,5 @@ public interface ILoggerService
 
     void LogDebug(string message);
 
-    void LogError(object? request, string errorMessage);
+    void LogError(object? request, string errorMessage, string? stackTrace = null);
 }

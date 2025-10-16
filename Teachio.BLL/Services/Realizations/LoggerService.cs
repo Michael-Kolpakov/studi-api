@@ -27,14 +27,15 @@ public class LoggerService : ILoggerService
         _logger.Debug(message);
     }
 
-    public void LogError(object? request, string errorMessage)
+    public void LogError(object? request, string errorMessage, string? stackTrace = null)
     {
         if (request is not null)
         {
             var requestType = request.GetType().ToString();
             var requestClass = requestType.Substring(requestType.LastIndexOf('.') + 1);
+            var stackTraceInfo = stackTrace is not null ? $"\nStackTrace: {stackTrace}" : string.Empty;
 
-            _logger.Error($"'{requestClass}' handled with the error: {errorMessage}");
+            _logger.Error($"'{requestClass}' handled with the error: {errorMessage}{stackTraceInfo}");
         }
         else
         {
