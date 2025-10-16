@@ -29,7 +29,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
     {
         _logger.LogInformation($"Entered 'DeleteCourseHandler' to delete a course with Id: {request.id}");
 
-        var course = await _repositoryWrapper.CoursesRepository.GetFirstOrDefaultAsync(x => x.Id == request.id);
+        var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(x => x.Id == request.id);
 
         if (course is null)
         {
