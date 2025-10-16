@@ -8,10 +8,6 @@
 
     <ItemGroup>
       <Folder Include="Attributes\" />
-      <Folder Include="MediatR\Courses\Sections\Create\" />
-      <Folder Include="MediatR\Courses\Sections\Delete\" />
-      <Folder Include="MediatR\Courses\Sections\GetById\" />
-      <Folder Include="MediatR\Courses\Sections\Update\" />
       <Folder Include="MediatR\Courses\Videos\VideoProgress\" />
       <Folder Include="MediatR\Courses\Videos\Videos\" />
       <Folder Include="MediatR\Users\" />
