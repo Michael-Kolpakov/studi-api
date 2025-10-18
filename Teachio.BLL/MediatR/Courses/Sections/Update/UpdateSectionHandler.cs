@@ -29,7 +29,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
 
     public async Task<Result<SectionResponseDto>> Handle(UpdateSectionCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered 'UpdateSectionHandler' to update a course with Id: {request.sectionUpdateDto.Id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.sectionUpdateDto.Id}");
 
         var (courseExists, errorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
             request.sectionUpdateDto.CourseId,

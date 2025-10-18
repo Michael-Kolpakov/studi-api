@@ -29,7 +29,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
 
     public async Task<Result<SectionResponseDto>> Handle(CreateSectionCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Entered 'CreateSectionHandler' to create a new course");
+        _logger.LogInformation($"Entered '{GetType().Name}' to create a new course");
 
         var (courseExists, errorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
             request.sectionCreateDto.CourseId,

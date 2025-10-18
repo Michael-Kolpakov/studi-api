@@ -26,7 +26,7 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
     public async Task<Result<CourseResponseDto>> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered 'UpdateCourseHandler' to update a course with Id: {request.courseUpdateDto.Id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.courseUpdateDto.Id}");
 
         var course = _mapper.Map<CourseEntity>(request.courseUpdateDto);
 

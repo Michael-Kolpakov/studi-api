@@ -25,7 +25,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
 
     public async Task<Result<SectionResponseDto>> Handle(DeleteSectionCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered 'DeleteSectionHandler' to delete a course with Id: {request.id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to delete a course with Id: {request.id}");
 
         var section = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(x => x.Id == request.id);
 

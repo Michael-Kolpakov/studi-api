@@ -26,7 +26,7 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
 
     public async Task<Result<CourseResponseDto>> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Entered 'CreateCourseHandler' to create a new course");
+        _logger.LogInformation($"Entered '{GetType().Name}' to create a new course");
 
         var newCourse = _mapper.Map<CourseEntity>(request.courseCreateDto);
 

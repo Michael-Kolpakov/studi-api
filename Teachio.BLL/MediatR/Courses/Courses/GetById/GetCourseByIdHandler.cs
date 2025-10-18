@@ -25,7 +25,7 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
 
     public async Task<Result<CourseResponseDto>> Handle(GetCourseByIdQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered 'GetCourseByIdHandler' to get course by Id: {request.id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to get course by Id: {request.id}");
 
         var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(x => x.Id == request.id);
 

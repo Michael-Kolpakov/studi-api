@@ -25,7 +25,7 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
 
     public Task<Result<GetAllCoursesResponseDto>> Handle(GetPaginatedCoursesQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Entered 'GetAllCoursesHandler' to get paginated courses");
+        _logger.LogInformation($"Entered '{GetType().Name}' to get paginated courses");
 
         var paginatedCourses = _repositoryWrapper.CoursesRepository.GetAllPaginated(request.pageNumber, request.pageSize);
 
