@@ -2,11 +2,11 @@
 
 public interface IEntityExistenceService
 {
-    Task<bool> CheckCourseExistenceAsync(Guid courseId, object request);
+    Task<(bool Exists, string? ErrorMessage)> CheckCourseExistenceAsync(Guid courseId, object request);
 
-    Task<bool> CheckSectionExistenceAsync(Guid sectionId, object request);
+    Task<(bool Exists, string? ErrorMessage)> CheckSectionExistenceAsync(Guid sectionId, object request);
 
-    Task<bool> CheckVideoExistenceAsync(Guid videoId, object request);
+    Task<(bool Exists, string? ErrorMessage)> CheckVideoExistenceAsync(Guid videoId, object request);
 
-    Task<bool> CheckUserExistenceAsync(Guid userId, object request);
+    Task<(bool Exists, string? ErrorMessage)> CheckUserExistenceAsync(Guid userId, object request);
 }

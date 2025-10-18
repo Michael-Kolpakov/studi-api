@@ -14,35 +14,35 @@ public class EntityExistenceService : IEntityExistenceService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public Task<bool> CheckCourseExistenceAsync(Guid courseId, object request)
+    public Task<(bool Exists, string? ErrorMessage)> CheckCourseExistenceAsync(Guid courseId, object request)
         => CheckExistenceAsync(
             courseId,
             id => _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(x => x.Id == id),
             request,
             "course");
 
-    public Task<bool> CheckSectionExistenceAsync(Guid sectionId, object request)
+    public Task<(bool Exists, string? ErrorMessage)> CheckSectionExistenceAsync(Guid sectionId, object request)
         => CheckExistenceAsync(
             sectionId,
             id => _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(x => x.Id == id),
             request,
             "section");
 
-    public Task<bool> CheckVideoExistenceAsync(Guid videoId, object request)
+    public Task<(bool Exists, string? ErrorMessage)> CheckVideoExistenceAsync(Guid videoId, object request)
         => CheckExistenceAsync(
             videoId,
             id => _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(x => x.Id == id),
             request,
             "video");
 
-    public Task<bool> CheckUserExistenceAsync(Guid userId, object request)
+    public Task<(bool Exists, string? ErrorMessage)> CheckUserExistenceAsync(Guid userId, object request)
         => CheckExistenceAsync(
             userId,
             id => _repositoryWrapper.AppUsersRepository.GetSingleOrDefaultAsync(x => x.Id == id.ToString()),
             request,
             "user");
 
-    private async Task<bool> CheckExistenceAsync<T>(
+    private async Task<(bool Exists, string? ErrorMessage)> CheckExistenceAsync<T>(
         Guid id,
         Func<Guid, Task<T?>> fetchFunc,
         object? request,
@@ -54,7 +54,7 @@ public class EntityExistenceService : IEntityExistenceService
         var entity = await fetchFunc(id);
         if (entity is not null)
         {
-            return true;
+            return (true, null);
         }
 
         var requestInfo = request ?? new
@@ -65,6 +65,6 @@ public class EntityExistenceService : IEntityExistenceService
         var errorMessage = $"There is no {entityName} with such Id: {id}";
         _logger.LogError(requestInfo, errorMessage);
 
-        return false;
+        return (false, errorMessage);
     }
 }
