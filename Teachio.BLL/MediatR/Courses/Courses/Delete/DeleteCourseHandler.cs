@@ -9,8 +9,6 @@ namespace Teachio.BLL.MediatR.Courses.Courses.Delete;
 
 public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<CourseResponseDto>>
 {
-    private const string _notFoundErrorMessage = "There is no course with such Id";
-
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
@@ -33,9 +31,10 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
 
         if (course is null)
         {
-            _logger.LogError(request, _notFoundErrorMessage);
+            var errorMessage = $"There is no section with such Id: {request.id}";
+            _logger.LogError(request, errorMessage);
 
-            return Result.Fail(_notFoundErrorMessage);
+            return Result.Fail(errorMessage);
         }
 
         _repositoryWrapper.CoursesRepository.Delete(course);
