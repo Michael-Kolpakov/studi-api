@@ -12,15 +12,18 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
 {
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
+    private readonly IEntityExistenceService _entityExistenceService;
     private readonly ILoggerService _logger;
 
     public UpdateSectionHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
+        IEntityExistenceService entityExistenceService,
         ILoggerService logger)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
+        _entityExistenceService = entityExistenceService;
         _logger = logger;
     }
 
@@ -28,14 +31,12 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
     {
         _logger.LogInformation($"Entered 'UpdateSectionHandler' to update a course with Id: {request.sectionUpdateDto.Id}");
 
-        var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(x =>
-            x.Id == request.sectionUpdateDto.CourseId);
+        var (courseExists, errorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
+            request.sectionUpdateDto.CourseId,
+            request);
 
-        if (course is null)
+        if (courseExists)
         {
-            var errorMessage = $"There is no course with such Id: {request.sectionUpdateDto.CourseId}";
-            _logger.LogError(request, errorMessage);
-
             return Result.Fail(errorMessage);
         }
 

@@ -12,15 +12,18 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
 {
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
+    private readonly IEntityExistenceService _entityExistenceService;
     private readonly ILoggerService _logger;
 
     public CreateSectionHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
+        IEntityExistenceService entityExistenceService,
         ILoggerService logger)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
+        _entityExistenceService = entityExistenceService;
         _logger = logger;
     }
 
@@ -28,14 +31,12 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
     {
         _logger.LogInformation("Entered 'CreateSectionHandler' to create a new course");
 
-        var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(x =>
-            x.Id == request.sectionCreateDto.CourseId);
+        var (courseExists, errorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
+            request.sectionCreateDto.CourseId,
+            request);
 
-        if (course is null)
+        if (courseExists)
         {
-            var errorMessage = $"There is no course with such Id: {request.sectionCreateDto.CourseId}";
-            _logger.LogError(request, errorMessage);
-
             return Result.Fail(errorMessage);
         }
 
