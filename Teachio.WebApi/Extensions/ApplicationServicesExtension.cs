@@ -18,8 +18,6 @@ public static class ApplicationServicesExtension
         var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
         var bllAssembly = Assembly.Load(BllAssemblyName);
 
-        services.AddScoped<ILoggerService, LoggerService>();
-
         services.AddControllers(options =>
         {
             options.Filters.Add(new ProducesAttribute("application/json"));
@@ -28,6 +26,7 @@ public static class ApplicationServicesExtension
         services.AddCustomDbContext(configuration);
         services.AddSwagger();
         services.AddSerilogLogging();
+        services.AddCustomServices();
         services.AddRepositoryServices();
         services.AddAutoMapper(_ => { }, currentAssemblies);
         services.AddMediatR(config => config.RegisterServicesFromAssemblies(bllAssembly));
@@ -49,6 +48,12 @@ public static class ApplicationServicesExtension
                     .AllowCredentials();
             });
         });
+    }
+
+    private static void AddCustomServices(this IServiceCollection services)
+    {
+        services.AddScoped<ILoggerService, LoggerService>();
+        services.AddScoped<IEntityExistenceService, EntityExistenceService>();
     }
 
     private static void AddRepositoryServices(this IServiceCollection services)
