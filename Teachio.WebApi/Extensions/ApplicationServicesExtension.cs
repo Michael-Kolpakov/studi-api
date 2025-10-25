@@ -18,6 +18,7 @@ public static class ApplicationServicesExtension
         var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
         var bllAssembly = Assembly.Load(BllAssemblyName);
 
+        services.AddLocalization(options => options.ResourcesPath = "Resources");
         services.AddControllers(options =>
         {
             options.Filters.Add(new ProducesAttribute("application/json"));

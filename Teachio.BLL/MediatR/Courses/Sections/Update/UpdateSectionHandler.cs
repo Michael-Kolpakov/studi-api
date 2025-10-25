@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
+using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Sections;
+using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
+using Teachio.BLL.SharedResource;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
@@ -14,33 +17,44 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IEntityExistenceService _entityExistenceService;
     private readonly ILoggerService _logger;
+    private readonly IStringLocalizer<CannotMapSharedResource> _stringLocalizerFailedToMap;
 
     public UpdateSectionHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         IEntityExistenceService entityExistenceService,
-        ILoggerService logger)
+        ILoggerService logger,
+        IStringLocalizer<CannotMapSharedResource> stringLocalizerFailedToMap)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _entityExistenceService = entityExistenceService;
         _logger = logger;
+        _stringLocalizerFailedToMap = stringLocalizerFailedToMap;
     }
 
     public async Task<Result<SectionResponseDto>> Handle(UpdateSectionCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.sectionUpdateDto.Id}");
 
-        var (courseExists, errorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
+        var section = _mapper.Map<SectionEntity>(request.sectionUpdateDto);
+
+        if (section is null)
+        {
+            var mappingErrorMessage = _stringLocalizerFailedToMap[nameof(CannotMapSharedResource_en.CannotMapNullToSection)].Value;
+            _logger.LogError(request, mappingErrorMessage);
+
+            return Result.Fail(mappingErrorMessage);
+        }
+
+        var (courseExists, existenceErrorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
             request.sectionUpdateDto.CourseId,
             request);
 
         if (courseExists)
         {
-            return Result.Fail(errorMessage);
+            return Result.Fail(existenceErrorMessage);
         }
-
-        var section = _mapper.Map<SectionEntity>(request.sectionUpdateDto);
 
         _repositoryWrapper.SectionsRepository.Update(section);
         await _repositoryWrapper.SaveChangesAsync();

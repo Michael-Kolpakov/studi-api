@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
+using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Sections;
+using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
+using Teachio.BLL.SharedResource;
 using Teachio.DAL.Repositories.Interfaces.Base;
 
 namespace Teachio.BLL.MediatR.Courses.Sections.GetById;
@@ -12,15 +15,18 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
+    private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
 
     public GetSectionByIdHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
-        ILoggerService logger)
+        ILoggerService logger,
+        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
+        _stringLocalizerCannotFind = stringLocalizerCannotFind;
     }
 
     public async Task<Result<SectionResponseDto>> Handle(GetSectionByIdQuery request, CancellationToken cancellationToken)
@@ -31,7 +37,7 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
 
         if (section is null)
         {
-            var errorMessage = $"There is no section with such Id: {request.id}";
+            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindSectionById), request.id].Value;
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);

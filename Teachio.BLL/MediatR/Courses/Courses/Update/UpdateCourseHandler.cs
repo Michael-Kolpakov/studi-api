@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
+using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Courses;
+using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
+using Teachio.BLL.SharedResource;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 
@@ -13,15 +16,18 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
+    private readonly IStringLocalizer<CannotMapSharedResource> _stringLocalizerFailedToMap;
 
     public UpdateCourseHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
-        ILoggerService logger)
+        ILoggerService logger,
+        IStringLocalizer<CannotMapSharedResource> stringLocalizerFailedToMap)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
+        _stringLocalizerFailedToMap = stringLocalizerFailedToMap;
     }
 
     public async Task<Result<CourseResponseDto>> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
@@ -29,6 +35,14 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
         _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.courseUpdateDto.Id}");
 
         var course = _mapper.Map<CourseEntity>(request.courseUpdateDto);
+
+        if (course is null)
+        {
+            var errorMessage = _stringLocalizerFailedToMap[nameof(CannotMapSharedResource_en.CannotMapNullToCourse)].Value;
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
 
         _repositoryWrapper.CoursesRepository.Update(course);
         await _repositoryWrapper.SaveChangesAsync();

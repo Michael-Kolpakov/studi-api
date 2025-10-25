@@ -1,3 +1,5 @@
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 using Serilog;
 using Teachio.WebApi.Extensions;
 using Teachio.WebApi.Middlewares;
@@ -17,6 +19,14 @@ public static class Program
 
         var app = builder.Build();
 
+        app.UseRequestLocalization(new RequestLocalizationOptions()
+        {
+            DefaultRequestCulture = new RequestCulture("en"),
+            SupportedCultures = new[]
+            {
+                new CultureInfo("en")
+            }
+        });
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseCors();
