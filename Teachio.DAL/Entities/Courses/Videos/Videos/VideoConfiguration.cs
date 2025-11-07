@@ -58,16 +58,12 @@ public static class VideoConfiguration
             typeBuilder.Property(v => v.ProcessingError)
                 .HasMaxLength(100);
 
-            typeBuilder.Property(course => course.CreatedAt)
+            typeBuilder.Property(v => v.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()")
                 .ValueGeneratedOnAdd();
 
             typeBuilder.Property(v => v.UpdatedAt)
                 .IsRequired();
-
-            typeBuilder.Property(v => v.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
-                .ValueGeneratedOnAdd();
         });
 
         builder.Entity<Video>()
