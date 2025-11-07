@@ -4,6 +4,6 @@ namespace Teachio.BLL.Dto.Courses.Videos.VideoProgress.Update;
 
 public class VideoProgressUpdateDto : VideoProgressCreateUpdateDto
 {
-    [Required(ErrorMessage = "'{0}' field is required")]
+    [Required(ErrorMessage = "Required")]
     public Guid Id { get; set; }
 }

@@ -4,6 +4,6 @@ namespace Teachio.BLL.Dto.Users.Update;
 
 public class AppUserUpdateDto : AppUserCreateUpdateDto
 {
-    [Required(ErrorMessage = "'{0}' field is required")]
+    [Required(ErrorMessage = "Required")]
     public Guid Id { get; set; }
 }

@@ -5,16 +5,16 @@ namespace Teachio.BLL.Dto.Courses.Videos.Videos;
 
 public abstract class VideoCreateUpdateDto
 {
-    [Required(ErrorMessage = "'{0}' field is required")]
-    [StringLength(60, ErrorMessage = "Length of '{0}' must be not longer than {1} characters")]
+    [Required(ErrorMessage = "Required")]
+    [StringLength(60, ErrorMessage = "Length")]
     public string Title { get; set; } = null!;
 
-    [Required(ErrorMessage = "'{0}' field is required")]
+    [Required(ErrorMessage = "Required")]
     public Guid SectionId { get; set; }
 
-    [Required(ErrorMessage = "'{0}' field is required")]
+    [Required(ErrorMessage = "Required")]
     public int OrderIndex { get; set; }
 
-    [Required(ErrorMessage = "'{0}' field is required")]
+    [Required(ErrorMessage = "Required")]
     public IFormFile File { get; set; } = null!;
 }

@@ -20,4 +20,19 @@
       </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\SharedResource\DataAnnotationsSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>DataAnnotationsSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Resources\SharedResource\DataAnnotationsSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>DataAnnotationsSharedResource.en.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

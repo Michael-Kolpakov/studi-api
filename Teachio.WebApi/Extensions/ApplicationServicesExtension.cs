@@ -4,6 +4,7 @@ using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.Services.Realizations;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using Teachio.DAL.Repositories.Realizations.Base;
+using Teachio.DAL.SharedResource;
 
 namespace Teachio.WebApi.Extensions;
 
@@ -23,6 +24,10 @@ public static class ApplicationServicesExtension
         {
             options.Filters.Add(new ProducesAttribute("application/json"));
             options.Filters.Add(new ConsumesAttribute("application/json"));
+        }).AddDataAnnotationsLocalization(options =>
+        {
+            options.DataAnnotationLocalizerProvider = (_, factory) =>
+                factory.Create(typeof(DataAnnotationsSharedResource));
         });
         services.AddCustomDbContext(configuration);
         services.AddSwagger();
