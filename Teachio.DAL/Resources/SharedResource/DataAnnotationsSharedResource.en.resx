@@ -24,4 +24,7 @@
     <data name="Length" xml:space="preserve">
         <value>Length of '{0}' must be not longer than {1} characters</value>
     </data>
+    <data name="Range" xml:space="preserve">
+        <value>Range of '{0}' must be between {1} and {2}</value>
+    </data>
 </root>

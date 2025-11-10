@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Teachio.DAL.Shared;
 
 namespace Teachio.DAL.Entities.Courses.Videos.VideoProgress;
 
@@ -28,8 +29,8 @@ public static class VideoProgressConfiguration
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
-                    "CK_Video_PositionSeconds_NonNegative",
-                    "[PositionSeconds] >= 0"));
+                    "CK_Video_PositionSeconds_Range",
+                    $"[PositionSeconds] >= 0 AND [PositionSeconds] <= {EntityConstants.MaxVideoDurationSeconds}"));
 
             typeBuilder.Property(vp => vp.UpdatedAt)
                 .IsRequired();

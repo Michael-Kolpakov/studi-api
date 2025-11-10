@@ -69,6 +69,15 @@ namespace Teachio.DAL.Resources.SharedResource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Range of &apos;{0}&apos; must be between {1} and {2}.
+        /// </summary>
+        internal static string Range {
+            get {
+                return ResourceManager.GetString("Range", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; field is required.
         /// </summary>
         internal static string Required {

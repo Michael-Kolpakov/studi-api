@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Teachio.DAL.Shared;
 
 namespace Teachio.BLL.Dto.Courses.Videos.VideoProgress.Request;
 
@@ -11,5 +12,6 @@ public abstract class VideoProgressCreateUpdateRequestDto
     public bool IsCompleted { get; set; }
 
     [Required(ErrorMessage = "Required")]
+    [Range(0, EntityConstants.MaxVideoDurationSeconds, ErrorMessage = "Range")]
     public int PositionSeconds { get; set; }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Teachio.DAL.Shared;
 
 namespace Teachio.DAL.Entities.Courses.Videos.Videos;
 
@@ -40,8 +41,8 @@ public static class VideoConfiguration
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
-                    "CK_Video_DurationSeconds_NonNegative",
-                    "[DurationSeconds] >= 0"));
+                    "CK_Video_DurationSeconds_Range",
+                    $"[DurationSeconds] >= 0 AND [PositionSeconds] <= {EntityConstants.MaxVideoDurationSeconds}"));
 
             typeBuilder.Property(v => v.Status)
                 .IsRequired()
