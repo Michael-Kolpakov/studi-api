@@ -23,7 +23,8 @@ public static class VideoProgressConfiguration
                 .HasDefaultValueSql("0");
 
             typeBuilder.Property(vp => vp.PositionSeconds)
-                .IsRequired();
+                .IsRequired()
+                .HasDefaultValue(0);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
