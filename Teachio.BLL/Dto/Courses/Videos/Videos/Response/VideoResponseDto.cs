@@ -1,5 +1,4 @@
-﻿using Teachio.BLL.Dto.Courses.Videos.VideoProgress;
-using Teachio.BLL.Dto.Courses.Videos.VideoProgress.Response;
+﻿using Teachio.BLL.Dto.Courses.Videos.VideoProgress.Response;
 
 namespace Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 

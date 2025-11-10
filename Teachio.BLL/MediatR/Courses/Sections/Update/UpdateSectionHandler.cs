@@ -2,7 +2,6 @@
 using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Localization;
-using Teachio.BLL.Dto.Courses.Sections;
 using Teachio.BLL.Dto.Courses.Sections.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;

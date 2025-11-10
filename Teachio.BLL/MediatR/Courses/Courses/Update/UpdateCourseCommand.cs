@@ -1,6 +1,5 @@
 ﻿using FluentResults;
 using MediatR;
-using Teachio.BLL.Dto.Courses.Courses;
 using Teachio.BLL.Dto.Courses.Courses.Request.Update;
 using Teachio.BLL.Dto.Courses.Courses.Response;
 

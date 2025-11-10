@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Teachio.BLL.Dto.Courses.Videos.VideoProgress;
 using Teachio.BLL.Dto.Courses.Videos.VideoProgress.Request.Create;
 using Teachio.BLL.Dto.Courses.Videos.VideoProgress.Request.Update;
 using Teachio.BLL.Dto.Courses.Videos.VideoProgress.Response;

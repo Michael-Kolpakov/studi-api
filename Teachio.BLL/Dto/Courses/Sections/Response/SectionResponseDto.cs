@@ -1,5 +1,4 @@
-﻿using Teachio.BLL.Dto.Courses.Videos.Videos;
-using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
+﻿using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 
 namespace Teachio.BLL.Dto.Courses.Sections.Response;
 

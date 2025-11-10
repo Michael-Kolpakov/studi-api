@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Teachio.BLL.Dto.Courses.Courses;
 using Teachio.BLL.Dto.Courses.Courses.Request.Create;
 using Teachio.BLL.Dto.Courses.Courses.Request.Update;
 using Teachio.BLL.Dto.Courses.Courses.Response;

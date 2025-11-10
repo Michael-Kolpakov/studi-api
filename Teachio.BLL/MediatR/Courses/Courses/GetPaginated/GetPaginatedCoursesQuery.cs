@@ -1,6 +1,5 @@
 ﻿using FluentResults;
 using MediatR;
-using Teachio.BLL.Dto.Courses.Courses;
 using Teachio.BLL.Dto.Courses.Courses.Response;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.GetPaginated;
