@@ -10,6 +10,8 @@ public class VideoProgress
 
     public Video? Video { get; set; }
 
+    public bool IsCompleted { get; set; }
+
     public int PositionSeconds { get; set; }
 
     public DateTime UpdatedAt { get; set; }

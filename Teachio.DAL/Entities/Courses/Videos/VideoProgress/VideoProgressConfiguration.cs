@@ -18,6 +18,10 @@ public static class VideoProgressConfiguration
             typeBuilder.Property(vp => vp.VideoId)
                 .IsRequired();
 
+            typeBuilder.Property(vp => vp.IsCompleted)
+                .IsRequired()
+                .HasDefaultValueSql("0");
+
             typeBuilder.Property(vp => vp.PositionSeconds)
                 .IsRequired();
 

@@ -6,5 +6,7 @@ public class VideoProgressResponseDto
 
     public Guid VideoId { get; set; }
 
+    public bool IsCompleted { get; set; }
+
     public int PositionSeconds { get; set; }
 }

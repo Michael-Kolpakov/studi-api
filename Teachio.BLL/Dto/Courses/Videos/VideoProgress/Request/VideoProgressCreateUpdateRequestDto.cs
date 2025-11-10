@@ -8,5 +8,8 @@ public abstract class VideoProgressCreateUpdateRequestDto
     public Guid VideoId { get; set; }
 
     [Required(ErrorMessage = "Required")]
+    public bool IsCompleted { get; set; }
+
+    [Required(ErrorMessage = "Required")]
     public int PositionSeconds { get; set; }
 }
