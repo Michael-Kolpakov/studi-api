@@ -3,6 +3,7 @@ using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Sections;
+using Teachio.BLL.Dto.Courses.Sections.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
@@ -35,9 +36,9 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
 
     public async Task<Result<SectionResponseDto>> Handle(UpdateSectionCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.sectionUpdateDto.Id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.SectionUpdateRequestDto.Id}");
 
-        var section = _mapper.Map<SectionEntity>(request.sectionUpdateDto);
+        var section = _mapper.Map<SectionEntity>(request.SectionUpdateRequestDto);
 
         if (section is null)
         {
@@ -48,7 +49,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
         }
 
         var (courseExists, existenceErrorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
-            request.sectionUpdateDto.CourseId,
+            request.SectionUpdateRequestDto.CourseId,
             request);
 
         if (courseExists)

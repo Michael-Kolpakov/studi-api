@@ -3,6 +3,7 @@ using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Sections;
+using Teachio.BLL.Dto.Courses.Sections.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
@@ -37,7 +38,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to create a new course");
 
-        var newSection = _mapper.Map<SectionEntity>(request.sectionCreateDto);
+        var newSection = _mapper.Map<SectionEntity>(request.SectionCreateRequestDto);
 
         if (newSection is null)
         {
@@ -48,7 +49,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         }
 
         var (courseExists, existenceErrorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
-            request.sectionCreateDto.CourseId,
+            request.SectionCreateRequestDto.CourseId,
             request);
 
         if (courseExists)

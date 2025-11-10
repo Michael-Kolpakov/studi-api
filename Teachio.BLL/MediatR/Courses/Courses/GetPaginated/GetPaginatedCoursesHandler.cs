@@ -2,6 +2,7 @@
 using FluentResults;
 using MediatR;
 using Teachio.BLL.Dto.Courses.Courses;
+using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.DAL.Repositories.Interfaces.Base;
 

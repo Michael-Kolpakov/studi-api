@@ -1,9 +1,10 @@
 ﻿using FluentResults;
 using MediatR;
 using Teachio.BLL.Dto.Courses.Courses;
-using Teachio.BLL.Dto.Courses.Courses.Create;
+using Teachio.BLL.Dto.Courses.Courses.Request.Create;
+using Teachio.BLL.Dto.Courses.Courses.Response;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.Create;
 
-public record CreateCourseCommand(CourseCreateDto courseCreateDto)
+public record CreateCourseCommand(CourseCreateRequestDto CourseCreateRequestDto)
     : IRequest<Result<CourseResponseDto>>;

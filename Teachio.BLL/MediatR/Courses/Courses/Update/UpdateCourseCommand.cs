@@ -1,9 +1,10 @@
 ﻿using FluentResults;
 using MediatR;
 using Teachio.BLL.Dto.Courses.Courses;
-using Teachio.BLL.Dto.Courses.Courses.Update;
+using Teachio.BLL.Dto.Courses.Courses.Request.Update;
+using Teachio.BLL.Dto.Courses.Courses.Response;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.Update;
 
-public record UpdateCourseCommand(CourseUpdateDto courseUpdateDto)
+public record UpdateCourseCommand(CourseUpdateRequestDto CourseUpdateRequestDto)
     : IRequest<Result<CourseResponseDto>>;

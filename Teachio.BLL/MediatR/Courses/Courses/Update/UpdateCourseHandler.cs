@@ -3,6 +3,7 @@ using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Courses;
+using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
@@ -32,9 +33,9 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
     public async Task<Result<CourseResponseDto>> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.courseUpdateDto.Id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.CourseUpdateRequestDto.Id}");
 
-        var course = _mapper.Map<CourseEntity>(request.courseUpdateDto);
+        var course = _mapper.Map<CourseEntity>(request.CourseUpdateRequestDto);
 
         if (course is null)
         {

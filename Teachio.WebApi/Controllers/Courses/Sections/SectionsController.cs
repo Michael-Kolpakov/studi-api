@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.Dto.Courses.Sections;
-using Teachio.BLL.Dto.Courses.Sections.Create;
-using Teachio.BLL.Dto.Courses.Sections.Update;
+using Teachio.BLL.Dto.Courses.Sections.Request.Create;
+using Teachio.BLL.Dto.Courses.Sections.Request.Update;
+using Teachio.BLL.Dto.Courses.Sections.Response;
 using Teachio.BLL.MediatR.Courses.Sections.Create;
 using Teachio.BLL.MediatR.Courses.Sections.Delete;
 using Teachio.BLL.MediatR.Courses.Sections.GetById;
@@ -24,9 +25,9 @@ public class SectionsController : BaseApiController
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(SectionResponseDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Create([FromBody] SectionCreateDto sectionCreateDto)
+    public async Task<IActionResult> Create([FromBody] SectionCreateRequestDto sectionCreateRequestDto)
     {
-        return HandleResult(await Mediator.Send(new CreateSectionCommand(sectionCreateDto)));
+        return HandleResult(await Mediator.Send(new CreateSectionCommand(sectionCreateRequestDto)));
     }
 
     [HttpPut]
@@ -34,9 +35,9 @@ public class SectionsController : BaseApiController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SectionResponseDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Update([FromBody] SectionUpdateDto sectionUpdateDto)
+    public async Task<IActionResult> Update([FromBody] SectionUpdateRequestDto sectionUpdateRequestDto)
     {
-        return HandleResult(await Mediator.Send(new UpdateSectionCommand(sectionUpdateDto)));
+        return HandleResult(await Mediator.Send(new UpdateSectionCommand(sectionUpdateRequestDto)));
     }
 
     [HttpDelete("{id:guid}")]

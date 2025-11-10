@@ -3,6 +3,7 @@ using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Courses;
+using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
@@ -34,7 +35,7 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to create a new course");
 
-        var newCourse = _mapper.Map<CourseEntity>(request.courseCreateDto);
+        var newCourse = _mapper.Map<CourseEntity>(request.CourseCreateRequestDto);
 
         if (newCourse is null)
         {
