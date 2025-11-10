@@ -20,7 +20,7 @@ public static class VideoProgressConfiguration
 
             typeBuilder.Property(vp => vp.IsCompleted)
                 .IsRequired()
-                .HasDefaultValueSql("0");
+                .HasDefaultValue(false);
 
             typeBuilder.Property(vp => vp.PositionSeconds)
                 .IsRequired()
