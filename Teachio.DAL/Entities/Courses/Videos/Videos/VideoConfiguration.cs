@@ -43,14 +43,6 @@ public static class VideoConfiguration
                     "CK_Video_DurationSeconds_NonNegative",
                     "[DurationSeconds] >= 0"));
 
-            typeBuilder.Property(v => v.ThumbnailName)
-                .IsRequired()
-                .HasMaxLength(60);
-
-            typeBuilder.Property(v => v.ThumbnailRelativePath)
-                .IsRequired()
-                .HasMaxLength(500);
-
             typeBuilder.Property(v => v.Status)
                 .IsRequired()
                 .HasConversion<int>();

@@ -10,6 +10,10 @@ public class Course
     public string Title { get; set; } = null!;
 
     public string? Description { get; set; }
+    
+    public string ThumbnailName { get; set; } = null!;
+
+    public string ThumbnailRelativePath { get; set; } = null!;
 
     public Guid OwnerUserId { get; set; }
 

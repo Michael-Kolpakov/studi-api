@@ -23,7 +23,15 @@ public static class CourseConfiguration
 
             typeBuilder.Property(c => c.Description)
                 .HasMaxLength(1000);
-            
+
+            typeBuilder.Property(c => c.ThumbnailName)
+                .IsRequired()
+                .HasMaxLength(60);
+
+            typeBuilder.Property(c => c.ThumbnailRelativePath)
+                .IsRequired()
+                .HasMaxLength(500);
+
             typeBuilder.Property(c => c.OwnerUserId)
                 .IsRequired();
 

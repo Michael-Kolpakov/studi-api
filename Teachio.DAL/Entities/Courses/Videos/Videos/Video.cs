@@ -22,10 +22,6 @@ public class Video
 
     public int? DurationSeconds { get; set; }
 
-    public string ThumbnailName { get; set; } = null!;
-
-    public string ThumbnailRelativePath { get; set; } = null!;
-
     public VideoStatus Status { get; set; }
 
     public string? ProcessingError { get; set; }
