@@ -10,8 +10,6 @@ public class AppUserResponseDto
 
     public string? Surname { get; set; }
 
-    public string? Role { get; set; }
-
     public List<CourseResponseDto>? OwnedCourses { get; set; }
 
     public List<CourseResponseDto>? WatchingCourses { get; set; }

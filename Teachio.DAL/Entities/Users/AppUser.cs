@@ -9,8 +9,6 @@ public class AppUser : IdentityUser
 
     public string Surname { get; set; } = null!;
 
-    public Role Role { get; set; }
-
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
@@ -18,10 +16,4 @@ public class AppUser : IdentityUser
     public List<Course> OwnedCourses { get; set; } = new List<Course>();
 
     public List<Course> WatchingCourses { get; set; } = new List<Course>();
-}
-
-public enum Role
-{
-    ContentCreator,
-    Watcher
 }

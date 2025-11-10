@@ -20,10 +20,6 @@ public static class AppUserConfiguration
                 .IsRequired()
                 .HasMaxLength(30);
 
-            typeBuilder.Property(au => au.Role)
-                .IsRequired()
-                .HasConversion<int>();
-
             typeBuilder.Property(au => au.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()")
                 .ValueGeneratedOnAdd();
