@@ -6,6 +6,7 @@ using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.BLL.MediatR.Courses.Courses.Create;
 using Teachio.BLL.MediatR.Courses.Courses.Delete;
 using Teachio.BLL.MediatR.Courses.Courses.GetById;
+using Teachio.BLL.MediatR.Courses.Courses.GetByIdPreview;
 using Teachio.BLL.MediatR.Courses.Courses.GetPaginated;
 using Teachio.BLL.MediatR.Courses.Courses.Update;
 
@@ -25,6 +26,13 @@ public class CoursesController : BaseApiController
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         return HandleResult(await Mediator.Send(new GetCourseByIdQuery(id)));
+    }
+
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CoursePreviewResponseDto))]
+    public async Task<IActionResult> GetByIdPreview([FromRoute] Guid id)
+    {
+        return HandleResult(await Mediator.Send(new GetCoursePreviewByIdQuery(id)));
     }
 
     [HttpPost]
