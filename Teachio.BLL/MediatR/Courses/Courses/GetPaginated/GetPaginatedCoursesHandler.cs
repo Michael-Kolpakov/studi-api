@@ -7,7 +7,7 @@ using Teachio.DAL.Repositories.Interfaces.Base;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.GetPaginated;
 
-public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQuery, Result<GetAllCoursesResponseDto>>
+public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQuery, Result<GetPaginatedCoursesResponseDto>>
 {
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
@@ -23,16 +23,16 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
         _logger = logger;
     }
 
-    public Task<Result<GetAllCoursesResponseDto>> Handle(GetPaginatedCoursesQuery request, CancellationToken cancellationToken)
+    public Task<Result<GetPaginatedCoursesResponseDto>> Handle(GetPaginatedCoursesQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to get paginated courses");
 
         var paginatedCourses = _repositoryWrapper.CoursesRepository.GetAllPaginated(request.pageNumber, request.pageSize);
 
-        var getAllCoursesResponseDto = new GetAllCoursesResponseDto()
+        var getAllCoursesResponseDto = new GetPaginatedCoursesResponseDto()
         {
             TotalAmount = paginatedCourses.TotalItems,
-            Courses = _mapper.Map<IEnumerable<CourseResponseDto>>(paginatedCourses.Entities)
+            Courses = _mapper.Map<IEnumerable<CoursePreviewShortResponseDto>>(paginatedCourses.Entities)
         };
 
         return Task.FromResult(Result.Ok(getAllCoursesResponseDto));

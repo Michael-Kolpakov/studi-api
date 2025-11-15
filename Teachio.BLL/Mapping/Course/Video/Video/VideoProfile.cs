@@ -13,5 +13,6 @@ public class VideoProfile : Profile
         CreateMap<VideoCreateRequestDto, VideoEntity>();
         CreateMap<VideoUpdateRequestDto, VideoEntity>();
         CreateMap<VideoEntity, VideoResponseDto>();
+        CreateMap<VideoEntity, VideoShortResponseDto>();
     }
 }

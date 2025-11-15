@@ -14,7 +14,7 @@ namespace Teachio.WebApi.Controllers.Courses.Courses;
 public class CoursesController : BaseApiController
 {
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetAllCoursesResponseDto))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetPaginatedCoursesResponseDto))]
     public async Task<IActionResult> GetPaginated([FromQuery] ushort pageNumber, [FromQuery] ushort pageSize)
     {
         return HandleResult(await Mediator.Send(new GetPaginatedCoursesQuery(pageNumber, pageSize)));

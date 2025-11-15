@@ -13,5 +13,7 @@ public class CourseProfile : Profile
         CreateMap<CourseCreateRequestDto, CourseEntity>();
         CreateMap<CourseUpdateRequestDto, CourseEntity>();
         CreateMap<CourseEntity, CourseResponseDto>();
+        CreateMap<CourseEntity, CoursePreviewResponseDto>();
+        CreateMap<CourseEntity, CoursePreviewShortResponseDto>();
     }
 }
