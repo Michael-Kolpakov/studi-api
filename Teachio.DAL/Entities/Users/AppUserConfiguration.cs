@@ -25,6 +25,7 @@ public static class AppUserConfiguration
                 .ValueGeneratedOnAdd();
 
             typeBuilder.Property(au => au.UpdatedAt)
+                .HasDefaultValueSql("GETUTCDATE()")
                 .IsRequired();
         });
     }
