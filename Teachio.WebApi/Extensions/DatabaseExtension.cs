@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Persistence;
+using Teachio.DAL.Persistence.Seed;
 
 namespace Teachio.WebApi.Extensions;
 
@@ -24,6 +25,6 @@ public static class DatabaseExtension
         var teachioDbContext = serviceScope.ServiceProvider.GetRequiredService<TeachioDbContext>();
 
         teachioDbContext.Database.Migrate();
-        // TeachioDbContext.SeedAsync(teachioDbContext).Wait();
+        TeachioDbSeed.SeedAsync(teachioDbContext).Wait();
     }
 }
