@@ -11,6 +11,8 @@ public class Section
 
     public int OrderIndex { get; set; }
 
+    public int VideosCount { get; set; }
+
     public Guid CourseId { get; set; }
 
     public Course? Course { get; set; }
