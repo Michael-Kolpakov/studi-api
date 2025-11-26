@@ -28,7 +28,7 @@ public class TeachioDbContext : IdentityDbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        
+
         builder.ConfigureCourses();
         builder.ConfigureSections();
         builder.ConfigureVideos();
