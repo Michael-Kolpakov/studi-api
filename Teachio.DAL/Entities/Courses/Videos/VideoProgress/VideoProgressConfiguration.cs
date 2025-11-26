@@ -33,6 +33,7 @@ public static class VideoProgressConfiguration
                     $"[PositionSeconds] >= 0 AND [PositionSeconds] <= {EntityConstants.MaxVideoDurationSeconds}"));
 
             typeBuilder.Property(vp => vp.UpdatedAt)
+                .HasDefaultValueSql("GETUTCDATE()")
                 .IsRequired();
         });
     }
