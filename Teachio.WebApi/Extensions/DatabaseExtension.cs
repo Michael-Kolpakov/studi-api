@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Persistence;
 using Teachio.DAL.Persistence.Seed;
+using ILogger = Serilog.ILogger;
 
 namespace Teachio.WebApi.Extensions;
 
@@ -23,8 +24,9 @@ public static class DatabaseExtension
     {
         var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();
         var teachioDbContext = serviceScope.ServiceProvider.GetRequiredService<TeachioDbContext>();
+        var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger>();
 
         teachioDbContext.Database.Migrate();
-        TeachioDbSeed.SeedAsync(teachioDbContext).Wait();
+        TeachioDbSeed.SeedAsync(teachioDbContext, logger).Wait();
     }
 }
