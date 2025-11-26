@@ -49,6 +49,8 @@ public static class TeachioDbSeed
 
         if (entities is null || entities.Count == 0)
         {
+            logger.Debug("No data found in {EntityName}.json to seed.", jsonFileName);
+
             return;
         }
 
