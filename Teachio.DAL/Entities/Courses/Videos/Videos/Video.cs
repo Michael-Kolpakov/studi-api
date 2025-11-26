@@ -10,8 +10,6 @@ public class Video
 
     public string VideoName { get; set; } = null!;
 
-    public string VideoRelativePath { get; set; } = null!;
-
     public string? ContentType { get; set; }
 
     public Guid SectionId { get; set; }

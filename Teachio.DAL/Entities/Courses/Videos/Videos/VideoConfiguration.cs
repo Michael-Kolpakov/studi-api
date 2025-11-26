@@ -22,11 +22,7 @@ public static class VideoConfiguration
 
             typeBuilder.Property(v => v.VideoName)
                 .IsRequired()
-                .HasMaxLength(60);
-
-            typeBuilder.Property(v => v.VideoRelativePath)
-                .IsRequired()
-                .HasMaxLength(500);
+                .HasMaxLength(110);
 
             typeBuilder.Property(v => v.ContentType)
                 .HasMaxLength(100);
@@ -56,6 +52,7 @@ public static class VideoConfiguration
                 .ValueGeneratedOnAdd();
 
             typeBuilder.Property(v => v.UpdatedAt)
+                .HasDefaultValueSql("GETUTCDATE()")
                 .IsRequired();
         });
 
