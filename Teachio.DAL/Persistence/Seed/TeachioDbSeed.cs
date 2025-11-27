@@ -18,11 +18,11 @@ public static class TeachioDbSeed
 
         logger.Debug("Staring database seeding...");
 
-        await SeedEntityAsync(dbContext, dbContext.VideoProgress, nameof(VideoProgress), logger);
-        await SeedEntityAsync(dbContext, dbContext.Videos, nameof(Video), logger);
-        await SeedEntityAsync(dbContext, dbContext.Sections, nameof(Section), logger);
-        await SeedEntityAsync(dbContext, dbContext.Courses, nameof(Course), logger);
         await SeedEntityAsync(dbContext, dbContext.AppUsers, nameof(AppUser), logger);
+        await SeedEntityAsync(dbContext, dbContext.Courses, nameof(Course), logger);
+        await SeedEntityAsync(dbContext, dbContext.Sections, nameof(Section), logger);
+        await SeedEntityAsync(dbContext, dbContext.Videos, nameof(Video), logger);
+        await SeedEntityAsync(dbContext, dbContext.VideoProgress, nameof(VideoProgress), logger);
 
         logger.Debug("Database seeding completed.");
     }
