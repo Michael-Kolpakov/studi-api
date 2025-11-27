@@ -71,7 +71,7 @@ public static class CourseConfiguration
                     .HasOne<AppUser>()
                     .WithMany()
                     .HasForeignKey("AppUserId")
-                    .OnDelete(DeleteBehavior.Cascade),
+                    .OnDelete(DeleteBehavior.NoAction),
                 j => j
                     .HasOne<Course>()
                     .WithMany()

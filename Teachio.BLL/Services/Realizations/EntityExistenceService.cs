@@ -53,7 +53,7 @@ public class EntityExistenceService : IEntityExistenceService
     public Task<(bool Exists, string? ErrorMessage)> CheckUserExistenceAsync(Guid userId, object request)
         => CheckExistenceAsync(
             userId,
-            id => _repositoryWrapper.AppUsersRepository.GetSingleOrDefaultAsync(x => x.Id == id.ToString()),
+            id => _repositoryWrapper.AppUsersRepository.GetSingleOrDefaultAsync(x => x.Id == id),
             request,
             nameof(AppUser),
             _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindUserById), userId].Value);

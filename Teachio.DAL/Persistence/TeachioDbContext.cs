@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Sections;
@@ -8,7 +9,7 @@ using Teachio.DAL.Entities.Users;
 
 namespace Teachio.DAL.Persistence;
 
-public class TeachioDbContext : IdentityDbContext
+public class TeachioDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
 {
     public TeachioDbContext()
     {
@@ -20,9 +21,13 @@ public class TeachioDbContext : IdentityDbContext
     }
 
     public DbSet<Course> Courses { get; set; } = null!;
+
     public DbSet<Section> Sections { get; set; } = null!;
+
     public DbSet<Video> Videos { get; set; } = null!;
+
     public DbSet<VideoProgress> VideoProgress { get; set; } = null!;
+
     public DbSet<AppUser> AppUsers { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)

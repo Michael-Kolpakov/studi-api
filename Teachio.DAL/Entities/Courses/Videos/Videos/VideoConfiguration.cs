@@ -38,7 +38,7 @@ public static class VideoConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     "CK_Video_DurationSeconds_Range",
-                    $"[DurationSeconds] >= 0 AND [PositionSeconds] <= {EntityConstants.MaxVideoDurationSeconds}"));
+                    $"[DurationSeconds] >= 0 AND [DurationSeconds] <= {EntityConstants.MaxVideoDurationSeconds}"));
 
             typeBuilder.Property(v => v.Status)
                 .IsRequired()

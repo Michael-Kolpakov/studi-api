@@ -3,7 +3,7 @@ using Teachio.DAL.Entities.Courses.Courses;
 
 namespace Teachio.DAL.Entities.Users;
 
-public class AppUser : IdentityUser
+public class AppUser : IdentityUser<Guid>
 {
     public string Name { get; set; } = null!;
 
