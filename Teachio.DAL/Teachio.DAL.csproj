@@ -35,4 +35,22 @@
       </Compile>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Persistence\Seed\Content\AppUser.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Persistence\Seed\Content\Course.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Persistence\Seed\Content\Section.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Persistence\Seed\Content\Video.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Persistence\Seed\Content\VideoProgress.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
