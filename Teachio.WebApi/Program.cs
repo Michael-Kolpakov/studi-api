@@ -19,6 +19,9 @@ public static class Program
 
         var app = builder.Build();
 
+        var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
+        var cancellationToken = lifetime.ApplicationStopping;
+
         app.UseRequestLocalization(new RequestLocalizationOptions()
         {
             DefaultRequestCulture = new RequestCulture("en"),
@@ -35,7 +38,7 @@ public static class Program
 
         app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-        await DatabaseExtension.InitializeDatabase(app);
+        await DatabaseExtension.InitializeDatabase(app, cancellationToken);
 
         await app.RunAsync();
     }
