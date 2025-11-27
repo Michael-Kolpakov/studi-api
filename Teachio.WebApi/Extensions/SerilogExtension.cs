@@ -8,7 +8,7 @@ public static class SerilogExtension
 {
     private const string _consoleLogTemplate = "[{Timestamp:HH:mm:ss.fff zzz} [{Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}";
 
-    public static void AddSerilogLogging(this IServiceCollection _)
+    public static void AddSerilogLogging(this IServiceCollection services)
     {
         var projectName = Assembly.GetCallingAssembly().GetName().Name?.ToLowerInvariant();
 
@@ -24,5 +24,12 @@ public static class SerilogExtension
             .WriteTo.Console(LogEventLevel.Information, _consoleLogTemplate);
 
         Log.Logger = loggerConfiguration.CreateLogger();
+
+        services.AddSingleton(Log.Logger);
+        services.AddLogging(builder =>
+        {
+            builder.ClearProviders();
+            builder.AddSerilog(Log.Logger, dispose: false);
+        });
     }
 }
