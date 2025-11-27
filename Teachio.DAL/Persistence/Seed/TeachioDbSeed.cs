@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Teachio.DAL.Entities.Courses.Courses;
@@ -11,6 +12,11 @@ namespace Teachio.DAL.Persistence.Seed;
 
 public static class TeachioDbSeed
 {
+    private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     public static async Task SeedAsync(
         TeachioDbContext dbContext,
         ILogger logger,
@@ -57,7 +63,9 @@ public static class TeachioDbSeed
 
         var jsonData = await File.ReadAllTextAsync(fullPath, cancellationToken);
 
-        var entities = JsonSerializer.Deserialize<List<TEntity>>(jsonData);
+        _jsonOptions.Converters.Add(new JsonStringEnumConverter());
+
+        var entities = JsonSerializer.Deserialize<List<TEntity>>(jsonData, _jsonOptions);
 
         if (entities is null || entities.Count == 0)
         {
