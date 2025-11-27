@@ -31,8 +31,8 @@ public static class TeachioDbSeed
         TeachioDbContext dbContext,
         DbSet<TEntity> dbSet,
         string jsonFileName,
-        ILogger logger
-    ) where TEntity : class
+        ILogger logger)
+        where TEntity : class
     {
         if (await dbSet.AnyAsync())
         {
