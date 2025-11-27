@@ -20,13 +20,13 @@ public static class DatabaseExtension
         return services;
     }
 
-    public static void InitializeDatabase(IApplicationBuilder app)
+    public static async Task InitializeDatabase(IApplicationBuilder app)
     {
         var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();
         var teachioDbContext = serviceScope.ServiceProvider.GetRequiredService<TeachioDbContext>();
         var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger>();
 
-        teachioDbContext.Database.Migrate();
-        TeachioDbSeed.SeedAsync(teachioDbContext, logger).Wait();
+        await teachioDbContext.Database.MigrateAsync();
+        await TeachioDbSeed.SeedAsync(teachioDbContext, logger);
     }
 }

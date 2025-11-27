@@ -8,7 +8,7 @@ namespace Teachio.WebApi;
 
 public static class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -35,8 +35,8 @@ public static class Program
 
         app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-        DatabaseExtension.InitializeDatabase(app);
+        await DatabaseExtension.InitializeDatabase(app);
 
-        app.Run();
+        await app.RunAsync();
     }
 }
