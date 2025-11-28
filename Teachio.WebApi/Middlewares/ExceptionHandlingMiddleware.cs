@@ -8,7 +8,6 @@ namespace Teachio.WebApi.Middlewares;
 public class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILoggerService _logger;
     private readonly Dictionary<Type, int> _exceptionStatusMap;
 
     private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions()
@@ -17,10 +16,9 @@ public class ExceptionHandlingMiddleware
         WriteIndented = false
     };
 
-    public ExceptionHandlingMiddleware(RequestDelegate next, ILoggerService logger)
+    public ExceptionHandlingMiddleware(RequestDelegate next)
     {
         _next = next ?? throw new ArgumentNullException(nameof(next));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
         _exceptionStatusMap = new Dictionary<Type, int>()
         {
@@ -47,7 +45,8 @@ public class ExceptionHandlingMiddleware
     
     private async Task HandleExceptionAsync(HttpContext context, Exception ex)
     {
-        _logger.LogError(null, ex.Message, ex.StackTrace);
+        var logger = context.RequestServices.GetRequiredService<ILoggerService>();
+        logger.LogError(null, ex.Message, ex.StackTrace);
 
         var statusCode = _exceptionStatusMap.TryGetValue(ex.GetType(), out var mapped)
             ? mapped
