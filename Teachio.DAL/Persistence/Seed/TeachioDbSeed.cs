@@ -12,9 +12,10 @@ namespace Teachio.DAL.Persistence.Seed;
 
 public static class TeachioDbSeed
 {
-    private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions()
+    private static readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
     {
-        PropertyNameCaseInsensitive = true
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter() }
     };
 
     public static async Task SeedAsync(
@@ -25,7 +26,7 @@ public static class TeachioDbSeed
         ArgumentNullException.ThrowIfNull(dbContext);
         ArgumentNullException.ThrowIfNull(logger);
 
-        logger.Information("Staring database seeding...");
+        logger.Information("Starting database seeding...");
 
         await SeedEntityAsync(dbContext, dbContext.AppUsers, nameof(AppUser), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.Courses, nameof(Course), logger, cancellationToken);
@@ -63,9 +64,7 @@ public static class TeachioDbSeed
 
         var jsonData = await File.ReadAllTextAsync(fullPath, cancellationToken);
 
-        _jsonOptions.Converters.Add(new JsonStringEnumConverter());
-
-        var entities = JsonSerializer.Deserialize<List<TEntity>>(jsonData, _jsonOptions);
+        var entities = JsonSerializer.Deserialize<List<TEntity>>(jsonData, jsonOptions);
 
         if (entities is null || entities.Count == 0)
         {
