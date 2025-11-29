@@ -1,5 +1,4 @@
 ﻿using Teachio.BLL.Dto.Courses.Sections.Response;
-using Teachio.BLL.Dto.Users.Response;
 
 namespace Teachio.BLL.Dto.Courses.Courses.Response;
 
@@ -13,9 +12,9 @@ public class CourseResponseDto
 
     public int SectionsCount { get; set; }
 
+    public int WatchingUsersCount { get; set; }
+
     public Guid OwnerUserId { get; set; }
 
     public List<SectionResponseDto>? Sections { get; set; }
-
-    public List<AppUserResponseDto>? WatchingUsers { get; set; }
 }
