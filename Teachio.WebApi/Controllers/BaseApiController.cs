@@ -7,7 +7,7 @@ using Teachio.BLL.MediatR.ResultValidations;
 namespace Teachio.WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/[controller]")]
 public class BaseApiController : ControllerBase
 {
     private IMediator? _mediator;

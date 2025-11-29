@@ -9,33 +9,34 @@ using Teachio.BLL.MediatR.Courses.Courses.GetById;
 using Teachio.BLL.MediatR.Courses.Courses.GetByIdPreview;
 using Teachio.BLL.MediatR.Courses.Courses.GetPaginated;
 using Teachio.BLL.MediatR.Courses.Courses.Update;
+using Teachio.WebApi.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Courses;
 
 public class CoursesController : BaseApiController
 {
-    [HttpGet]
+    [HttpGet(CoursesRelativeRoutes.GetPaginated)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetPaginatedCoursesResponseDto))]
     public async Task<IActionResult> GetPaginated([FromQuery] ushort pageNumber, [FromQuery] ushort pageSize)
     {
         return HandleResult(await Mediator.Send(new GetPaginatedCoursesQuery(pageNumber, pageSize)));
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet(CoursesRelativeRoutes.GetById)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseResponseDto))]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         return HandleResult(await Mediator.Send(new GetCourseByIdQuery(id)));
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet(CoursesRelativeRoutes.GetByIdPreview)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CoursePreviewResponseDto))]
     public async Task<IActionResult> GetByIdPreview([FromRoute] Guid id)
     {
         return HandleResult(await Mediator.Send(new GetCoursePreviewByIdQuery(id)));
     }
 
-    [HttpPost]
+    [HttpPost(CoursesRelativeRoutes.Create)]
     // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CourseResponseDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -45,7 +46,7 @@ public class CoursesController : BaseApiController
         return HandleResult(await Mediator.Send(new CreateCourseCommand(courseCreateRequestDto)));
     }
 
-    [HttpPut]
+    [HttpPut(CoursesRelativeRoutes.Update)]
     // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseResponseDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -55,7 +56,7 @@ public class CoursesController : BaseApiController
         return HandleResult(await Mediator.Send(new UpdateCourseCommand(courseUpdateRequestDto)));
     }
 
-    [HttpDelete("{id:guid}")]
+    [HttpDelete(CoursesRelativeRoutes.Delete)]
     // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseResponseDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

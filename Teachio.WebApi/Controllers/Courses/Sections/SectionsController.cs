@@ -7,19 +7,20 @@ using Teachio.BLL.MediatR.Courses.Sections.Create;
 using Teachio.BLL.MediatR.Courses.Sections.Delete;
 using Teachio.BLL.MediatR.Courses.Sections.GetById;
 using Teachio.BLL.MediatR.Courses.Sections.Update;
+using Teachio.WebApi.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Sections;
 
 public class SectionsController : BaseApiController
 {
-    [HttpGet("{id:guid}")]
+    [HttpGet(SectionsRelativeRoutes.GetById)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SectionResponseDto))]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         return HandleResult(await Mediator.Send(new GetSectionByIdQuery(id)));
     }
 
-    [HttpPost]
+    [HttpPost(SectionsRelativeRoutes.Create)]
     // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(SectionResponseDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -29,7 +30,7 @@ public class SectionsController : BaseApiController
         return HandleResult(await Mediator.Send(new CreateSectionCommand(sectionCreateRequestDto)));
     }
 
-    [HttpPut]
+    [HttpPut(SectionsRelativeRoutes.Update)]
     // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SectionResponseDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -39,7 +40,7 @@ public class SectionsController : BaseApiController
         return HandleResult(await Mediator.Send(new UpdateSectionCommand(sectionUpdateRequestDto)));
     }
 
-    [HttpDelete("{id:guid}")]
+    [HttpDelete(SectionsRelativeRoutes.Delete)]
     // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SectionResponseDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
