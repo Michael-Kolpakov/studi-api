@@ -10,6 +10,8 @@ public class SectionResponseDto
 
     public int OrderIndex { get; set; }
 
+    public int VideosCount { get; set; }
+
     public Guid CourseId { get; set; }
 
     public List<VideoResponseDto>? Videos { get; set; }

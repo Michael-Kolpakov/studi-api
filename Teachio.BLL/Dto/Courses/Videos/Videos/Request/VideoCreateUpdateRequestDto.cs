@@ -16,5 +16,5 @@ public abstract class VideoCreateUpdateRequestDto
     public int OrderIndex { get; set; }
 
     [Required(ErrorMessage = "Required")]
-    public IFormFile File { get; set; } = null!;
+    public IFormFile VideoFile { get; set; } = null!;
 }

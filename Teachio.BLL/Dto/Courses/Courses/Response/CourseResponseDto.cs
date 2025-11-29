@@ -11,9 +11,11 @@ public class CourseResponseDto
 
     public string? Description { get; set; }
 
+    public int SectionsCount { get; set; }
+
     public Guid OwnerUserId { get; set; }
 
     public List<SectionResponseDto>? Sections { get; set; }
-    
+
     public List<AppUserResponseDto>? WatchingUsers { get; set; }
 }

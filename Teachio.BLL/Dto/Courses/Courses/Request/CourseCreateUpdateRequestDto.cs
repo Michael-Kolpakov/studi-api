@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Teachio.BLL.Dto.Courses.Courses.Request;
 
@@ -10,6 +11,9 @@ public abstract class CourseCreateUpdateRequestDto
 
     [StringLength(1000, ErrorMessage = "Length")]
     public string? Description { get; set; }
+
+    [Required(ErrorMessage = "Required")]
+    public IFormFile ThumbnailFile { get; set; } = null!;
 
     [Required(ErrorMessage = "Required")]
     public Guid OwnerUserId { get; set; }
