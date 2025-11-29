@@ -23,6 +23,7 @@ public class CoursesController : BaseApiController
     /// <returns>Returns a paginated list of the courses.</returns>
     [HttpGet(CoursesRelativeRoutes.GetPaginated)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetPaginatedCoursesResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetPaginated([FromQuery] ushort pageNumber, [FromQuery] ushort pageSize)
     {
         return HandleResult(await Mediator.Send(new GetPaginatedCoursesQuery(pageNumber, pageSize)));
@@ -35,6 +36,8 @@ public class CoursesController : BaseApiController
     /// <returns>Returns the corresponding course.</returns>
     [HttpGet(CoursesRelativeRoutes.GetById)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         return HandleResult(await Mediator.Send(new GetCourseByIdQuery(id)));
@@ -47,6 +50,8 @@ public class CoursesController : BaseApiController
     /// <returns>Returns a preview of the corresponding course.</returns>
     [HttpGet(CoursesRelativeRoutes.GetByIdPreview)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CoursePreviewResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetByIdPreview([FromRoute] Guid id)
     {
         return HandleResult(await Mediator.Send(new GetCoursePreviewByIdQuery(id)));
@@ -60,6 +65,7 @@ public class CoursesController : BaseApiController
     [HttpPost(CoursesRelativeRoutes.Create)]
     // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CourseResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Create([FromBody] CourseCreateRequestDto courseCreateRequestDto)
@@ -75,6 +81,7 @@ public class CoursesController : BaseApiController
     [HttpPut(CoursesRelativeRoutes.Update)]
     // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Update([FromBody] CourseUpdateRequestDto courseUpdateRequestDto)
@@ -90,8 +97,10 @@ public class CoursesController : BaseApiController
     [HttpDelete(CoursesRelativeRoutes.Delete)]
     // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         return HandleResult(await Mediator.Send(new DeleteCourseCommand(id)));

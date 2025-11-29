@@ -20,6 +20,8 @@ public class SectionsController : BaseApiController
     /// <returns>Returns the corresponding course section.</returns>
     [HttpGet(SectionsRelativeRoutes.GetById)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SectionResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         return HandleResult(await Mediator.Send(new GetSectionByIdQuery(id)));
@@ -33,6 +35,7 @@ public class SectionsController : BaseApiController
     [HttpPost(SectionsRelativeRoutes.Create)]
     // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(SectionResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Create([FromBody] SectionCreateRequestDto sectionCreateRequestDto)
@@ -48,6 +51,7 @@ public class SectionsController : BaseApiController
     [HttpPut(SectionsRelativeRoutes.Update)]
     // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SectionResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Update([FromBody] SectionUpdateRequestDto sectionUpdateRequestDto)
@@ -63,8 +67,10 @@ public class SectionsController : BaseApiController
     [HttpDelete(SectionsRelativeRoutes.Delete)]
     // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SectionResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         return HandleResult(await Mediator.Send(new DeleteSectionCommand(id)));
