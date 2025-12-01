@@ -1,4 +1,6 @@
-﻿namespace Teachio.BLL.Dto.Courses.Videos.Videos.Response;
+﻿using Teachio.BLL.Dto.Courses.Videos.VideoProgress.Response;
+
+namespace Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 
 public class VideoShortResponseDto
 {
@@ -11,4 +13,6 @@ public class VideoShortResponseDto
     public int? OrderIndex { get; set; }
 
     public int? DurationSeconds { get; set; }
+
+    public VideoProgressResponseDto VideoProgress { get; set; } = null!;
 }

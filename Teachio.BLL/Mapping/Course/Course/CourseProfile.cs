@@ -12,8 +12,20 @@ public class CourseProfile : Profile
     {
         CreateMap<CourseCreateRequestDto, CourseEntity>();
         CreateMap<CourseUpdateRequestDto, CourseEntity>();
-        CreateMap<CourseEntity, CourseResponseDto>();
-        CreateMap<CourseEntity, CoursePreviewResponseDto>();
-        CreateMap<CourseEntity, CoursePreviewShortResponseDto>();
+
+        CreateMap<CourseEntity, CourseResponseDto>()
+            .ForMember(
+                dest => dest.WatchingUsersCount,
+                opt => opt.MapFrom(src => src.WatchingUsers.Count));
+
+        CreateMap<CourseEntity, CoursePreviewResponseDto>()
+            .ForMember(
+                dest => dest.WatchingUsersCount,
+                opt => opt.MapFrom(src => src.WatchingUsers.Count));
+
+        CreateMap<CourseEntity, CoursePreviewShortResponseDto>()
+            .ForMember(
+                dest => dest.WatchingUsersCount,
+                opt => opt.MapFrom(src=> src.WatchingUsers.Count));
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Teachio.BLL.Dto.Courses.Sections.Response;
+using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 
 namespace Teachio.BLL.Dto.Courses.Courses.Response;
 
@@ -16,5 +17,7 @@ public class CourseResponseDto
 
     public Guid OwnerUserId { get; set; }
 
-    public List<SectionResponseDto>? Sections { get; set; }
+    public VideoResponseDto? SelectedVideo { get; set; }
+
+    public List<SectionShortResponseDto> Sections { get; set; } = new List<SectionShortResponseDto>();
 }

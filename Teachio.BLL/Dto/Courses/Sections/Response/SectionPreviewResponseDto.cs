@@ -2,7 +2,7 @@
 
 namespace Teachio.BLL.Dto.Courses.Sections.Response;
 
-public class SectionShortResponseDto
+public class SectionPreviewResponseDto
 {
     public Guid Id { get; set; }
 
@@ -14,5 +14,5 @@ public class SectionShortResponseDto
 
     public Guid CourseId { get; set; }
 
-    public List<VideoShortResponseDto> Videos { get; set; } = new List<VideoShortResponseDto>();
+    public List<VideoPreviewResponseDto> Videos { get; set; } =  new List<VideoPreviewResponseDto>();
 }

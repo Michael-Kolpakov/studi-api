@@ -18,5 +18,5 @@ public class VideoResponseDto
 
     public int? DurationSeconds { get; set; }
 
-    public VideoProgressResponseDto? VideoProgress { get; set; }
+    public VideoProgressResponseDto VideoProgress { get; set; } = null!;
 }

@@ -16,7 +16,9 @@ public class CoursePreviewResponseDto
 
     public string? ThumbnailName { get; set; }
 
+    public int WatchingUsersCount { get; set; }
+
     public Guid OwnerUserId { get; set; }
 
-    public List<SectionShortResponseDto>? Sections { get; set; }
+    public List<SectionPreviewResponseDto> Sections { get; set; } = new List<SectionPreviewResponseDto>();
 }

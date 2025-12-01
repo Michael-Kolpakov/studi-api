@@ -14,5 +14,5 @@ public class SectionResponseDto
 
     public Guid CourseId { get; set; }
 
-    public List<VideoResponseDto>? Videos { get; set; }
+    public List<VideoResponseDto> Videos { get; set; } = new List<VideoResponseDto>();
 }

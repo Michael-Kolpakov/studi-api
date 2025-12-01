@@ -13,6 +13,7 @@ public class SectionProfile : Profile
         CreateMap<SectionCreateRequestDto, SectionEntity>();
         CreateMap<SectionUpdateRequestDto, SectionEntity>();
         CreateMap<SectionEntity, SectionResponseDto>();
+        CreateMap<SectionEntity, SectionPreviewResponseDto>();
         CreateMap<SectionEntity, SectionShortResponseDto>();
     }
 }

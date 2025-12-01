@@ -14,5 +14,7 @@ public class CoursePreviewShortResponseDto
 
     public string? ThumbnailName { get; set; }
 
+    public int WatchingUsersCount { get; set; }
+
     public Guid OwnerUserId { get; set; }
 }

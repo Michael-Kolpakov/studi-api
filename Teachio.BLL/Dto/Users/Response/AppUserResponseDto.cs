@@ -10,7 +10,7 @@ public class AppUserResponseDto
 
     public string? Surname { get; set; }
 
-    public List<CourseResponseDto>? OwnedCourses { get; set; }
+    public List<CourseResponseDto> OwnedCourses { get; set; } = new List<CourseResponseDto>();
 
-    public List<CourseResponseDto>? WatchingCourses { get; set; }
+    public List<CourseResponseDto> WatchingCourses { get; set; } = new List<CourseResponseDto>();
 }
