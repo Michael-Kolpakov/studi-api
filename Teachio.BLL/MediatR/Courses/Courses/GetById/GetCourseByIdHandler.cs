@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Courses.Response;
+using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
@@ -33,7 +35,12 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to get course by Id: {request.id}");
 
-        var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(x => x.Id == request.id);
+        var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
+            x => x.Id == request.id,
+            q => q
+                .Include(c => c.Sections)
+                    .ThenInclude(s => s.Videos)
+                        .ThenInclude(v => v.VideoProgress));
 
         if (course is null)
         {
@@ -43,7 +50,19 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
             return Result.Fail(errorMessage);
         }
 
+        var watchingUsersCount = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionCountAsync(
+            x => x.WatchingUsers,
+            x => x.Id == request.id);
+
+        var selectedVideo = course.Sections
+            .SelectMany(s => s.Videos)
+            .FirstOrDefault(v => request.SelectedVideoId.HasValue
+                ? v.Id == request.SelectedVideoId.Value
+                : !v.VideoProgress.IsCompleted);
+
         var courseResponseDto = _mapper.Map<CourseResponseDto>(course);
+        courseResponseDto.SelectedVideo = _mapper.Map<VideoResponseDto?>(selectedVideo);
+        courseResponseDto.WatchingUsersCount = watchingUsersCount;
 
         return Result.Ok(courseResponseDto);
     }

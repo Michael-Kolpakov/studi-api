@@ -139,13 +139,31 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         int? offset = null)
     {
         return await GetQueryable(
-            predicate,
-            include,
-            selector,
-            ascendingSortKeySelector,
-            descendingSortKeySelector,
-            offset: offset)
+                predicate,
+                include,
+                selector,
+                ascendingSortKeySelector,
+                descendingSortKeySelector,
+                offset: offset)
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<int> GetCountAsync(
+        Expression<Func<T, bool>>? predicate = default,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default)
+    {
+        return await GetQueryable(predicate, include).CountAsync();
+    }
+
+    public async Task<int> GetNavigationCollectionCountAsync<TProperty>(
+        Expression<Func<T, IEnumerable<TProperty>>> collectionSelector,
+        Expression<Func<T, bool>>? predicate = default,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default)
+    {
+        var query = GetQueryable(predicate, include);
+        var elements = query.SelectMany(collectionSelector);
+
+        return await elements.CountAsync();
     }
 
     private IQueryable<T> GetQueryable(

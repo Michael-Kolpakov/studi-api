@@ -33,14 +33,15 @@ public class CoursesController : BaseApiController
     /// Retrieves a course by its unique identifier.
     /// </summary>
     /// <param name="id">The unique identifier of the course to retrieve.</param>
+    /// <param name="selectedVideoId">The unique identifier of the selected video to load.</param>
     /// <returns>Returns the corresponding course.</returns>
     [HttpGet(CoursesRelativeRoutes.GetById)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetById([FromRoute] Guid id)
+    public async Task<IActionResult> GetById([FromRoute] Guid id, [FromQuery] Guid? selectedVideoId = null)
     {
-        return HandleResult(await Mediator.Send(new GetCourseByIdQuery(id)));
+        return HandleResult(await Mediator.Send(new GetCourseByIdQuery(id, selectedVideoId)));
     }
 
     /// <summary>

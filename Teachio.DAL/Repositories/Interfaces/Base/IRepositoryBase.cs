@@ -16,7 +16,7 @@ public interface IRepositoryBase<T>
 
     T Update(T entity);
 
-    public void UpdateRange(IEnumerable<T> items);
+    void UpdateRange(IEnumerable<T> items);
 
     T Delete(T entity);
 
@@ -26,13 +26,13 @@ public interface IRepositoryBase<T>
 
     EntityEntry<T> Entry(T entity);
 
-    public Task ExecuteSqlRaw(string query);
+    Task ExecuteSqlRaw(string query);
 
     Task<IEnumerable<T>> GetAllAsync(
         Expression<Func<T, bool>>? predicate = default,
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default);
 
-    public PaginationResponse<T> GetAllPaginated(
+    PaginationResponse<T> GetAllPaginated(
         ushort? pageNumber = null,
         ushort? pageSize = null,
         Expression<Func<T, T>>? selector = default,
@@ -61,6 +61,15 @@ public interface IRepositoryBase<T>
         Expression<Func<T, object>>? ascendingSortKeySelector = default,
         Expression<Func<T, object>>? descendingSortKeySelector = default,
         int? offset = null);
+
+    Task<int> GetCountAsync(
+        Expression<Func<T, bool>>? predicate = default,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default);
+
+    Task<int> GetNavigationCollectionCountAsync<TProperty>(
+        Expression<Func<T, IEnumerable<TProperty>>> collectionSelector,
+        Expression<Func<T, bool>>? predicate = default,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default);
 
     IQueryable<T> FindAll(
         Expression<Func<T, bool>>? predicate = default,
