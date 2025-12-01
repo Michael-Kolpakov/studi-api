@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.BLL.Resources.SharedResource;
@@ -35,7 +36,11 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to get course preview by Id: {request.id}");
 
-        var coursePreview = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(x => x.Id == request.id);
+        var coursePreview = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
+            x => x.Id == request.id,
+            q => q
+                .Include(c => c.Sections)
+                    .ThenInclude(v => v.Videos));
 
         if (coursePreview is null)
         {
@@ -45,7 +50,12 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
             return Result.Fail(errorMessage);
         }
 
+        var watchingUsersCount = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionCountAsync(
+            x => x.WatchingUsers,
+            x => x.Id == request.id);
+
         var coursePreviewResponseDto = _mapper.Map<CoursePreviewResponseDto>(coursePreview);
+        coursePreviewResponseDto.WatchingUsersCount = watchingUsersCount;
 
         return Result.Ok(coursePreviewResponseDto);
     }

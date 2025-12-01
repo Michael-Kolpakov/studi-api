@@ -16,6 +16,8 @@ public class CoursePreviewResponseDto
 
     public string? ThumbnailName { get; set; }
 
+    public string? ThumbnailRelativePath { get; set; }
+
     public int WatchingUsersCount { get; set; }
 
     public Guid OwnerUserId { get; set; }
