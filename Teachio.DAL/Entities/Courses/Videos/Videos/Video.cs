@@ -16,9 +16,9 @@ public class Video
 
     public Section? Section { get; set; }
 
-    public int? OrderIndex { get; set; }
+    public int OrderIndex { get; set; }
 
-    public int? DurationSeconds { get; set; }
+    public int DurationSeconds { get; set; }
 
     public VideoStatus Status { get; set; }
 

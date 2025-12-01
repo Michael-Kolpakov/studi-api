@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Teachio.DAL.Persistence;
 
@@ -11,9 +12,11 @@ using Teachio.DAL.Persistence;
 namespace Teachio.DAL.Persistence.Migrations
 {
     [DbContext(typeof(TeachioDbContext))]
-    partial class TeachioDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251201233649_NamesForCourseAndSection")]
+    partial class NamesForCourseAndSection
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -305,10 +308,10 @@ namespace Teachio.DAL.Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<int>("DurationSeconds")
+                    b.Property<int?>("DurationSeconds")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderIndex")
+                    b.Property<int?>("OrderIndex")
                         .HasColumnType("int");
 
                     b.Property<string>("ProcessingError")

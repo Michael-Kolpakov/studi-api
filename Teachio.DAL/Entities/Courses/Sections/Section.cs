@@ -9,6 +9,8 @@ public class Section
 
     public string Title { get; set; } = null!;
 
+    public string SectionName { get; set; } = null!;
+
     public int OrderIndex { get; set; }
 
     public int VideosCount { get; set; }

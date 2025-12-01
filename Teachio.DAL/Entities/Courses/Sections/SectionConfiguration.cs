@@ -21,8 +21,17 @@ public static class SectionConfiguration
                 .IsRequired()
                 .HasMaxLength(60);
 
+            typeBuilder.Property(s => s.SectionName)
+                .IsRequired()
+                .HasMaxLength(60);
+
             typeBuilder.Property(s => s.OrderIndex)
                 .IsRequired();
+
+            typeBuilder.ToTable(t =>
+                t.HasCheckConstraint(
+                    "CK_Section_OrderIndex_NonNegative",
+                    "[OrderIndex] >= 0"));
 
             typeBuilder.Property(s => s.VideosCount)
                 .IsRequired()
@@ -32,11 +41,6 @@ public static class SectionConfiguration
                 t.HasCheckConstraint(
                     "CK_Section_VideosCount_Max",
                     $"[VideosCount] >= 0 AND [VideosCount] <= {EntityConstants.MaxVideosPerSection}"));
-            
-            typeBuilder.ToTable(t =>
-                t.HasCheckConstraint(
-                    "CK_Section_OrderIndex_NonNegative",
-                    "[OrderIndex] >= 0"));
 
             typeBuilder.Property(s => s.CourseId)
                 .IsRequired();

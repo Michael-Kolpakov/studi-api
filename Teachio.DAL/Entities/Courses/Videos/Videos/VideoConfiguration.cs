@@ -30,10 +30,16 @@ public static class VideoConfiguration
             typeBuilder.Property(v => v.SectionId)
                 .IsRequired();
 
+            typeBuilder.Property(v => v.OrderIndex)
+                .IsRequired();
+
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     "CK_Video_OrderIndex_NonNegative",
                     "[OrderIndex] >= 0"));
+
+            typeBuilder.Property(v => v.DurationSeconds)
+                .IsRequired();
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(

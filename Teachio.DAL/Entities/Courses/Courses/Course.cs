@@ -11,13 +11,15 @@ public class Course
 
     public string? Description { get; set; }
 
+    public string CourseName { get; set; } = null!;
+
     public string ThumbnailName { get; set; } = null!;
 
     public int SectionsCount { get; set; }
 
     public Guid OwnerUserId { get; set; }
 
-    public AppUser? OwnerUser { get; set; }
+    public AppUser OwnerUser { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }
 
