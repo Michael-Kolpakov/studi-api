@@ -28,7 +28,7 @@ public class Video
 
     public DateTime UpdatedAt { get; set; }
 
-    public VideoProgress.VideoProgress? VideoProgress { get; set; }
+    public VideoProgress.VideoProgress VideoProgress { get; set; } = null!;
 }
 
 public enum VideoStatus
