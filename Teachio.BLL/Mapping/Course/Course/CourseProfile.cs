@@ -31,7 +31,7 @@ public class CourseProfile : Profile
             .ForMember(
                 dest => dest.ThumbnailRelativePath,
                 opt => opt.MapFrom(src => HandlerConstants.ThumbnailRelativePathTemplate
-                    .Replace("{AppUser}", $"{src.OwnerUser.Email}-{src.OwnerUser.Id}")
+                    .Replace("{AppUser}", src.OwnerUser.Email)
                     .Replace("{CourseName}", src.CourseName)
                     .Replace("{ThumbnailName}", src.ThumbnailName)));
 
