@@ -69,11 +69,29 @@ namespace Teachio.BLL.Resources.SharedResource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There is no course with key &apos;{1}&apos;: {0}.
+        /// </summary>
+        internal static string CannotFindCourseByKey {
+            get {
+                return ResourceManager.GetString("CannotFindCourseByKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There is no section with such Id: {0}.
         /// </summary>
         internal static string CannotFindSectionById {
             get {
                 return ResourceManager.GetString("CannotFindSectionById", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no section with key &apos;{1}&apos;: {0}.
+        /// </summary>
+        internal static string CannotFindSectionByKey {
+            get {
+                return ResourceManager.GetString("CannotFindSectionByKey", resourceCulture);
             }
         }
         
@@ -87,11 +105,29 @@ namespace Teachio.BLL.Resources.SharedResource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There is no user with key &apos;{1}&apos;: {0}.
+        /// </summary>
+        internal static string CannotFindUserByKey {
+            get {
+                return ResourceManager.GetString("CannotFindUserByKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There is no video with such Id: {0}.
         /// </summary>
         internal static string CannotFindVideoById {
             get {
                 return ResourceManager.GetString("CannotFindVideoById", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no video with key &apos;{1}&apos;: {0}.
+        /// </summary>
+        internal static string CannotFindVideoByKey {
+            get {
+                return ResourceManager.GetString("CannotFindVideoByKey", resourceCulture);
             }
         }
     }

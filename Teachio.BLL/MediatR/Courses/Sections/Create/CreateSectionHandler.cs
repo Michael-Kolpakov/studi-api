@@ -49,6 +49,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
 
         var (courseExists, existenceErrorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
             request.SectionCreateRequestDto.CourseId,
+            nameof(request.SectionCreateRequestDto.CourseId),
             request);
 
         if (courseExists)

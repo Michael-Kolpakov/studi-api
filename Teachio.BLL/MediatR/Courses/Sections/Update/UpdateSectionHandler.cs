@@ -49,6 +49,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
 
         var (courseExists, existenceErrorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
             request.SectionUpdateRequestDto.CourseId,
+            nameof(request.SectionUpdateRequestDto.CourseId),
             request);
 
         if (courseExists)
