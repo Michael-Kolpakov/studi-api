@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Teachio.DAL.Shared;
+using Teachio.DAL.Utils.Constants;
 
 namespace Teachio.BLL.Dto.Courses.Videos.VideoProgress.Request;
 

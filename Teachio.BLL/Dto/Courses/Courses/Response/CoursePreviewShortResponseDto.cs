@@ -4,7 +4,7 @@ public class CoursePreviewShortResponseDto
 {
     public Guid Id { get; set; }
 
-    public string? Title { get; set; }
+    public string Title { get; set; } = null!;
 
     public string? Description { get; set; }
 
@@ -12,7 +12,7 @@ public class CoursePreviewShortResponseDto
 
     public float TotalDuration { get; set; }
 
-    public string? ThumbnailName { get; set; }
+    public string ThumbnailRelativePath { get; set; } = null!;
 
     public int WatchingUsersCount { get; set; }
 
