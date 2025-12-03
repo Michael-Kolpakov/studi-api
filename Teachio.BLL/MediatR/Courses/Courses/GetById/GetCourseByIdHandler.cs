@@ -35,6 +35,8 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to get course by Id: {request.id}");
 
+        // TODO: validate whether the user has access to the course
+
         var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.id,
             q => q

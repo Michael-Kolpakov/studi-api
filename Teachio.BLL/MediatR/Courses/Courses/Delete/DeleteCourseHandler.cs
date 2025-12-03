@@ -33,6 +33,8 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to delete a course with Id: {request.id}");
 
+        // TODO: validate whether gained course really belongs to the user making the request (and perhaps remove check below)
+
         var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(x => x.Id == request.id);
 
         if (course is null)
@@ -42,6 +44,10 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
 
             return Result.Fail(errorMessage);
         }
+
+        // TODO: delete all course dependent entities: Sections, Videos and videoProgress
+
+        // TODO: address Google Drive API (and CDN in the future) to delete thumbnail image
 
         _repositoryWrapper.CoursesRepository.Delete(course);
         await _repositoryWrapper.SaveChangesAsync();

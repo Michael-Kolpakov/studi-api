@@ -62,6 +62,8 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
             return Result.Fail(errorMessage);
         }
 
+        // TODO: address Google Drive API (and CDN in the future) to upload thumbnail image
+
         await _repositoryWrapper.CoursesRepository.CreateAsync(newCourse);
         await _repositoryWrapper.SaveChangesAsync();
 

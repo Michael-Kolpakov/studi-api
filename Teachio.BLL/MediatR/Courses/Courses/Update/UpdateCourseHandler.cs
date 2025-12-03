@@ -33,7 +33,7 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.CourseUpdateRequestDto.Id}");
 
-        // TODO: Validate whether gained course really belongs to the user making the request (and perhaps remove check below)
+        // TODO: validate whether gained course really belongs to the user making the request (and perhaps remove check below)
 
         var existingCourse = await _repositoryWrapper.CoursesRepository
             .GetSingleOrDefaultAsync(x => x.Id == request.CourseUpdateRequestDto.Id);
@@ -45,6 +45,8 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
             return Result.Fail(errorMessage);
         }
+
+        // TODO: address Google Drive API (and CDN in the future) to update thumbnail image if needed
 
         _mapper.Map(request.CourseUpdateRequestDto, existingCourse);
 
