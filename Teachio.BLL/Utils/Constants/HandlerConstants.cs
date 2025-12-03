@@ -1,4 +1,4 @@
-﻿namespace Teachio.BLL.Shared;
+﻿namespace Teachio.BLL.Utils.Constants;
 
 public static class HandlerConstants
 {

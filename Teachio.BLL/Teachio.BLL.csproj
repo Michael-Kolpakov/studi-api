@@ -7,10 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Attributes\" />
       <Folder Include="MediatR\Courses\Videos\VideoProgress\" />
       <Folder Include="MediatR\Courses\Videos\Videos\" />
       <Folder Include="MediatR\Users\" />
+      <Folder Include="Utils\Attributes\" />
     </ItemGroup>
 
     <ItemGroup>
