@@ -15,14 +15,16 @@ public class CourseProfile : Profile
             .ForMember(
                 dest => dest.Title,
                 opt => opt.MapFrom<TrimTitleResolver>())
-            .ForMember(dest => dest.CourseName,
+            .ForMember(
+                dest => dest.CourseName,
                 opt => opt.MapFrom<CreateNameFromTitleResolver>());
 
         CreateMap<CourseUpdateRequestDto, CourseEntity>()
             .ForMember(
                 dest => dest.Title,
                 opt => opt.MapFrom<TrimTitleResolver>())
-            .ForMember(dest => dest.CourseName,
+            .ForMember(
+                dest => dest.CourseName,
                 opt => opt.MapFrom<CreateNameFromTitleResolver>());
 
         CreateMap<CourseEntity, CourseResponseDto>()
