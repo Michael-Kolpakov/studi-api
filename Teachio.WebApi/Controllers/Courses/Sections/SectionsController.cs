@@ -7,7 +7,7 @@ using Teachio.BLL.MediatR.Courses.Sections.Create;
 using Teachio.BLL.MediatR.Courses.Sections.Delete;
 using Teachio.BLL.MediatR.Courses.Sections.GetById;
 using Teachio.BLL.MediatR.Courses.Sections.Update;
-using Teachio.WebApi.RelativeRoutes;
+using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Sections;
 

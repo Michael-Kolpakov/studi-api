@@ -9,7 +9,7 @@ using Teachio.BLL.MediatR.Courses.Courses.GetById;
 using Teachio.BLL.MediatR.Courses.Courses.GetByIdPreview;
 using Teachio.BLL.MediatR.Courses.Courses.GetPaginated;
 using Teachio.BLL.MediatR.Courses.Courses.Update;
-using Teachio.WebApi.RelativeRoutes;
+using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Courses;
 

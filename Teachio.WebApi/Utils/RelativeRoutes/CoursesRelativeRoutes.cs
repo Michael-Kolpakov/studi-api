@@ -1,4 +1,4 @@
-﻿namespace Teachio.WebApi.RelativeRoutes;
+﻿namespace Teachio.WebApi.Utils.RelativeRoutes;
 
 public static class CoursesRelativeRoutes
 {
