@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Entities.Users;
-using Teachio.DAL.Shared;
+using Teachio.DAL.Utils.Constants;
 
 namespace Teachio.DAL.Entities.Courses.Courses;
 

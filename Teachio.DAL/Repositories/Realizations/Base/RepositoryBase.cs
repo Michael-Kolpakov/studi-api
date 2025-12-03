@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Teachio.DAL.Helpers;
 using Teachio.DAL.Persistence;
 using Teachio.DAL.Repositories.Interfaces.Base;
+using Teachio.DAL.Utils.Helpers;
 
 namespace Teachio.DAL.Repositories.Realizations.Base;
 

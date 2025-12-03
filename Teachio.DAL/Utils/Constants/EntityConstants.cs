@@ -1,4 +1,4 @@
-﻿namespace Teachio.DAL.Shared;
+﻿namespace Teachio.DAL.Utils.Constants;
 
 public static class EntityConstants
 {

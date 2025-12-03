@@ -1,4 +1,4 @@
-﻿namespace Teachio.DAL.Helpers;
+﻿namespace Teachio.DAL.Utils.Helpers;
 
 public class PaginationResponse<T>
 {

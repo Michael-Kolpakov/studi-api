@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Teachio.DAL.Validators;
+namespace Teachio.DAL.Utils.Validators;
 
 public class DateValidatorAttribute : ValidationAttribute
 {
