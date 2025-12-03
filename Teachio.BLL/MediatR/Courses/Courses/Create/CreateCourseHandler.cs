@@ -17,17 +17,20 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
     private readonly IStringLocalizer<CannotMapSharedResource> _stringLocalizerFailedToMap;
+    private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
 
     public CreateCourseHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
-        IStringLocalizer<CannotMapSharedResource> stringLocalizerFailedToMap)
+        IStringLocalizer<CannotMapSharedResource> stringLocalizerFailedToMap,
+        IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
         _stringLocalizerFailedToMap = stringLocalizerFailedToMap;
+        _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
     }
 
     public async Task<Result<CourseResponseDto>> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
@@ -39,6 +42,21 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
         if (newCourse is null)
         {
             var errorMessage = _stringLocalizerFailedToMap[nameof(CannotMapSharedResource_en.CannotMapNullToCourse)].Value;
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
+        var existingCourse = await _repositoryWrapper.CoursesRepository
+            .GetFirstOrDefaultAsync(c => c.OwnerUserId == newCourse.OwnerUserId && c.CourseName == newCourse.CourseName);
+
+        if (existingCourse is not null)
+        {
+            var errorMessage = _stringLocalizerAlreadyExists[
+                nameof(AlreadyExistsSharedResource_en.CourseAlreadyExists),
+                newCourse.CourseName,
+                newCourse.OwnerUserId
+            ].Value;
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);
