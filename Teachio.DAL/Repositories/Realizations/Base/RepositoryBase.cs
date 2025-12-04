@@ -84,7 +84,7 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return await GetQueryable(predicate, include).ToListAsync();
     }
 
-    public PaginationResponse<T> GetAllPaginated(
+    public async Task<PaginationResponse<T>> GetAllPaginatedAsync(
         ushort? pageNumber = null,
         ushort? pageSize = null,
         Expression<Func<T, T>>? selector = default,
@@ -100,12 +100,31 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
             ascendingSortKeySelector,
             descendingSortKeySelector);
 
-        var paginationResponse = PaginationResponse<T>.Create(
-            query,
-            pageNumber,
-            pageSize);
+        var totalItems = await query.CountAsync();
 
-        return paginationResponse;
+        IEnumerable<T> items;
+
+        if (pageNumber is null && pageSize is null)
+        {
+            items = await query.ToListAsync();
+        }
+        else if (pageNumber == 0 || pageSize == 0)
+        {
+            items = [];
+        }
+        else
+        {
+            var resolvedPageNumber = pageNumber ?? 1;
+            var resolvedPageSize = pageSize ?? totalItems;
+            var offset = (resolvedPageNumber - 1) * resolvedPageSize;
+
+            items = await query
+                .Skip(offset)
+                .Take(resolvedPageSize)
+                .ToListAsync();
+        }
+
+        return PaginationResponse<T>.Create(items, totalItems, pageNumber, pageSize);
     }
 
     public async Task<T?> GetSingleOrDefaultAsync(

@@ -27,7 +27,10 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to get paginated courses (page number: {request.pageNumber}, page size: {request.pageSize})");
 
-        var paginatedCourses = _repositoryWrapper.CoursesRepository.GetAllPaginated(request.pageNumber, request.pageSize);
+        var paginatedCourses = await _repositoryWrapper.CoursesRepository.GetAllPaginatedAsync(
+            request.pageNumber,
+            request.pageSize);
+
         var courses = paginatedCourses.Entities.ToList();
 
         var watchingUsersCounts = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionsCountsAsync(

@@ -4,50 +4,47 @@ public class PaginationResponse<T>
 {
     private PaginationResponse(
         IEnumerable<T> items,
-        ushort count,
-        ushort pageNumber,
-        ushort pageSize)
+        int count,
+        int pageNumber,
+        int pageSize)
     {
         TotalItems = count;
         PageSize = pageSize;
         CurrentPage = pageNumber;
-        TotalPages = (ushort)Math.Ceiling(count / (double)pageSize);
+        TotalPages = pageSize > 0 ? (int)Math.Ceiling(count / (double)pageSize) : 0;
         Entities = items;
     }
 
-    public ushort TotalItems { get; private set; }
+    public int TotalItems { get; private set; }
     
-    public ushort CurrentPage { get; private set; }
+    public int CurrentPage { get; private set; }
     
-    public ushort TotalPages { get; private set; }
+    public int TotalPages { get; private set; }
     
-    public ushort PageSize { get; private set; }
+    public int PageSize { get; private set; }
     
 
     public IEnumerable<T> Entities { get; set; }
 
     public static PaginationResponse<T> Create(
-        IQueryable<T>? source,
-        ushort? pageNumber = null,
-        ushort? pageSize = null)
+        IEnumerable<T> items,
+        int totalItems,
+        int? pageNumber = null,
+        int? pageSize = null)
     {
-        var count = (ushort)(source?.Count() ?? 0);
-
         if (pageNumber is null && pageSize is null)
         {
-            return new PaginationResponse<T>(source?.AsEnumerable() ?? [], count, 1, count);
+            return new PaginationResponse<T>(items, totalItems, 1, totalItems);
         }
 
-        if (pageNumber == 0)
+        if (pageNumber == 0 || pageSize == 0)
         {
-            return new PaginationResponse<T>([], count, 0, 0);
+            return new PaginationResponse<T>(items, totalItems, pageNumber ?? 0, pageSize ?? 0);
         }
 
-        var items = source?
-            .Skip((pageNumber!.Value - 1) * pageSize!.Value)
-            .Take(pageSize.Value)
-            .AsEnumerable() ?? [];
+        var resolvedPageNumber = pageNumber ?? 1;
+        var resolvedPageSize = pageSize ?? totalItems;
 
-        return new PaginationResponse<T>(items, count, pageNumber!.Value, pageSize!.Value);
+        return new PaginationResponse<T>(items, totalItems, resolvedPageNumber, resolvedPageSize);
     }
 }

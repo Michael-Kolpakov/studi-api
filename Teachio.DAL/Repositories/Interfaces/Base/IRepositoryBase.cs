@@ -32,7 +32,7 @@ public interface IRepositoryBase<T>
         Expression<Func<T, bool>>? predicate = default,
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default);
 
-    PaginationResponse<T> GetAllPaginated(
+    Task<PaginationResponse<T>> GetAllPaginatedAsync(
         ushort? pageNumber = null,
         ushort? pageSize = null,
         Expression<Func<T, T>>? selector = default,
