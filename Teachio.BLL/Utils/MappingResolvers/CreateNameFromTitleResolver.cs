@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using Teachio.BLL.Dto.Courses.Courses.Request;
 using Teachio.BLL.Dto.Courses.Sections.Request;
+using Teachio.DAL.Entities.Courses.Courses;
 
 namespace Teachio.BLL.Utils.MappingResolvers;
 
-public class CreateNameFromTitleResolver : IValueResolver<object, object, string>
+public class CreateNameFromTitleResolver : IValueResolver<object, Course, string>
 {
-    public string Resolve(object source, object destination, string destMember, ResolutionContext context)
+    public string Resolve(object source, Course destination, string destMember, ResolutionContext context)
     {
         return source switch
         {
