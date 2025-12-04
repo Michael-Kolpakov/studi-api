@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.BLL.Resources.SharedResource;
@@ -35,7 +36,12 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
 
         // TODO: validate whether gained course really belongs to the user making the request (and perhaps remove check below)
 
-        var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(x => x.Id == request.id);
+        var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
+            x => x.Id == request.id,
+            q => q
+                .Include(c => c.Sections)
+                    .ThenInclude(s => s.Videos)
+                        .ThenInclude(v => v.VideoProgress));
 
         if (course is null)
         {
@@ -45,14 +51,19 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
             return Result.Fail(errorMessage);
         }
 
-        // TODO: delete all course dependent entities: Sections, Videos and videoProgress
+        // TODO: make sure whether we really delete all course dependent entities: Sections, Videos and VideoProgress
 
         // TODO: address Google Drive API (and CDN in the future) to delete thumbnail image
+
+        var watchingUsersCount = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionsCountAsync(
+            course => course.WatchingUsers,
+            x => x.Id == request.id);
 
         _repositoryWrapper.CoursesRepository.Delete(course);
         await _repositoryWrapper.SaveChangesAsync();
 
         var courseResponseDto = _mapper.Map<CourseResponseDto>(course);
+        courseResponseDto.WatchingUsersCount = watchingUsersCount;
 
         return Result.Ok(courseResponseDto);
     }
