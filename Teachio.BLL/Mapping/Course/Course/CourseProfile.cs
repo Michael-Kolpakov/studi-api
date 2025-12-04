@@ -30,7 +30,10 @@ public class CourseProfile : Profile
         CreateMap<CourseEntity, CourseResponseDto>()
             .ForMember(
                 dest => dest.WatchingUsersCount,
-                opt => opt.MapFrom(src => src.WatchingUsers.Count));
+                opt => opt.MapFrom(src => src.WatchingUsers.Count))
+            .ForMember(
+                dest => dest.TotalDuration,
+                opt => opt.MapFrom<TotalDurationResolver>());
 
         CreateMap<CourseEntity, CoursePreviewResponseDto>()
             .ForMember(
@@ -46,6 +49,12 @@ public class CourseProfile : Profile
         CreateMap<CourseEntity, CoursePreviewShortResponseDto>()
             .ForMember(
                 dest => dest.WatchingUsersCount,
-                opt => opt.MapFrom(src=> src.WatchingUsers.Count));
+                opt => opt.MapFrom(src => src.WatchingUsers.Count))
+            .ForMember(
+                dest => dest.TotalDuration,
+                opt => opt.MapFrom<TotalDurationResolver>())
+            .ForMember(
+                dest => dest.ThumbnailRelativePath,
+                opt => opt.MapFrom<CreateThumbnailRelativePathResolver>());
     }
 }
