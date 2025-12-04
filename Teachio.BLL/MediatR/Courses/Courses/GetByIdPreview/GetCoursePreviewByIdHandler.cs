@@ -50,8 +50,8 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
             return Result.Fail(errorMessage);
         }
 
-        var watchingUsersCount = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionCountAsync(
-            x => x.WatchingUsers,
+        var watchingUsersCount = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionsCountAsync(
+            course => course.WatchingUsers,
             x => x.Id == request.id);
 
         var coursePreviewResponseDto = _mapper.Map<CoursePreviewResponseDto>(coursePreview);

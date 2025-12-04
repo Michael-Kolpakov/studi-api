@@ -23,18 +23,30 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
         _logger = logger;
     }
 
-    public Task<Result<GetPaginatedCoursesResponseDto>> Handle(GetPaginatedCoursesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<GetPaginatedCoursesResponseDto>> Handle(GetPaginatedCoursesQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to get paginated courses");
+        _logger.LogInformation($"Entered '{GetType().Name}' to get paginated courses (page number: {request.pageNumber}, page size: {request.pageSize})");
 
         var paginatedCourses = _repositoryWrapper.CoursesRepository.GetAllPaginated(request.pageNumber, request.pageSize);
+        var courses = paginatedCourses.Entities.ToList();
+
+        var watchingUsersCounts = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionsCountsAsync(
+            course => course.Id,
+            course => course.WatchingUsers,
+            x => courses.Select(c => c.Id).Contains(x.Id));
+
+        var coursePreviewShortResponseDtos = _mapper.Map<List<CoursePreviewShortResponseDto>>(courses);
+        foreach (var courseDto in coursePreviewShortResponseDtos)
+        {
+            courseDto.WatchingUsersCount = watchingUsersCounts.GetValueOrDefault(courseDto.Id, 0);
+        }
 
         var getAllCoursesResponseDto = new GetPaginatedCoursesResponseDto()
         {
             TotalAmount = paginatedCourses.TotalItems,
-            Courses = _mapper.Map<IEnumerable<CoursePreviewShortResponseDto>>(paginatedCourses.Entities)
+            Courses = coursePreviewShortResponseDtos
         };
 
-        return Task.FromResult(Result.Ok(getAllCoursesResponseDto));
+        return Result.Ok(getAllCoursesResponseDto);
     }
 }

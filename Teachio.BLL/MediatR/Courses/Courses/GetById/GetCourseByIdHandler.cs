@@ -52,8 +52,8 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
             return Result.Fail(errorMessage);
         }
 
-        var watchingUsersCount = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionCountAsync(
-            x => x.WatchingUsers,
+        var watchingUsersCount = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionsCountAsync(
+            course => course.WatchingUsers,
             x => x.Id == request.id);
 
         var selectedVideo = course.Sections

@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 using Teachio.DAL.Persistence;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using Teachio.DAL.Utils.Helpers;
@@ -148,22 +148,100 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
             .FirstOrDefaultAsync();
     }
 
-    public async Task<int> GetCountAsync(
+    public async Task<int> GetSelfCountAsync(
         Expression<Func<T, bool>>? predicate = default,
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default)
     {
-        return await GetQueryable(predicate, include).CountAsync();
+        var query = GetQueryable(predicate, include);
+        var count = await query.CountAsync();
+
+        return count;
     }
 
-    public async Task<int> GetNavigationCollectionCountAsync<TProperty>(
+    public async Task<int> GetNavigationCollectionsCountAsync<TProperty>(
         Expression<Func<T, IEnumerable<TProperty>>> collectionSelector,
         Expression<Func<T, bool>>? predicate = default,
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default)
     {
         var query = GetQueryable(predicate, include);
-        var elements = query.SelectMany(collectionSelector);
+        var elementsCount = await query.SelectMany(collectionSelector).CountAsync();
 
-        return await elements.CountAsync();
+        return elementsCount;
+    }
+
+    public async Task<Dictionary<TKey, int>> GetNavigationCollectionsCountsAsync<TKey, TProperty>(
+        Expression<Func<T, TKey>> keySelector,
+        Expression<Func<T, IEnumerable<TProperty>>> collectionSelector,
+        Expression<Func<T, bool>>? predicate = default,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default)
+        where TKey : notnull
+    {
+        var query = GetQueryable(predicate, include);
+        var projection = BuildNavigationProjection(query, keySelector, collectionSelector);
+
+        return await projection
+            .SelectMany(
+                x => x.Collection.DefaultIfEmpty(),
+                (projectionItem, collectionItem) => new { projectionItem.Key, CollectionItem = collectionItem })
+            .GroupBy(x => x.Key)
+            .ToDictionaryAsync(
+                g => g.Key,
+                g => g.Count(item => item.CollectionItem != null));
+    }
+
+    private static IQueryable<NavigationCollectionProjection<TKey, TProperty>> BuildNavigationProjection<TKey, TProperty>(
+        IQueryable<T> query,
+        Expression<Func<T, TKey>> keySelector,
+        Expression<Func<T, IEnumerable<TProperty>>> collectionSelector)
+    {
+        var entityParameter = Expression.Parameter(typeof(T), "entity");
+        var rewrittenKeySelector = ReplaceParameter(keySelector, entityParameter);
+        var rewrittenCollectionSelector = ReplaceParameter(collectionSelector, entityParameter);
+
+        var projectionConstructor = typeof(NavigationCollectionProjection<TKey, TProperty>)
+            .GetConstructor([typeof(TKey), typeof(IEnumerable<TProperty>)])!;
+
+        var projectionBody = Expression.New(
+            projectionConstructor,
+            rewrittenKeySelector.Body,
+            rewrittenCollectionSelector.Body);
+
+        var projectionLambda = Expression.Lambda<Func<T, NavigationCollectionProjection<TKey, TProperty>>>(
+            projectionBody,
+            entityParameter);
+
+        return query.Select(projectionLambda);
+    }
+
+    private static Expression<Func<T, TResult>> ReplaceParameter<TResult>(
+        Expression<Func<T, TResult>> expression,
+        ParameterExpression newParameter)
+    {
+        var visitor = new ReplaceParameterVisitor(expression.Parameters[0], newParameter);
+        var updatedBody = visitor.Visit(expression.Body);
+
+        return Expression.Lambda<Func<T, TResult>>(updatedBody, newParameter);
+    }
+
+    private sealed record NavigationCollectionProjection<TKey, TProperty>(
+        TKey Key,
+        IEnumerable<TProperty> Collection);
+
+    private sealed class ReplaceParameterVisitor : ExpressionVisitor
+    {
+        private readonly ParameterExpression _source;
+        private readonly ParameterExpression _target;
+
+        public ReplaceParameterVisitor(ParameterExpression source, ParameterExpression target)
+        {
+            _source = source;
+            _target = target;
+        }
+
+        protected override Expression VisitParameter(ParameterExpression node)
+        {
+            return node == _source ? _target : base.VisitParameter(node);
+        }
     }
 
     private IQueryable<T> GetQueryable(
