@@ -13,6 +13,8 @@ public class CourseResponseDto
 
     public int SectionsCount { get; set; }
 
+    public float TotalDuration { get; set; }
+
     public int WatchingUsersCount { get; set; }
 
     public Guid OwnerUserId { get; set; }
