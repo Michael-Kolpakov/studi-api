@@ -53,7 +53,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
 
         // TODO: make sure whether we really delete all course dependent entities: Sections, Videos and VideoProgress
 
-        // TODO: address Google Drive API (and CDN in the future) to delete thumbnail image
+        // TODO: address Google Drive API (or CDN in the future) to delete thumbnail image
 
         var watchingUsersCount = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionsCountAsync(
             course => course.WatchingUsers,

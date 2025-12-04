@@ -62,7 +62,9 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
             return Result.Fail(errorMessage);
         }
 
-        // TODO: address Google Drive API (and CDN in the future) to upload thumbnail image
+        // TODO: set OwnerUserId field for CourseEntity as current user's Id who makes the request
+
+        // TODO: address Google Drive API (or CDN in the future) to upload thumbnail image and set ThumbnailName field for CourseEntity
 
         await _repositoryWrapper.CoursesRepository.CreateAsync(newCourse);
         await _repositoryWrapper.SaveChangesAsync();

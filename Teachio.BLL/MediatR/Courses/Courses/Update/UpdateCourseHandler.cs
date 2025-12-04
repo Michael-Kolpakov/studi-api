@@ -46,7 +46,7 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
             return Result.Fail(errorMessage);
         }
 
-        // TODO: address Google Drive API (and CDN in the future) to update thumbnail image if needed
+        // TODO: address Google Drive API (or CDN in the future) to update thumbnail image if needed
 
         _mapper.Map(request.CourseUpdateRequestDto, existingCourse);
 
