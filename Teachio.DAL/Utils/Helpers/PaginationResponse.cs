@@ -27,7 +27,7 @@ public class PaginationResponse<T>
     public IEnumerable<T> Entities { get; set; }
 
     public static PaginationResponse<T> Create(
-        IQueryable<T> source,
+        IQueryable<T>? source,
         ushort? pageNumber = null,
         ushort? pageSize = null)
     {
@@ -35,18 +35,18 @@ public class PaginationResponse<T>
 
         if (pageNumber is null && pageSize is null)
         {
-            return new PaginationResponse<T>(source?.AsEnumerable() ?? Enumerable.Empty<T>(), count, 1, count);
+            return new PaginationResponse<T>(source?.AsEnumerable() ?? [], count, 1, count);
         }
 
         if (pageNumber == 0)
         {
-            return new PaginationResponse<T>(Enumerable.Empty<T>(), count, 0, 0);
+            return new PaginationResponse<T>([], count, 0, 0);
         }
 
         var items = source?
             .Skip((pageNumber!.Value - 1) * pageSize!.Value)
-            .Take(pageSize!.Value)
-            .AsEnumerable() ?? Enumerable.Empty<T>();
+            .Take(pageSize.Value)
+            .AsEnumerable() ?? [];
 
         return new PaginationResponse<T>(items, count, pageNumber!.Value, pageSize!.Value);
     }
