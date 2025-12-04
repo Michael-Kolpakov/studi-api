@@ -5,7 +5,7 @@ using Teachio.DAL.Entities.Courses.Courses;
 
 namespace Teachio.BLL.Utils.MappingResolvers;
 
-public class CreateThumbnailRelativePathResolver : IValueResolver<Course, object, string>
+public class ThumbnailRelativePathResolver : IValueResolver<Course, object, string>
 {
     public string Resolve(Course source, object destination, string destMember, ResolutionContext context)
     {

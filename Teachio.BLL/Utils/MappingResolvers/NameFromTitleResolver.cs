@@ -5,7 +5,7 @@ using Teachio.DAL.Entities.Courses.Courses;
 
 namespace Teachio.BLL.Utils.MappingResolvers;
 
-public class CreateNameFromTitleResolver : IValueResolver<object, Course, string>
+public class NameFromTitleResolver : IValueResolver<object, Course, string>
 {
     public string Resolve(object source, Course destination, string destMember, ResolutionContext context)
     {

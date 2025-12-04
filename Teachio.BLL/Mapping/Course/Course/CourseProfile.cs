@@ -14,18 +14,18 @@ public class CourseProfile : Profile
         CreateMap<CourseCreateRequestDto, CourseEntity>()
             .ForMember(
                 dest => dest.Title,
-                opt => opt.MapFrom<TrimTitleResolver>())
+                opt => opt.MapFrom<TrimmedTitleResolver>())
             .ForMember(
                 dest => dest.CourseName,
-                opt => opt.MapFrom<CreateNameFromTitleResolver>());
+                opt => opt.MapFrom<NameFromTitleResolver>());
 
         CreateMap<CourseUpdateRequestDto, CourseEntity>()
             .ForMember(
                 dest => dest.Title,
-                opt => opt.MapFrom<TrimTitleResolver>())
+                opt => opt.MapFrom<TrimmedTitleResolver>())
             .ForMember(
                 dest => dest.CourseName,
-                opt => opt.MapFrom<CreateNameFromTitleResolver>());
+                opt => opt.MapFrom<NameFromTitleResolver>());
 
         CreateMap<CourseEntity, CourseResponseDto>()
             .ForMember(
@@ -44,7 +44,7 @@ public class CourseProfile : Profile
                 opt => opt.MapFrom<TotalDurationResolver>())
             .ForMember(
                 dest => dest.ThumbnailRelativePath,
-                opt => opt.MapFrom<CreateThumbnailRelativePathResolver>());
+                opt => opt.MapFrom<ThumbnailRelativePathResolver>());
 
         CreateMap<CourseEntity, CoursePreviewShortResponseDto>()
             .ForMember(
@@ -55,6 +55,6 @@ public class CourseProfile : Profile
                 opt => opt.MapFrom<TotalDurationResolver>())
             .ForMember(
                 dest => dest.ThumbnailRelativePath,
-                opt => opt.MapFrom<CreateThumbnailRelativePathResolver>());
+                opt => opt.MapFrom<ThumbnailRelativePathResolver>());
     }
 }
