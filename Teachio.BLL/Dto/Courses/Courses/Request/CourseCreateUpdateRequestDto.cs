@@ -14,7 +14,4 @@ public abstract class CourseCreateUpdateRequestDto
 
     [Required(ErrorMessage = "Required")]
     public IFormFile ThumbnailFile { get; set; } = null!;
-
-    [Required(ErrorMessage = "Required")]
-    public Guid OwnerUserId { get; set; }
 }
