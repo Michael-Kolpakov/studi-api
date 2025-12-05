@@ -51,6 +51,9 @@
       <None Update="Persistence\Seed\Content\VideoProgress.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="Persistence\Seed\Content\UserCourse.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

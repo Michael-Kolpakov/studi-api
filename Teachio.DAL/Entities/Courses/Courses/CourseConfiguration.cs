@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Entities.Courses.Sections;
+using Teachio.DAL.Entities.Shared;
 using Teachio.DAL.Entities.Users;
 using Teachio.DAL.Utils.Constants;
 
@@ -42,6 +43,15 @@ public static class CourseConfiguration
                     "CK_Course_SectionsCount_Max",
                     $"[SectionsCount] >= 0 AND [SectionsCount] <= {EntityConstants.MaxSectionsPerCourse}"));
 
+            typeBuilder.Property(s => s.WatchingUsersCount)
+                .IsRequired()
+                .HasDefaultValue(0);
+
+            typeBuilder.ToTable(t =>
+                t.HasCheckConstraint(
+                    "CK_Course_WatchingUsersCount_NonNegative",
+                    $"[WatchingUsersCount] >= 0"));
+
             typeBuilder.Property(c => c.OwnerUserId)
                 .IsRequired();
 
@@ -69,21 +79,20 @@ public static class CourseConfiguration
         builder.Entity<Course>()
             .HasMany(course => course.WatchingUsers)
             .WithMany(appUser => appUser.WatchingCourses)
-            .UsingEntity<Dictionary<string, object>>(
-                "UserCourse",
+            .UsingEntity<UserCourse>(
                 j => j
-                    .HasOne<AppUser>()
+                    .HasOne(userCourse => userCourse.AppUser)
                     .WithMany()
-                    .HasForeignKey("AppUserId")
+                    .HasForeignKey(userCourse => userCourse.AppUserId)
                     .OnDelete(DeleteBehavior.NoAction),
                 j => j
-                    .HasOne<Course>()
+                    .HasOne(userCourse => userCourse.Course)
                     .WithMany()
-                    .HasForeignKey("CourseId")
+                    .HasForeignKey(userCourse => userCourse.CourseId)
                     .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
-                    j.HasKey("AppUserId", "CourseId");
+                    j.HasKey(userCourse => new { userCourse.AppUserId, userCourse.CourseId });
                     j.ToTable("UserCourse", "courses");
                 });
     }

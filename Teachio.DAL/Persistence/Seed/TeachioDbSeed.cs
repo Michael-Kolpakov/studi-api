@@ -6,6 +6,7 @@ using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Entities.Courses.Videos.VideoProgress;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
+using Teachio.DAL.Entities.Shared;
 using Teachio.DAL.Entities.Users;
 
 namespace Teachio.DAL.Persistence.Seed;
@@ -30,6 +31,7 @@ public static class TeachioDbSeed
 
         await SeedEntityAsync(dbContext, dbContext.AppUsers, nameof(AppUser), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.Courses, nameof(Course), logger, cancellationToken);
+        await SeedEntityAsync(dbContext, dbContext.UserCourses, nameof(UserCourse), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.Sections, nameof(Section), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.Videos, nameof(Video), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.VideoProgress, nameof(VideoProgress), logger, cancellationToken);

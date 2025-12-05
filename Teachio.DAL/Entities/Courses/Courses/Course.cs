@@ -17,6 +17,8 @@ public class Course
 
     public int SectionsCount { get; set; }
 
+    public int WatchingUsersCount { get; set; }
+
     public Guid OwnerUserId { get; set; }
 
     public AppUser OwnerUser { get; set; } = null!;
