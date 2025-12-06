@@ -17,6 +17,6 @@ public class NameFromTitleResolver : IValueResolver<object, Course, string>
         };
     }
 
-    private static string CreateNameFromTitle(string title) =>
+    public static string CreateNameFromTitle(string title) =>
         string.Join("-", title.Trim().ToLowerInvariant().Split(" ", StringSplitOptions.RemoveEmptyEntries));
 }

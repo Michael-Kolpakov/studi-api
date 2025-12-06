@@ -9,6 +9,7 @@ using Teachio.BLL.MediatR.Courses.Courses.GetById;
 using Teachio.BLL.MediatR.Courses.Courses.GetByIdPreview;
 using Teachio.BLL.MediatR.Courses.Courses.GetPaginated;
 using Teachio.BLL.MediatR.Courses.Courses.Update;
+using Teachio.BLL.MediatR.Courses.Courses.UploadThumbnail;
 using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Courses;
@@ -72,6 +73,22 @@ public class CoursesController : BaseApiController
     public async Task<IActionResult> Create([FromBody] CourseCreateRequestDto courseCreateRequestDto)
     {
         return HandleResult(await Mediator.Send(new CreateCourseCommand(courseCreateRequestDto)));
+    }
+
+    /// <summary>
+    /// Uploads a thumbnail for a course.
+    /// </summary>
+    /// <param name="thumbnailUploadRequestDto">The data for uploading course thumbnail.</param>
+    /// <returns>Returns the newly uploaded thumbnail unique identifier.</returns>
+    [HttpPost(CoursesRelativeRoutes.UploadThumbnail)]
+    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ThumbnailUploadResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> UploadThumbnail([FromForm] ThumbnailUploadRequestDto thumbnailUploadRequestDto)
+    {
+        return HandleResult(await Mediator.Send(new UploadThumbnailCommand(thumbnailUploadRequestDto)));
     }
 
     /// <summary>

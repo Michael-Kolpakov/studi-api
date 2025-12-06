@@ -10,6 +10,8 @@ public static class CoursesRelativeRoutes
 
     public const string Create = "create";
 
+    public const string UploadThumbnail = "upload-thumbnail";
+
     public const string Update = "update";
 
     public const string Delete = "delete/{id:guid}";

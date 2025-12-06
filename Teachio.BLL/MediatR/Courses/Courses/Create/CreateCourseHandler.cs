@@ -37,6 +37,8 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to create a new course");
 
+        // TODO: validate whether course thumbnail exists (database relationships and ownership)
+
         var newCourse = _mapper.Map<CourseEntity>(request.CourseCreateRequestDto);
 
         if (newCourse is null)
@@ -62,9 +64,12 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
             return Result.Fail(errorMessage);
         }
 
+        // Temporary workaround while we don't have authentication implemented
+        newCourse.OwnerUserId = Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
+
         // TODO: set OwnerUserId field for CourseEntity as current user's Id who makes the request
 
-        // TODO: address Google Drive API (or CDN in the future) to upload thumbnail image and set ThumbnailName field for CourseEntity
+        // TODO: validate whether course was created successfully, if not - address Google Drive API (or CDN in the future) to delete thumbnail image
 
         await _repositoryWrapper.CoursesRepository.CreateAsync(newCourse);
         await _repositoryWrapper.SaveChangesAsync();

@@ -35,6 +35,8 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
         // TODO: validate whether gained course really belongs to the user making the request (and perhaps remove check below)
 
+        // TODO: validate whether course thumbnail exists (database relationships and ownership)
+
         var existingCourse = await _repositoryWrapper.CoursesRepository
             .GetSingleOrDefaultAsync(x => x.Id == request.CourseUpdateRequestDto.Id);
 
@@ -46,7 +48,9 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
             return Result.Fail(errorMessage);
         }
 
-        // TODO: address Google Drive API (or CDN in the future) to update thumbnail image if needed
+        // TODO: validate whether course was updated successfully, if yes - address Google Drive API (or CDN in the future) to delete old thumbnail image and set new one
+
+        // TODO: validate whether course was updated successfully, if not - address Google Drive API (or CDN in the future) to delete current thumbnail image
 
         var watchingUsersCount = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionsCountAsync(
             course => course.WatchingUsers,
