@@ -22,7 +22,7 @@ public class CoursesController : BaseApiController
     /// <param name="pageSize">The number of items per page.</param>
     /// <returns>Returns a paginated list of the courses.</returns>
     [HttpGet(CoursesRelativeRoutes.GetPaginated)]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetPaginatedCoursesResponseDto))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedCoursesResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetPaginated([FromQuery] ushort pageNumber, [FromQuery] ushort pageSize)
     {

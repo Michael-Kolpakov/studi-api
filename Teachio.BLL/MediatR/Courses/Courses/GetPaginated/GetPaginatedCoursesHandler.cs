@@ -7,7 +7,7 @@ using Teachio.DAL.Repositories.Interfaces.Base;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.GetPaginated;
 
-public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQuery, Result<GetPaginatedCoursesResponseDto>>
+public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQuery, Result<PaginatedCoursesResponseDto>>
 {
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
@@ -23,7 +23,7 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
         _logger = logger;
     }
 
-    public async Task<Result<GetPaginatedCoursesResponseDto>> Handle(GetPaginatedCoursesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginatedCoursesResponseDto>> Handle(GetPaginatedCoursesQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to get paginated courses (page number: {request.pageNumber}, page size: {request.pageSize})");
 
@@ -44,7 +44,7 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
             courseDto.WatchingUsersCount = watchingUsersCounts.GetValueOrDefault(courseDto.Id, 0);
         }
 
-        var getAllCoursesResponseDto = new GetPaginatedCoursesResponseDto()
+        var getAllCoursesResponseDto = new PaginatedCoursesResponseDto()
         {
             TotalAmount = paginatedCourses.TotalItems,
             Courses = coursePreviewShortResponseDtos

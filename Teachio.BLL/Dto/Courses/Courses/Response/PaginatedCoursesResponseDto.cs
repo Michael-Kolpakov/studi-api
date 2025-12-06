@@ -1,6 +1,6 @@
 ﻿namespace Teachio.BLL.Dto.Courses.Courses.Response;
 
-public class GetPaginatedCoursesResponseDto
+public class PaginatedCoursesResponseDto
 {
     public int TotalAmount { get; set; }
 
