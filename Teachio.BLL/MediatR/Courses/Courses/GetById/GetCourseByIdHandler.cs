@@ -52,10 +52,6 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
             return Result.Fail(errorMessage);
         }
 
-        var watchingUsersCount = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionsCountAsync(
-            course => course.WatchingUsers,
-            x => x.Id == request.id);
-
         var selectedVideo = course.Sections
             .SelectMany(s => s.Videos)
             .FirstOrDefault(v => request.SelectedVideoId.HasValue
@@ -64,7 +60,6 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
 
         var courseResponseDto = _mapper.Map<CourseResponseDto>(course);
         courseResponseDto.SelectedVideo = _mapper.Map<VideoResponseDto?>(selectedVideo);
-        courseResponseDto.WatchingUsersCount = watchingUsersCount;
 
         return Result.Ok(courseResponseDto);
     }

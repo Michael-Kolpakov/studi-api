@@ -52,17 +52,12 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
         // TODO: validate whether course was updated successfully, if not - address Google Drive API (or CDN in the future) to delete current thumbnail image
 
-        var watchingUsersCount = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionsCountAsync(
-            course => course.WatchingUsers,
-            x => x.Id == request.CourseUpdateRequestDto.Id);
-
         _mapper.Map(request.CourseUpdateRequestDto, existingCourse);
 
         _repositoryWrapper.CoursesRepository.Update(existingCourse);
         await _repositoryWrapper.SaveChangesAsync();
 
         var courseResponseDto = _mapper.Map<CourseResponseDto>(existingCourse);
-        courseResponseDto.WatchingUsersCount = watchingUsersCount;
 
         return Result.Ok(courseResponseDto);
     }

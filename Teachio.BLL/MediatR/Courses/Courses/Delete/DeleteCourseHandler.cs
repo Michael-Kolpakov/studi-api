@@ -55,15 +55,10 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
 
         // TODO: address Google Drive API (or CDN in the future) to delete thumbnail image
 
-        var watchingUsersCount = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionsCountAsync(
-            course => course.WatchingUsers,
-            x => x.Id == request.id);
-
         _repositoryWrapper.CoursesRepository.Delete(course);
         await _repositoryWrapper.SaveChangesAsync();
 
         var courseResponseDto = _mapper.Map<CourseResponseDto>(course);
-        courseResponseDto.WatchingUsersCount = watchingUsersCount;
 
         return Result.Ok(courseResponseDto);
     }

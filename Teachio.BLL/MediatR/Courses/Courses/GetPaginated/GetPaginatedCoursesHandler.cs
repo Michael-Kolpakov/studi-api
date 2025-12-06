@@ -31,23 +31,10 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
             request.pageNumber,
             request.pageSize);
 
-        var courses = paginatedCourses.Entities.ToList();
-
-        var watchingUsersCounts = await _repositoryWrapper.CoursesRepository.GetNavigationCollectionsCountsAsync(
-            course => course.Id,
-            course => course.WatchingUsers,
-            x => courses.Select(c => c.Id).Contains(x.Id));
-
-        var coursePreviewShortResponseDtos = _mapper.Map<List<CoursePreviewShortResponseDto>>(courses);
-        foreach (var courseDto in coursePreviewShortResponseDtos)
-        {
-            courseDto.WatchingUsersCount = watchingUsersCounts.GetValueOrDefault(courseDto.Id, 0);
-        }
-
         var getAllCoursesResponseDto = new PaginatedCoursesResponseDto()
         {
             TotalAmount = paginatedCourses.TotalItems,
-            Courses = coursePreviewShortResponseDtos
+            Courses = _mapper.Map<IEnumerable<CoursePreviewShortResponseDto>>(paginatedCourses.Entities)
         };
 
         return Result.Ok(getAllCoursesResponseDto);
