@@ -45,6 +45,9 @@ public class CourseProfile : Profile
                 dest => dest.TotalDuration,
                 opt => opt.MapFrom<TotalDurationResolver>())
             .ForMember(
+                dest => dest.VideosCount,
+                opt => opt.MapFrom<VideosCountResolver>())
+            .ForMember(
                 dest => dest.ThumbnailRelativePath,
                 opt => opt.MapFrom<ThumbnailRelativePathResolver>());
     }

@@ -16,8 +16,12 @@ public static class ApplicationServicesExtension
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
         var bllAssembly = Assembly.Load(BllAssemblyName);
+        var currentAssemblies = AppDomain.CurrentDomain
+            .GetAssemblies()
+            .Concat([bllAssembly])
+            .Distinct()
+            .ToArray();
 
         services.AddLocalization(options => options.ResourcesPath = "Resources");
         services.AddControllers(options =>

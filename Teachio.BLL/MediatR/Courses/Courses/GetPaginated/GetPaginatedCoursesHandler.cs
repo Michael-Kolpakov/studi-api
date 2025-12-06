@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.DAL.Repositories.Interfaces.Base;
@@ -29,7 +30,11 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
 
         var paginatedCourses = await _repositoryWrapper.CoursesRepository.GetAllPaginatedAsync(
             request.pageNumber,
-            request.pageSize);
+            request.pageSize,
+            include: q => q
+                .Include(c => c.OwnerUser)
+                .Include(s => s.Sections)
+                    .ThenInclude(v => v.Videos));
 
         var getAllCoursesResponseDto = new PaginatedCoursesResponseDto()
         {

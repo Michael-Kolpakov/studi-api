@@ -39,6 +39,7 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
         var coursePreview = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.id,
             q => q
+                .Include(c => c.OwnerUser)
                 .Include(c => c.Sections)
                     .ThenInclude(v => v.Videos));
 
