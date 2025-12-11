@@ -1,0 +1,262 @@
+﻿[
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "114917c6-12f8-4007-8f50-e12816fb62c1"
+  },
+  {
+    "AppUserId": "76bb9fd8-084c-4012-8c94-a2a04f45156f",
+    "CourseId": "da417b29-dde0-4981-993e-3bf8c671df43"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "da417b29-dde0-4981-993e-3bf8c671df43"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "da417b29-dde0-4981-993e-3bf8c671df43"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "03047874-f12d-42df-b596-e9bfb52a2bc7"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "03047874-f12d-42df-b596-e9bfb52a2bc7"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "03047874-f12d-42df-b596-e9bfb52a2bc7"
+  },
+  {
+    "AppUserId": "76bb9fd8-084c-4012-8c94-a2a04f45156f",
+    "CourseId": "17794761-fe8c-4d7b-a2db-76cde0fb1a79"
+  },
+  {
+    "AppUserId": "76bb9fd8-084c-4012-8c94-a2a04f45156f",
+    "CourseId": "e2a99318-e8fd-41c7-98c3-a3b8b44821c7"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "e2a99318-e8fd-41c7-98c3-a3b8b44821c7"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "e2a99318-e8fd-41c7-98c3-a3b8b44821c7"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "990b4760-4cda-4a11-baa7-17691799a9ee"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "990b4760-4cda-4a11-baa7-17691799a9ee"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "5940332f-7d3b-41ac-bc58-8097ec934792"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "5940332f-7d3b-41ac-bc58-8097ec934792"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "b3f87bc3-44b1-4d1a-b25f-1e438b8f8361"
+  },
+  {
+    "AppUserId": "76bb9fd8-084c-4012-8c94-a2a04f45156f",
+    "CourseId": "4b53c6ec-6e42-4174-a79f-30127dacedf9"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "bb935e39-fb52-4b9f-84a5-d621784dec1f"
+  },
+  {
+    "AppUserId": "76bb9fd8-084c-4012-8c94-a2a04f45156f",
+    "CourseId": "bb935e39-fb52-4b9f-84a5-d621784dec1f"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "bb935e39-fb52-4b9f-84a5-d621784dec1f"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "5713bb40-325b-493f-8d3e-c9566931936a"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "5713bb40-325b-493f-8d3e-c9566931936a"
+  },
+  {
+    "AppUserId": "76bb9fd8-084c-4012-8c94-a2a04f45156f",
+    "CourseId": "7d520eaa-8faa-455b-b00a-799ad023a177"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "7d520eaa-8faa-455b-b00a-799ad023a177"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "7d520eaa-8faa-455b-b00a-799ad023a177"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "d5091c52-db8d-43b3-a4a9-8e38cd4a3ff2"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "d5091c52-db8d-43b3-a4a9-8e38cd4a3ff2"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "021aac87-f86d-44cc-ab64-7cc580567d19"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "49764352-c057-496a-9cf3-3a955a5af202"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "49764352-c057-496a-9cf3-3a955a5af202"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "6b1b5c79-cdb3-4857-9791-8fc85cb4242a"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "6b1b5c79-cdb3-4857-9791-8fc85cb4242a"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "cb22ae92-4625-4fa4-a1fb-f41294ffbd39"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "e8175baa-0d2e-4777-94e4-c8ac6293339d"
+  },
+  {
+    "AppUserId": "76bb9fd8-084c-4012-8c94-a2a04f45156f",
+    "CourseId": "16e64c23-fbd1-439c-83f3-833842bd150a"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "16e64c23-fbd1-439c-83f3-833842bd150a"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "65e158fe-3b42-41c5-8bed-5e73ddd3f72b"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "65e158fe-3b42-41c5-8bed-5e73ddd3f72b"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "65e158fe-3b42-41c5-8bed-5e73ddd3f72b"
+  },
+  {
+    "AppUserId": "76bb9fd8-084c-4012-8c94-a2a04f45156f",
+    "CourseId": "f933d0c3-796a-455b-9180-11a1e929cbee"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "f933d0c3-796a-455b-9180-11a1e929cbee"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "3b4d4838-065a-4f9e-b4b3-2f63986998c5"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "4f4f1174-b9f7-47c3-a0f6-b08b56c26e87"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "4f4f1174-b9f7-47c3-a0f6-b08b56c26e87"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "4f4f1174-b9f7-47c3-a0f6-b08b56c26e87"
+  },
+  {
+    "AppUserId": "76bb9fd8-084c-4012-8c94-a2a04f45156f",
+    "CourseId": "29f4adc8-dec7-4d98-b6a2-564db365be55"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "27d67240-77f3-4966-bf8c-b84aef4517b7"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "27d67240-77f3-4966-bf8c-b84aef4517b7"
+  },
+  {
+    "AppUserId": "76bb9fd8-084c-4012-8c94-a2a04f45156f",
+    "CourseId": "27d67240-77f3-4966-bf8c-b84aef4517b7"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "8f5ebad2-8dbf-4865-a581-78b033f57237"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "8f5ebad2-8dbf-4865-a581-78b033f57237"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "8f5ebad2-8dbf-4865-a581-78b033f57237"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "16e7a4cc-7e30-4cbf-a8e5-4b4d5df55643"
+  },
+  {
+    "AppUserId": "76bb9fd8-084c-4012-8c94-a2a04f45156f",
+    "CourseId": "16e7a4cc-7e30-4cbf-a8e5-4b4d5df55643"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "16e7a4cc-7e30-4cbf-a8e5-4b4d5df55643"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "054a38aa-b329-4449-b01c-2348db25e8a2"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "054a38aa-b329-4449-b01c-2348db25e8a2"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "064f4ca7-2b25-4b52-a9d8-c1b8d87aad5f"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "064f4ca7-2b25-4b52-a9d8-c1b8d87aad5f"
+  },
+  {
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e",
+    "CourseId": "064f4ca7-2b25-4b52-a9d8-c1b8d87aad5f"
+  },
+  {
+    "AppUserId": "76bb9fd8-084c-4012-8c94-a2a04f45156f",
+    "CourseId": "c7ed38b8-51f5-4170-ac34-7ab683f638ef"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "c7ed38b8-51f5-4170-ac34-7ab683f638ef"
+  },
+  {
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110",
+    "CourseId": "c7ed38b8-51f5-4170-ac34-7ab683f638ef"
+  },
+  {
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248",
+    "CourseId": "93a48ac4-7eab-4caa-b6d4-2cf42e5e75c2"
+  },
+  {
+    "AppUserId": "76bb9fd8-084c-4012-8c94-a2a04f45156f",
+    "CourseId": "93a48ac4-7eab-4caa-b6d4-2cf42e5e75c2"
+  }
+]
