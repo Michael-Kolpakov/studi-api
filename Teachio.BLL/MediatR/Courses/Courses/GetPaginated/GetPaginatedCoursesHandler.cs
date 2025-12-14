@@ -1,10 +1,13 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics.CodeAnalysis;
+using AutoMapper;
 using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.DAL.Repositories.Interfaces.Base;
+using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.GetPaginated;
 
@@ -31,10 +34,7 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
         var paginatedCourses = await _repositoryWrapper.CoursesRepository.GetAllPaginatedAsync(
             request.pageNumber,
             request.pageSize,
-            include: q => q
-                .Include(c => c.OwnerUser)
-                .Include(s => s.Sections)
-                    .ThenInclude(v => v.Videos));
+            include: IncludeCourseRelatedEntities);
 
         var getAllCoursesResponseDto = new PaginatedCoursesResponseDto()
         {
@@ -43,5 +43,14 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
         };
 
         return Result.Ok(getAllCoursesResponseDto);
+    }
+
+    [ExcludeFromCodeCoverage]
+    private static IIncludableQueryable<CourseEntity, object> IncludeCourseRelatedEntities(IQueryable<CourseEntity> query)
+    {
+        return query
+            .Include(c => c.OwnerUser)
+            .Include(s => s.Sections)
+                .ThenInclude(v => v.Videos);
     }
 }
