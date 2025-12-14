@@ -1,13 +1,16 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics.CodeAnalysis;
+using AutoMapper;
 using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
 using Teachio.DAL.Repositories.Interfaces.Base;
+using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.Delete;
 
@@ -38,10 +41,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
 
         var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.id,
-            q => q
-                .Include(c => c.Sections)
-                    .ThenInclude(s => s.Videos)
-                        .ThenInclude(v => v.VideoProgress));
+            IncludeCourseRelatedEntities);
 
         if (course is null)
         {
@@ -61,5 +61,14 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
         var courseResponseDto = _mapper.Map<CourseResponseDto>(course);
 
         return Result.Ok(courseResponseDto);
+    }
+
+    [ExcludeFromCodeCoverage]
+    private static IIncludableQueryable<CourseEntity, object> IncludeCourseRelatedEntities(IQueryable<CourseEntity> query)
+    {
+        return query
+            .Include(c => c.Sections)
+                .ThenInclude(s => s.Videos)
+                    .ThenInclude(v => v.VideoProgress);
     }
 }

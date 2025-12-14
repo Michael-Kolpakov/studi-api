@@ -1,13 +1,16 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics.CodeAnalysis;
+using AutoMapper;
 using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
 using Teachio.DAL.Repositories.Interfaces.Base;
+using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.GetByIdPreview;
 
@@ -30,18 +33,13 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
     }
 
-    public async Task<Result<CoursePreviewResponseDto>> Handle(
-        GetCoursePreviewByIdQuery request,
-        CancellationToken cancellationToken)
+    public async Task<Result<CoursePreviewResponseDto>> Handle(GetCoursePreviewByIdQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to get course preview by Id: {request.id}");
 
         var coursePreview = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.id,
-            q => q
-                .Include(c => c.OwnerUser)
-                .Include(c => c.Sections)
-                    .ThenInclude(v => v.Videos));
+            IncludeCourseRelatedEntities);
 
         if (coursePreview is null)
         {
@@ -54,5 +52,14 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
         var coursePreviewResponseDto = _mapper.Map<CoursePreviewResponseDto>(coursePreview);
 
         return Result.Ok(coursePreviewResponseDto);
+    }
+
+    [ExcludeFromCodeCoverage]
+    private static IIncludableQueryable<CourseEntity, object> IncludeCourseRelatedEntities(IQueryable<CourseEntity> query)
+    {
+        return query
+            .Include(c => c.OwnerUser)
+            .Include(c => c.Sections)
+                .ThenInclude(v => v.Videos);
     }
 }
