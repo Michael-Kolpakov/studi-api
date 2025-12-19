@@ -60,7 +60,7 @@ namespace Teachio.DAL.Resources.SharedResource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Length of &apos;{0}&apos; must be not longer than {1} characters.
+        ///   Looks up a localized string similar to Length of &apos;{0}&apos; must be no longer than {1} characters.
         /// </summary>
         internal static string Length {
             get {

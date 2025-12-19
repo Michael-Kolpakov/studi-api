@@ -6,12 +6,13 @@ using Teachio.WebApi.Middlewares;
 
 namespace Teachio.WebApi;
 
-public static class Program
+public class Program
 {
     public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Host.ConfigureApplication(builder);
         builder.Host.UseSerilog((context, services, loggerConfiguration) =>
             loggerConfiguration.ReadFrom.Configuration(context.Configuration).ReadFrom.Services(services));
 
@@ -21,6 +22,7 @@ public static class Program
 
         var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
         var cancellationToken = lifetime.ApplicationStopping;
+        var environment = app.Services.GetRequiredService<IHostEnvironment>();
 
         app.UseRequestLocalization(new RequestLocalizationOptions()
         {
@@ -38,7 +40,10 @@ public static class Program
 
         app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-        await DatabaseExtension.InitializeDatabase(app, cancellationToken);
+        if (!string.Equals(environment.EnvironmentName, "IntegrationTests", StringComparison.OrdinalIgnoreCase))
+        {
+            await DatabaseExtension.InitializeDatabase(app, cancellationToken);
+        }
 
         await app.RunAsync();
     }
