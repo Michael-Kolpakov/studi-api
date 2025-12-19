@@ -1,0 +1,8 @@
+{
+  "Id": "34cff13a-867f-4424-bcaf-fd8ec958359f",
+  "Name": "John",
+  "Surname": "Doe",
+  "Email": "johndoe@ex.com",
+  "EmailConfirmed": false,
+  "PasswordHash": "$2a$04$CcGJ7mbPlaf7iv/U4tu9mer9ITxRuTq5pG7ZCTmkPqfBSudlxDJ5S"
+}
