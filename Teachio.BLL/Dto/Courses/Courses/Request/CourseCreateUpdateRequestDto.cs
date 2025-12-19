@@ -13,4 +13,7 @@ public abstract class CourseCreateUpdateRequestDto
 
     [Required(ErrorMessage = "Required")]
     public string ThumbnailName { get; set; } = null!;
+
+    [Required(ErrorMessage = "Required")]
+    public Guid OwnerUserId { get; set; }
 }

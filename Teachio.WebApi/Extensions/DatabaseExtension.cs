@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Persistence;
 using Teachio.DAL.Persistence.Seed;
+using Teachio.DAL.Utils.Constants;
+using Teachio.DAL.Utils.Database;
 using ILogger = Serilog.ILogger;
 
 namespace Teachio.WebApi.Extensions;
@@ -9,13 +11,21 @@ public static class DatabaseExtension
 {
     public static IServiceCollection AddCustomDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        var migrationsAssembly = typeof(TeachioDbContext).Assembly.GetName().Name;
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        services.AddDbContext<TeachioDbContext>((serviceProvider, options) =>
+        {
+            var environment = serviceProvider.GetRequiredService<IHostEnvironment>();
+            var migrationsAssembly = typeof(TeachioDbContext).Assembly.GetName().Name;
 
-        services.AddDbContext<TeachioDbContext>(options =>
-            options.UseSqlServer(
-                connectionString,
-                opt => opt.MigrationsAssembly(migrationsAssembly)));
+            if (string.Equals(environment.EnvironmentName, "IntegrationTests", StringComparison.OrdinalIgnoreCase))
+            {
+                options.UseInMemoryDatabase(DatabaseConstants.IntegrationTestsInMemoryDatabase, IntegrationTestDatabaseRoot.Root);
+
+                return;
+            }
+
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            options.UseSqlServer(connectionString, opt => opt.MigrationsAssembly(migrationsAssembly));
+        });
 
         return services;
     }
@@ -24,6 +34,12 @@ public static class DatabaseExtension
     {
         using var scope = app.ApplicationServices.CreateScope();
         var services = scope.ServiceProvider;
+        var environment = services.GetRequiredService<IHostEnvironment>();
+
+        if (string.Equals(environment.EnvironmentName, "IntegrationTests", StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
 
         var dbContext = services.GetRequiredService<TeachioDbContext>();
         var logger = services.GetRequiredService<ILogger>();

@@ -37,6 +37,8 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to create a new course");
 
+        // TODO: validate whether OwnerUserId really belongs to the user making the request
+
         // TODO: validate whether course thumbnail exists (database relationships and ownership)
 
         var newCourse = _mapper.Map<CourseEntity>(request.CourseCreateRequestDto);
