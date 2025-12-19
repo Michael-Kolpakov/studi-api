@@ -1,0 +1,42 @@
+using RestSharp;
+using Teachio.BLL.Dto.Courses.Courses.Request.Create;
+using Teachio.BLL.Dto.Courses.Courses.Request.Update;
+using Teachio.BLL.Dto.Courses.Courses.Response;
+
+namespace Teachio.XIntegrationTests.Utils.Clients;
+
+public class CourseClient(HttpClient client, string secondPathUrl = "")
+    : BaseClient(client, secondPathUrl)
+{
+    public async Task<RestResponse> GetPaginatedAsync(int? pageNumber, int? pageSize, string authToken = "")
+    {
+        var paginationParams = $"pageNumber={pageNumber}&pageSize={pageSize}";
+
+        return await SendQuery($"/get-paginated?{paginationParams}", authToken);
+    }
+
+    public async Task<RestResponse> GetByIdAsync(Guid id, string authToken = "")
+    {
+        return await SendQuery($"/get-by-id/{id}", authToken);
+    }
+
+    public async Task<RestResponse> GetByIdPreviewAsync(Guid id, string authToken = "")
+    {
+        return await SendQuery($"/get-by-id-preview/{id}", authToken);
+    }
+
+    public async Task<RestResponse> CreateAsync(CourseCreateRequestDto streetcodeFactCreateDto, string authToken = "")
+    {
+        return await SendCommand("/create", Method.Post, streetcodeFactCreateDto, authToken);
+    }
+
+    public async Task<RestResponse> UpdateAsync(CourseUpdateRequestDto termUpdateDto, string authToken = "")
+    {
+        return await SendCommand("/update", Method.Put, termUpdateDto, authToken);
+    }
+
+    public async Task<RestResponse> DeleteAsync(Guid id, string authToken = "")
+    {
+        return await SendCommand($"/delete/{id}", Method.Delete, new CourseResponseDto(), authToken);
+    }
+}
