@@ -42,7 +42,7 @@ public class Program
 
         if (!string.Equals(environment.EnvironmentName, "IntegrationTests", StringComparison.OrdinalIgnoreCase))
         {
-            await DatabaseExtension.InitializeDatabase(app, cancellationToken);
+            await DatabaseExtensions.InitializeDatabase(app, cancellationToken);
         }
 
         await app.RunAsync();

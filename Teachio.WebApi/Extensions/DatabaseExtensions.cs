@@ -7,7 +7,7 @@ using ILogger = Serilog.ILogger;
 
 namespace Teachio.WebApi.Extensions;
 
-public static class DatabaseExtension
+public static class DatabaseExtensions
 {
     public static IServiceCollection AddCustomDbContext(this IServiceCollection services, IConfiguration configuration)
     {

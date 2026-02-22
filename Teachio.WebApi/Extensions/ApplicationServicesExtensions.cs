@@ -8,7 +8,7 @@ using Teachio.DAL.SharedResource;
 
 namespace Teachio.WebApi.Extensions;
 
-public static class ApplicationServicesExtension
+public static class ApplicationServicesExtensions
 {
     private const string BllAssemblyName = "Teachio.BLL";
 

@@ -4,7 +4,7 @@ using Serilog.Events;
 
 namespace Teachio.WebApi.Extensions;
 
-public static class SerilogExtension
+public static class SerilogExtensions
 {
     private const string ConsoleLogTemplate = "[{Timestamp:HH:mm:ss.fff zzz} {Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}";
 
