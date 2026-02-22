@@ -35,7 +35,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
 
     public async Task<Result<SectionResponseDto>> Handle(UpdateSectionCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.SectionUpdateRequestDto.Id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to update a section with Id: {request.SectionUpdateRequestDto.Id}");
 
         var section = _mapper.Map<SectionEntity>(request.SectionUpdateRequestDto);
 

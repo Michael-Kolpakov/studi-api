@@ -31,7 +31,7 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
 
     public async Task<Result<SectionResponseDto>> Handle(GetSectionByIdQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to get course by Id: {request.id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to get section by Id: {request.id}");
 
         var section = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(x => x.Id == request.id);
 

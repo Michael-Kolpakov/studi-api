@@ -31,7 +31,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
 
     public async Task<Result<SectionResponseDto>> Handle(DeleteSectionCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to delete a course with Id: {request.id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to delete a section with Id: {request.id}");
 
         var section = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(x => x.Id == request.id);
 
@@ -42,6 +42,8 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
 
             return Result.Fail(errorMessage);
         }
+
+        // TODO: make sure whether we really delete all section dependent entities: Videos and VideoProgress
 
         _repositoryWrapper.SectionsRepository.Delete(section);
         await _repositoryWrapper.SaveChangesAsync();
