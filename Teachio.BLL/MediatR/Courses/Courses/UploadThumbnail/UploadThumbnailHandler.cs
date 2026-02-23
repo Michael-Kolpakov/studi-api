@@ -28,8 +28,8 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to upload a thumbnail of a course");
 
-        var fileName = NameFromTitleResolver.CreateNameFromTitle(request.ThumbnailUploadRequestDto.ThumbnailFile.FileName);
-        var fileContentType = request.ThumbnailUploadRequestDto.ThumbnailFile.ContentType;
+        var fileName = NameFromTitleResolver.CreateNameFromTitle(request.thumbnailUploadRequestDto.ThumbnailFile.FileName);
+        var fileContentType = request.thumbnailUploadRequestDto.ThumbnailFile.ContentType;
 
         if (!AllowedContentTypes.Contains(fileContentType))
         {

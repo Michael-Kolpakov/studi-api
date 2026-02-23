@@ -5,5 +5,5 @@ using Teachio.BLL.Dto.Courses.Courses.Response;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.Update;
 
-public record UpdateCourseCommand(CourseUpdateRequestDto CourseUpdateRequestDto)
+public record UpdateCourseCommand(CourseUpdateRequestDto courseUpdateRequestDto)
     : IRequest<Result<CourseResponseDto>>;

@@ -31,7 +31,7 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
     public async Task<Result<CourseResponseDto>> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.CourseUpdateRequestDto.Id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.courseUpdateRequestDto.Id}");
 
         // TODO: validate whether OwnerUserId really belongs to the user making the request
 
@@ -40,11 +40,11 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
         // TODO: validate whether course thumbnail exists (database relationships and ownership)
 
         var existingCourse = await _repositoryWrapper.CoursesRepository
-            .GetSingleOrDefaultAsync(x => x.Id == request.CourseUpdateRequestDto.Id);
+            .GetSingleOrDefaultAsync(x => x.Id == request.courseUpdateRequestDto.Id);
 
         if (existingCourse is null)
         {
-            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindCourseById), request.CourseUpdateRequestDto.Id].Value;
+            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindCourseById), request.courseUpdateRequestDto.Id].Value;
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);
@@ -54,7 +54,7 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
         // TODO: validate whether course was updated successfully, if not - address Google Drive API (or CDN in the future) to delete current thumbnail image
 
-        _mapper.Map(request.CourseUpdateRequestDto, existingCourse);
+        _mapper.Map(request.courseUpdateRequestDto, existingCourse);
 
         _repositoryWrapper.CoursesRepository.Update(existingCourse);
         await _repositoryWrapper.SaveChangesAsync();

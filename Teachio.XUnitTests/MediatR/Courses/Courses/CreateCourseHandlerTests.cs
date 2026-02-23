@@ -57,7 +57,7 @@ public class CreateCourseHandlerTests
 
         // Assert
         Assert.True(result.IsFailed);
-        MapperVerifications.VerifyMapWasCalled<CourseCreateRequestDto, CourseEntity>(_mockMapper, request.CourseCreateRequestDto);
+        MapperVerifications.VerifyMapWasCalled<CourseCreateRequestDto, CourseEntity>(_mockMapper, request.courseCreateRequestDto);
         LoggerVerifications.VerifyLoggerErrorWasCalled(_mockLoggerService, request, expectedError);
     }
 
@@ -66,7 +66,7 @@ public class CreateCourseHandlerTests
     {
         // Arrange
         var request = GetCreateCourseCommand();
-        var courseCreateRequestDto = request.CourseCreateRequestDto;
+        var courseCreateRequestDto = request.courseCreateRequestDto;
         var ownerId = Guid.NewGuid();
 
         var course = CourseTestData.GetCourse(
@@ -100,7 +100,7 @@ public class CreateCourseHandlerTests
     {
         // Arrange
         var request = GetCreateCourseCommand();
-        var courseCreateRequestDto = request.CourseCreateRequestDto;
+        var courseCreateRequestDto = request.courseCreateRequestDto;
 
         var course = CourseTestData.GetCourse(
             title: courseCreateRequestDto.Title,

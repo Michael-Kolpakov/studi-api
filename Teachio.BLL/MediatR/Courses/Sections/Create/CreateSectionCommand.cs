@@ -5,5 +5,5 @@ using Teachio.BLL.Dto.Courses.Sections.Response;
 
 namespace Teachio.BLL.MediatR.Courses.Sections.Create;
 
-public record CreateSectionCommand(SectionCreateRequestDto SectionCreateRequestDto)
+public record CreateSectionCommand(SectionCreateRequestDto sectionCreateRequestDto)
     : IRequest<Result<SectionResponseDto>>;

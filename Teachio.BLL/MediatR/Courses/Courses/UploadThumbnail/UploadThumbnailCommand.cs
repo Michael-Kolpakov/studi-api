@@ -5,5 +5,5 @@ using Teachio.BLL.Dto.Courses.Courses.Response;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.UploadThumbnail;
 
-public record UploadThumbnailCommand(ThumbnailUploadRequestDto ThumbnailUploadRequestDto)
+public record UploadThumbnailCommand(ThumbnailUploadRequestDto thumbnailUploadRequestDto)
     : IRequest<Result<ThumbnailUploadResponseDto>>;

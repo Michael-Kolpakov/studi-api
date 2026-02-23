@@ -37,7 +37,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to create a new section");
 
-        var newSection = _mapper.Map<SectionEntity>(request.SectionCreateRequestDto);
+        var newSection = _mapper.Map<SectionEntity>(request.sectionCreateRequestDto);
 
         if (newSection is null)
         {
@@ -48,8 +48,8 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         }
 
         var (courseExists, existenceErrorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
-            request.SectionCreateRequestDto.CourseId,
-            nameof(request.SectionCreateRequestDto.CourseId),
+            request.sectionCreateRequestDto.CourseId,
+            nameof(request.sectionCreateRequestDto.CourseId),
             request);
 
         if (courseExists)
