@@ -13,19 +13,13 @@ public class ExtractCreateTestCourseAttribute : BeforeAfterTestAttribute
 {
     public static CourseCreateRequestDto CourseCreateRequestDto { get; private set; } = null!;
 
-    private static AppUser OwnerUser { get; set; } = null!;
-
     public override void Before(MethodInfo methodUnderTest)
     {
-        var ownerUserId = Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
-
-        OwnerUser = AppUserExtractor.Extract(ownerUserId);
         CourseCreateRequestDto = new CourseCreateRequestDto()
         {
             Title = "CourseCreateRequestDto for Create Test",
             Description = "Description of CourseCreateRequestDto for Create Test",
-            ThumbnailName = "coursecreaterequestdto-for-create-test.png",
-            OwnerUserId = OwnerUser.Id
+            ThumbnailName = "coursecreaterequestdto-for-create-test.png"
         };
     }
 
@@ -38,7 +32,5 @@ public class ExtractCreateTestCourseAttribute : BeforeAfterTestAttribute
         {
             sqlDbHelper.DeleteItem(course);
         }
-
-        AppUserExtractor.Remove(OwnerUser);
     }
 }

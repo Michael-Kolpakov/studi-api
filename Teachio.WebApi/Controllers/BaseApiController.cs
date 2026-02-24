@@ -1,4 +1,5 @@
-﻿using FluentResults;
+﻿using System.Security.Claims;
+using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.Dto.Shared;
@@ -40,5 +41,24 @@ public class BaseApiController : ControllerBase
                 Message = x.Message
             }
         ));
+    }
+
+    protected Guid? GetUserId()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userIdClaim))
+        {
+            return null;
+        }
+
+        return Guid.TryParse(userIdClaim, out var userId) ? userId : null;
+    }
+
+    protected Guid GetUserIdOrThrow()
+    {
+        var userId = GetUserId();
+
+        return userId ?? throw new UnauthorizedAccessException("User is not authenticated");
     }
 }

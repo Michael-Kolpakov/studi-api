@@ -72,7 +72,11 @@ public class CoursesController : BaseApiController
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Create([FromBody] CourseCreateRequestDto courseCreateRequestDto)
     {
-        return HandleResult(await Mediator.Send(new CreateCourseCommand(courseCreateRequestDto)));
+        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
+        // var userId = GetUserIdOrThrow();
+        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
+
+        return HandleResult(await Mediator.Send(new CreateCourseCommand(courseCreateRequestDto, userId)));
     }
 
     /// <summary>

@@ -17,7 +17,9 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
         : base(factory, "/api/courses")
     {
         var courseId = Guid.NewGuid();
-        _testCourse = CourseExtractor.Extract(courseId);
+        var appUserId = Guid.NewGuid();
+
+        _testCourse = CourseExtractor.Extract(courseId, appUserId);
     }
 
     #region GetPaginated Tests
@@ -160,8 +162,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
         Assert.Multiple(
             () => Assert.NotEqual(Guid.Empty, returnedValue.Id),
             () => Assert.Equal(courseCreateRequestDto.Title, returnedValue.Title),
-            () => Assert.Equal(courseCreateRequestDto.Description, returnedValue.Description),
-            () => Assert.Equal(courseCreateRequestDto.OwnerUserId, returnedValue.OwnerUserId));
+            () => Assert.Equal(courseCreateRequestDto.Description, returnedValue.Description));
     }
 
     [Fact]
@@ -185,7 +186,6 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
     {
         // Arrange
         var courseCreateRequestDto = ExtractCreateTestCourseAttribute.CourseCreateRequestDto;
-        courseCreateRequestDto.OwnerUserId = _testCourse.OwnerUserId;
         courseCreateRequestDto.Title = _testCourse.Title;
 
         // Act
@@ -217,8 +217,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
         Assert.Multiple(
             () => Assert.Equal(courseUpdateRequestDto.Id, returnedValue.Id),
             () => Assert.Equal(courseUpdateRequestDto.Title, returnedValue.Title),
-            () => Assert.Equal(courseUpdateRequestDto.Description, returnedValue.Description),
-            () => Assert.Equal(courseUpdateRequestDto.OwnerUserId, returnedValue.OwnerUserId));
+            () => Assert.Equal(courseUpdateRequestDto.Description, returnedValue.Description));
     }
 
     [Fact]

@@ -67,7 +67,7 @@ public class CreateCourseHandlerTests
         // Arrange
         var request = GetCreateCourseCommand();
         var courseCreateRequestDto = request.courseCreateRequestDto;
-        var ownerId = Guid.NewGuid();
+        var ownerId = request.ownerUserId;
 
         var course = CourseTestData.GetCourse(
             ownerId: ownerId,
@@ -147,7 +147,9 @@ public class CreateCourseHandlerTests
                 ThumbnailName = thumbnailName
             };
 
-        return new CreateCourseCommand(courseCreateRequestDto!);
+        var ownerUserId = Guid.NewGuid();
+
+        return new CreateCourseCommand(courseCreateRequestDto!, ownerUserId);
     }
 
     #endregion
