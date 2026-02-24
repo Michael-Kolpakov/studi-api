@@ -45,7 +45,7 @@ public class GetCourseByIdHandlerTests
     {
         // Arrange
         var request = GetGetCourseByIdQuery();
-        var expectedError = _cannotFindLocalizerMock["CannotFindCourseById", request.id].Value;
+        var expectedError = _cannotFindLocalizerMock["CannotFindCourseById", request.courseId].Value;
 
         RepositoryMocks.SetupGetSingleOrDefaultAsyncMock(_mockRepository, wrapper => wrapper.CoursesRepository, null);
 
@@ -155,9 +155,9 @@ public class GetCourseByIdHandlerTests
 
     #region Helper Methods
 
-    private static GetCourseByIdQuery GetGetCourseByIdQuery(Guid? id = null, Guid? selectedVideoId = null)
+    private static GetCourseByIdQuery GetGetCourseByIdQuery(Guid? courseId = null, Guid? selectedVideoId = null)
     {
-        return new GetCourseByIdQuery(id ?? Guid.NewGuid(), selectedVideoId);
+        return new GetCourseByIdQuery(courseId ?? Guid.NewGuid(), selectedVideoId);
     }
 
     #endregion

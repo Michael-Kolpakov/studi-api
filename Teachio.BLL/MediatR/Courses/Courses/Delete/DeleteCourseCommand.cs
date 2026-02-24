@@ -4,5 +4,5 @@ using Teachio.BLL.Dto.Courses.Courses.Response;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.Delete;
 
-public record DeleteCourseCommand(Guid id)
+public record DeleteCourseCommand(Guid courseId, Guid requestingUserId)
     : IRequest<Result<CourseResponseDto>>;

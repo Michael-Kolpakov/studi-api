@@ -1,9 +1,7 @@
 using System.Reflection;
 using Teachio.BLL.Dto.Courses.Courses.Request.Create;
 using Teachio.DAL.Entities.Courses.Courses;
-using Teachio.DAL.Entities.Users;
 using Teachio.XIntegrationTests.ControllerTests;
-using Teachio.XIntegrationTests.Utils.Extractors;
 using Xunit.Sdk;
 
 namespace Teachio.XIntegrationTests.Utils.BeforeAndAfterAttributes.Courses.Courses;

@@ -78,6 +78,5 @@ public class GetPaginatedCoursesHandlerTests
         return new GetPaginatedCoursesQuery(pageNumber, pageSize);
     }
 
-
     #endregion
 }

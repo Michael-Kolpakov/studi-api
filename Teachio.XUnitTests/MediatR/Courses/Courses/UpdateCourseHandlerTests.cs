@@ -67,6 +67,7 @@ public class UpdateCourseHandlerTests
         var courseUpdateRequestDto = request.courseUpdateRequestDto;
 
         var existingCourse = CourseTestData.GetCourse(
+            ownerId: request.requestingUserId,
             title: "Old Title",
             description: "Old Description",
             thumbnailName: "old-title.png",
@@ -106,22 +107,23 @@ public class UpdateCourseHandlerTests
     #region Helper Methods
 
     private static UpdateCourseCommand GetUpdateCourseCommand(
-        Guid? id = null,
+        Guid? courseId = null,
         string title = "Updated Course Title",
         string description = "Updated Course Description",
         string thumbnailName = "updated-course-title.png")
     {
         var courseUpdateRequestDto = new CourseUpdateRequestDto()
         {
-            Id = id ?? Guid.NewGuid(),
+            Id = courseId ?? Guid.NewGuid(),
             Title = title,
             Description = description,
             ThumbnailName = thumbnailName
         };
 
-        return new UpdateCourseCommand(courseUpdateRequestDto);
-    }
+        var requestingUserId = Guid.NewGuid();
 
+        return new UpdateCourseCommand(courseUpdateRequestDto, requestingUserId);
+    }
 
     #endregion
 }

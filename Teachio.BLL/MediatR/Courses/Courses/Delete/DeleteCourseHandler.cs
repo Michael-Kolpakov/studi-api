@@ -35,17 +35,23 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
 
     public async Task<Result<CourseResponseDto>> Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to delete a course with Id: {request.id}");
-
-        // TODO: validate whether gained course really belongs to the user making the request (and perhaps remove check below)
+        _logger.LogInformation($"Entered '{GetType().Name}' to delete a course with Id: {request.courseId}");
 
         var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
-            x => x.Id == request.id,
+            x => x.Id == request.courseId,
             IncludeCourseRelatedEntities);
 
         if (course is null)
         {
-            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindCourseById), request.id].Value;
+            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindCourseById), request.courseId].Value;
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
+        if (course.OwnerUserId != request.requestingUserId)
+        {
+            var errorMessage = "User don't have permission to delete this course";
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);

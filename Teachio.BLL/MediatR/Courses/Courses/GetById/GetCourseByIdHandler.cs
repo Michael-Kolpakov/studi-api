@@ -36,17 +36,17 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
 
     public async Task<Result<CourseResponseDto>> Handle(GetCourseByIdQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to get course by Id: {request.id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to get course by Id: {request.courseId}");
 
         // TODO: validate whether the user has access to the course
 
         var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
-            x => x.Id == request.id,
+            x => x.Id == request.courseId,
             IncludeCourseRelatedEntities);
 
         if (course is null)
         {
-            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindCourseById), request.id].Value;
+            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindCourseById), request.courseId].Value;
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);

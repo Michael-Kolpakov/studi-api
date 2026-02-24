@@ -33,10 +33,6 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.courseUpdateRequestDto.Id}");
 
-        // TODO: validate whether OwnerUserId really belongs to the user making the request
-
-        // TODO: validate whether gained course really belongs to the user making the request (and perhaps remove check below)
-
         // TODO: validate whether course thumbnail exists (database relationships and ownership)
 
         var existingCourse = await _repositoryWrapper.CoursesRepository
@@ -45,6 +41,14 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
         if (existingCourse is null)
         {
             var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindCourseById), request.courseUpdateRequestDto.Id].Value;
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
+        if (existingCourse.OwnerUserId != request.requestingUserId)
+        {
+            var errorMessage = "User don't have permission to update this course";
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);

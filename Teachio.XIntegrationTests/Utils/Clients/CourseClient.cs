@@ -25,14 +25,14 @@ public class CourseClient(HttpClient client, string secondPathUrl = "")
         return await SendQuery($"/get-by-id-preview/{id}", authToken);
     }
 
-    public async Task<RestResponse> CreateAsync(CourseCreateRequestDto streetcodeFactCreateDto, string authToken = "")
+    public async Task<RestResponse> CreateAsync(CourseCreateRequestDto courseCreateRequestDto, string authToken = "")
     {
-        return await SendCommand("/create", Method.Post, streetcodeFactCreateDto, authToken);
+        return await SendCommand("/create", Method.Post, courseCreateRequestDto, authToken);
     }
 
-    public async Task<RestResponse> UpdateAsync(CourseUpdateRequestDto termUpdateDto, string authToken = "")
+    public async Task<RestResponse> UpdateAsync(CourseUpdateRequestDto courseUpdateRequestDto, string authToken = "")
     {
-        return await SendCommand("/update", Method.Put, termUpdateDto, authToken);
+        return await SendCommand("/update", Method.Put, courseUpdateRequestDto, authToken);
     }
 
     public async Task<RestResponse> DeleteAsync(Guid id, string authToken = "")
