@@ -17,7 +17,10 @@ public class CourseProfile : Profile
                 opt => opt.MapFrom<TrimmedTitleResolver>())
             .ForMember(
                 dest => dest.CourseName,
-                opt => opt.MapFrom<NameFromTitleResolver>());
+                opt => opt.MapFrom<NameFromTitleResolver>())
+            .ForMember(
+                dest => dest.OwnerUserId,
+                opt => opt.MapFrom<OwnerUserIdResolver>());
 
         CreateMap<CourseUpdateRequestDto, CourseEntity>()
             .ForMember(

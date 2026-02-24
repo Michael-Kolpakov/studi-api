@@ -39,7 +39,9 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
 
         // TODO: validate whether course thumbnail exists (database relationships and ownership)
 
-        var newCourse = _mapper.Map<CourseEntity>(request.courseCreateRequestDto);
+        var newCourse = _mapper.Map<CourseEntity>(
+            request.courseCreateRequestDto,
+            opt => opt.Items["OwnerUserId"] = request.ownerUserId);
 
         if (newCourse is null)
         {
@@ -48,8 +50,6 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
 
             return Result.Fail(errorMessage);
         }
-
-        newCourse.OwnerUserId = request.ownerUserId;
 
         var existingCourse = await _repositoryWrapper.CoursesRepository
             .GetFirstOrDefaultAsync(c => c.OwnerUserId == newCourse.OwnerUserId && c.CourseName == newCourse.CourseName);
