@@ -31,21 +31,6 @@ public class CoursesController : BaseApiController
     }
 
     /// <summary>
-    /// Retrieves a course by its unique identifier.
-    /// </summary>
-    /// <param name="id">The unique identifier of the course to retrieve.</param>
-    /// <param name="selectedVideoId">The unique identifier of the selected video to load.</param>
-    /// <returns>Returns the corresponding course.</returns>
-    [HttpGet(CoursesRelativeRoutes.GetById)]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseResponseDto))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetById([FromRoute] Guid id, [FromQuery] Guid? selectedVideoId = null)
-    {
-        return HandleResult(await Mediator.Send(new GetCourseByIdQuery(id, selectedVideoId)));
-    }
-
-    /// <summary>
     /// Retrieves a preview of a course by its unique identifier.
     /// </summary>
     /// <param name="id">The unique identifier of the course to retrieve.</param>
@@ -57,6 +42,22 @@ public class CoursesController : BaseApiController
     public async Task<IActionResult> GetByIdPreview([FromRoute] Guid id)
     {
         return HandleResult(await Mediator.Send(new GetCoursePreviewByIdQuery(id)));
+    }
+
+    /// <summary>
+    /// Retrieves a course by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the course to retrieve.</param>
+    /// <param name="selectedVideoId">The unique identifier of the selected video to load.</param>
+    /// <returns>Returns the corresponding course.</returns>
+    [HttpGet(CoursesRelativeRoutes.GetById)]
+    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById([FromRoute] Guid id, [FromQuery] Guid? selectedVideoId = null)
+    {
+        return HandleResult(await Mediator.Send(new GetCourseByIdQuery(id, selectedVideoId)));
     }
 
     /// <summary>
