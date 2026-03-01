@@ -24,79 +24,89 @@ public class EntityExistenceService : IEntityExistenceService
         _stringLocalizerCannotFind = stringLocalizerCannotFind ?? throw new ArgumentNullException(nameof(stringLocalizerCannotFind));
     }
 
-    public Task<(Course? Entity, string? ErrorMessage)> CheckCourseExistenceAsync<TKey>(TKey key, string keyName)
+    public async Task<(Course? Entity, string? ErrorMessage)> CheckCourseExistenceAsync<TKey>(TKey key, string keyName)
         where TKey : notnull
     {
-        var errorMessage = BuildErrorMessage(
-            key,
-            keyName,
-            nameof(Course),
-            nameof(CannotFindSharedResource_en.CannotFindCourseById),
-            nameof(CannotFindSharedResource_en.CannotFindCourseByKey));
-
-        return CheckExistenceAsync<Course, TKey>(
+        return await CheckExistenceWithErrorHandlingAsync<Course, TKey>(
             key,
             keyName,
             expr => _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(expr),
-            errorMessage);
+            nameof(Course),
+            nameof(CannotFindSharedResource_en.CannotFindCourseById),
+            nameof(CannotFindSharedResource_en.CannotFindCourseByKey));
     }
 
-    public Task<(Section? Entity, string? ErrorMessage)> CheckSectionExistenceAsync<TKey>(TKey key, string keyName)
+    public async Task<(Section? Entity, string? ErrorMessage)> CheckSectionExistenceAsync<TKey>(TKey key, string keyName)
         where TKey : notnull
     {
-        var errorMessage = BuildErrorMessage(
-            key,
-            keyName,
-            nameof(Section),
-            nameof(CannotFindSharedResource_en.CannotFindSectionById),
-            nameof(CannotFindSharedResource_en.CannotFindSectionByKey));
-
-        return CheckExistenceAsync<Section, TKey>(
+        return await CheckExistenceWithErrorHandlingAsync<Section, TKey>(
             key,
             keyName,
             expr => _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(expr),
-            errorMessage);
+            nameof(Section),
+            nameof(CannotFindSharedResource_en.CannotFindSectionById),
+            nameof(CannotFindSharedResource_en.CannotFindSectionByKey));
     }
 
-    public Task<(Video? Entity, string? ErrorMessage)> CheckVideoExistenceAsync<TKey>(TKey key, string keyName)
+    public async Task<(Video? Entity, string? ErrorMessage)> CheckVideoExistenceAsync<TKey>(TKey key, string keyName)
         where TKey : notnull
     {
-        var errorMessage = BuildErrorMessage(
-            key,
-            keyName,
-            nameof(Video),
-            nameof(CannotFindSharedResource_en.CannotFindVideoById),
-            nameof(CannotFindSharedResource_en.CannotFindVideoByKey));
-
-        return CheckExistenceAsync<Video, TKey>(
+        return await CheckExistenceWithErrorHandlingAsync<Video, TKey>(
             key,
             keyName,
             expr => _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(expr),
-            errorMessage);
+            nameof(Video),
+            nameof(CannotFindSharedResource_en.CannotFindVideoById),
+            nameof(CannotFindSharedResource_en.CannotFindVideoByKey));
     }
 
-    public Task<(AppUser? Entity, string? ErrorMessage)> CheckUserExistenceAsync<TKey>(TKey key, string keyName)
+    public async Task<(AppUser? Entity, string? ErrorMessage)> CheckUserExistenceAsync<TKey>(TKey key, string keyName)
+        where TKey : notnull
+    {
+        return await CheckExistenceWithErrorHandlingAsync<AppUser, TKey>(
+            key,
+            keyName,
+            expr => _repositoryWrapper.AppUsersRepository.GetSingleOrDefaultAsync(expr),
+            nameof(AppUser),
+            nameof(CannotFindSharedResource_en.CannotFindUserById),
+            nameof(CannotFindSharedResource_en.CannotFindUserByKey));
+    }
+
+    private async Task<(TEntity? Entity, string? ErrorMessage)> CheckExistenceWithErrorHandlingAsync<TEntity, TKey>(
+        TKey key,
+        string keyName,
+        Func<Expression<Func<TEntity, bool>>, Task<TEntity?>> fetchFunc,
+        string entityName,
+        string byIdResourceName,
+        string byKeyResourceName)
+        where TEntity : class
         where TKey : notnull
     {
         var errorMessage = BuildErrorMessage(
             key,
             keyName,
-            nameof(AppUser),
-            nameof(CannotFindSharedResource_en.CannotFindUserById),
-            nameof(CannotFindSharedResource_en.CannotFindUserByKey));
+            entityName,
+            byIdResourceName,
+            byKeyResourceName);
 
-        return CheckExistenceAsync<AppUser, TKey>(
-            key,
-            keyName,
-            expr => _repositoryWrapper.AppUsersRepository.GetSingleOrDefaultAsync(expr),
-            errorMessage);
+        try
+        {
+            var entity = await CheckExistenceAsync(key, keyName, fetchFunc);
+
+            return entity is null ? (null, errorMessage) : (entity, null);
+        }
+        catch (ArgumentException)
+        {
+            var propertyNotFoundErrorMessage = $"Property '{keyName}' not found on type '{entityName}'.";
+
+            return (null, propertyNotFoundErrorMessage);
+        }
     }
 
-    private static async Task<(TEntity? Entity, string? ErrorMessage)> CheckExistenceAsync<TEntity, TKey>(
+    private static async Task<TEntity?> CheckExistenceAsync<TEntity, TKey>(
         TKey key,
         string keyName,
-        Func<Expression<Func<TEntity, bool>>, Task<TEntity?>> fetchFunc,
-        string errorMessage)
+        Func<Expression<Func<TEntity, bool>>, Task<TEntity?>> fetchFunc)
         where TEntity : class
         where TKey : notnull
     {
@@ -104,27 +114,15 @@ public class EntityExistenceService : IEntityExistenceService
         ArgumentException.ThrowIfNullOrWhiteSpace(keyName);
 
         var parameter = Expression.Parameter(typeof(TEntity), "x");
-        Expression? property;
-        try
-        {
-            property = Expression.PropertyOrField(parameter, keyName);
-        }
-        catch (ArgumentException)
-        {
-            var propertyNotFoundErrorMessage = $"Property '{keyName}' not found on type '{typeof(TEntity).Name}'.";
-
-            return (null, propertyNotFoundErrorMessage);
-        }
-
-        var constant = Expression.Constant(key, typeof(TKey));
-        Expression right = constant;
+        var property = Expression.PropertyOrField(parameter, keyName);
+        var right = Expression.Constant(key, typeof(TKey));
 
         var body = Expression.Equal(property, right);
         var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameter);
 
         var entity = await fetchFunc(lambda);
 
-        return (entity, errorMessage);
+        return entity;
     }
 
     private string BuildErrorMessage<TKey>(
