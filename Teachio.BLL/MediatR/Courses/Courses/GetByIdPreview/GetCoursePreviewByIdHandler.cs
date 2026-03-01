@@ -37,11 +37,11 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to get course preview by Id: {request.courseId}");
 
-        var coursePreview = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
+        var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.courseId,
             IncludeCourseRelatedEntities);
 
-        if (coursePreview is null)
+        if (course is null)
         {
             var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindCourseById), request.courseId].Value;
             _logger.LogError(request, errorMessage);
@@ -49,7 +49,7 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
             return Result.Fail(errorMessage);
         }
 
-        var coursePreviewResponseDto = _mapper.Map<CoursePreviewResponseDto>(coursePreview);
+        var coursePreviewResponseDto = _mapper.Map<CoursePreviewResponseDto>(course);
 
         return Result.Ok(coursePreviewResponseDto);
     }

@@ -155,9 +155,15 @@ public class GetCourseByIdHandlerTests
 
     #region Helper Methods
 
-    private static GetCourseByIdQuery GetGetCourseByIdQuery(Guid? courseId = null, Guid? selectedVideoId = null)
+    private static GetCourseByIdQuery GetGetCourseByIdQuery(
+        Guid? courseId = null,
+        Guid? requestingUserId = null,
+        Guid? selectedVideoId = null)
     {
-        return new GetCourseByIdQuery(courseId ?? Guid.NewGuid(), selectedVideoId);
+        return new GetCourseByIdQuery(
+            courseId ?? Guid.NewGuid(),
+            requestingUserId ?? Guid.NewGuid(),
+            selectedVideoId);
     }
 
     #endregion

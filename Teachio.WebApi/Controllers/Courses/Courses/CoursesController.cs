@@ -57,7 +57,11 @@ public class CoursesController : BaseApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById([FromRoute] Guid id, [FromQuery] Guid? selectedVideoId = null)
     {
-        return HandleResult(await Mediator.Send(new GetCourseByIdQuery(id, selectedVideoId)));
+        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
+        // var userId = GetUserIdOrThrow();
+        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
+
+        return HandleResult(await Mediator.Send(new GetCourseByIdQuery(id, userId, selectedVideoId)));
     }
 
     /// <summary>
