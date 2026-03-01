@@ -18,6 +18,7 @@ public class UpdateCourseHandlerTests
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<ILoggerService> _mockLoggerService;
     private readonly CannotFindLocalizerMock _cannotFindLocalizerMock;
+    private readonly NoPermissionsLocalizerMock _noPermissionsLocalizerMock;
 
     private readonly UpdateCourseHandler _sut;
 
@@ -29,6 +30,7 @@ public class UpdateCourseHandlerTests
         _mockMapper = new Mock<IMapper>();
         _mockLoggerService = new Mock<ILoggerService>();
         _cannotFindLocalizerMock = new CannotFindLocalizerMock();
+        _noPermissionsLocalizerMock = new NoPermissionsLocalizerMock();
 
         _mockRepository
             .Setup(x => x.CoursesRepository)
@@ -38,7 +40,8 @@ public class UpdateCourseHandlerTests
             _mockMapper.Object,
             _mockRepository.Object,
             _mockLoggerService.Object,
-            _cannotFindLocalizerMock);
+            _cannotFindLocalizerMock,
+            _noPermissionsLocalizerMock);
     }
 
     [Fact]

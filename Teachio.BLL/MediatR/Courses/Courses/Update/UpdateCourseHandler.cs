@@ -16,17 +16,20 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
+    private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
 
     public UpdateCourseHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
-        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind)
+        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
+        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
+        _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
     public async Task<Result<CourseResponseDto>> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
@@ -48,10 +51,20 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
         if (existingCourse.OwnerUserId != request.requestingUserId)
         {
-            var errorMessage = "User don't have permission to update this course";
-            _logger.LogError(request, errorMessage);
+            var logErrorMessage = _stringLocalizerNoPermissions[
+                nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateCourseForUserWithId),
+                request.courseUpdateRequestDto.Id,
+                request.requestingUserId
+            ].Value;
 
-            return Result.Fail(errorMessage);
+            _logger.LogError(request, logErrorMessage);
+
+            var responseErrorMessage = _stringLocalizerNoPermissions[
+                nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateCourseForUser),
+                request.courseUpdateRequestDto.Id
+            ].Value;
+
+            return Result.Fail(responseErrorMessage);
         }
 
         // TODO: validate whether course was updated successfully, if yes - address Google Drive API (or CDN in the future) to delete old thumbnail image and set new one

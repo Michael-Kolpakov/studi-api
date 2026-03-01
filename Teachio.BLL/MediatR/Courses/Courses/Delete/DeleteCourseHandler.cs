@@ -20,17 +20,20 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
+    private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
 
     public DeleteCourseHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
-        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind)
+        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
+        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
+        _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
     public async Task<Result<CourseResponseDto>> Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
@@ -51,10 +54,20 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
 
         if (course.OwnerUserId != request.requestingUserId)
         {
-            var errorMessage = "User don't have permission to delete this course";
-            _logger.LogError(request, errorMessage);
+            var logErrorMessage = _stringLocalizerNoPermissions[
+                nameof(NoPermissionsSharedResource_en.NoPermissionsToDeleteCourseForUserWithId),
+                request.courseId,
+                request.requestingUserId
+            ].Value;
 
-            return Result.Fail(errorMessage);
+            _logger.LogError(request, logErrorMessage);
+
+            var responseErrorMessage = _stringLocalizerNoPermissions[
+                nameof(NoPermissionsSharedResource_en.NoPermissionsToDeleteCourseForUser),
+                request.courseId
+            ].Value;
+
+            return Result.Fail(responseErrorMessage);
         }
 
         // TODO: make sure whether we really delete all course dependent entities: Sections, Videos and VideoProgress

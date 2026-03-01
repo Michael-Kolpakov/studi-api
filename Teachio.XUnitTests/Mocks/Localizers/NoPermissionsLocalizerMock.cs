@@ -1,8 +1,8 @@
-﻿using Teachio.BLL.SharedResource;
+using Teachio.BLL.SharedResource;
 
 namespace Teachio.XUnitTests.Mocks.Localizers;
 
-public class AlreadyExistsLocalizerMock : BaseLocalizerMock<AlreadyExistsSharedResource>
+public class NoPermissionsLocalizerMock : BaseLocalizerMock<NoPermissionsSharedResource>
 {
     protected override Dictionary<int, List<string>> DefineGroupedErrors()
     {
@@ -10,12 +10,14 @@ public class AlreadyExistsLocalizerMock : BaseLocalizerMock<AlreadyExistsSharedR
         {
             {
                 1, [
-                    "CourseAlreadyExistsForUser"
+                    "NoPermissionsToDeleteCourseForUser",
+                    "NoPermissionsToUpdateCourseForUser"
                 ]
             },
             {
                 2, [
-                    "CourseAlreadyExistsForUserWithId"
+                    "NoPermissionsToDeleteCourseForUserWithId",
+                    "NoPermissionsToUpdateCourseForUserWithId"
                 ]
             }
         };
