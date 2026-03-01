@@ -60,11 +60,20 @@ namespace Teachio.BLL.Resources.SharedResource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User already has a course with name &apos;{0}&apos;.
+        /// </summary>
+        internal static string CourseAlreadyExistsForUser {
+            get {
+                return ResourceManager.GetString("CourseAlreadyExistsForUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User with Id &apos;{1}&apos; already has a course with name &apos;{0}&apos;.
         /// </summary>
-        internal static string CourseAlreadyExists {
+        internal static string CourseAlreadyExistsForUserWithId {
             get {
-                return ResourceManager.GetString("CourseAlreadyExists", resourceCulture);
+                return ResourceManager.GetString("CourseAlreadyExistsForUserWithId", resourceCulture);
             }
         }
     }

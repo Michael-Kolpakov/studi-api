@@ -56,14 +56,20 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
 
         if (existingCourse is not null)
         {
-            var errorMessage = _stringLocalizerAlreadyExists[
-                nameof(AlreadyExistsSharedResource_en.CourseAlreadyExists),
+            var logErrorMessage = _stringLocalizerAlreadyExists[
+                nameof(AlreadyExistsSharedResource_en.CourseAlreadyExistsForUserWithId),
                 newCourse.CourseName,
                 newCourse.OwnerUserId
             ].Value;
-            _logger.LogError(request, errorMessage);
 
-            return Result.Fail(errorMessage);
+            _logger.LogError(request, logErrorMessage);
+
+            var responseErrorMessage = _stringLocalizerAlreadyExists[
+                nameof(AlreadyExistsSharedResource_en.CourseAlreadyExistsForUser),
+                newCourse.Title
+            ].Value;
+
+            return Result.Fail(responseErrorMessage);
         }
 
         // TODO: validate whether course was created successfully, if not - address Google Drive API (or CDN in the future) to delete thumbnail image
