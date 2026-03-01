@@ -14,23 +14,17 @@ namespace Teachio.BLL.Services.Realizations;
 public class EntityExistenceService : IEntityExistenceService
 {
     private readonly IRepositoryWrapper _repositoryWrapper;
-    private readonly ILoggerService _logger;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
 
     public EntityExistenceService(
         IRepositoryWrapper repositoryWrapper,
-        ILoggerService logger,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind)
     {
         _repositoryWrapper = repositoryWrapper ?? throw new ArgumentNullException(nameof(repositoryWrapper));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _stringLocalizerCannotFind = stringLocalizerCannotFind ?? throw new ArgumentNullException(nameof(stringLocalizerCannotFind));
     }
 
-    public Task<(bool Exists, string? ErrorMessage)> CheckCourseExistenceAsync<TKey>(
-        TKey key,
-        string keyName,
-        object request)
+    public Task<(Course? Entity, string? ErrorMessage)> CheckCourseExistenceAsync<TKey>(TKey key, string keyName)
         where TKey : notnull
     {
         var errorMessage = BuildErrorMessage(
@@ -44,15 +38,10 @@ public class EntityExistenceService : IEntityExistenceService
             key,
             keyName,
             expr => _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(expr),
-            request,
-            nameof(Course),
             errorMessage);
     }
 
-    public Task<(bool Exists, string? ErrorMessage)> CheckSectionExistenceAsync<TKey>(
-        TKey key,
-        string keyName,
-        object request)
+    public Task<(Section? Entity, string? ErrorMessage)> CheckSectionExistenceAsync<TKey>(TKey key, string keyName)
         where TKey : notnull
     {
         var errorMessage = BuildErrorMessage(
@@ -66,15 +55,10 @@ public class EntityExistenceService : IEntityExistenceService
             key,
             keyName,
             expr => _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(expr),
-            request,
-            nameof(Section),
             errorMessage);
     }
 
-    public Task<(bool Exists, string? ErrorMessage)> CheckVideoExistenceAsync<TKey>(
-        TKey key,
-        string keyName,
-        object request)
+    public Task<(Video? Entity, string? ErrorMessage)> CheckVideoExistenceAsync<TKey>(TKey key, string keyName)
         where TKey : notnull
     {
         var errorMessage = BuildErrorMessage(
@@ -88,15 +72,10 @@ public class EntityExistenceService : IEntityExistenceService
             key,
             keyName,
             expr => _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(expr),
-            request,
-            nameof(Video),
             errorMessage);
     }
 
-    public Task<(bool Exists, string? ErrorMessage)> CheckUserExistenceAsync<TKey>(
-        TKey key,
-        string keyName,
-        object request)
+    public Task<(AppUser? Entity, string? ErrorMessage)> CheckUserExistenceAsync<TKey>(TKey key, string keyName)
         where TKey : notnull
     {
         var errorMessage = BuildErrorMessage(
@@ -110,22 +89,19 @@ public class EntityExistenceService : IEntityExistenceService
             key,
             keyName,
             expr => _repositoryWrapper.AppUsersRepository.GetSingleOrDefaultAsync(expr),
-            request,
-            nameof(AppUser),
             errorMessage);
     }
 
-    private async Task<(bool Exists, string? ErrorMessage)> CheckExistenceAsync<TEntity, TKey>(
+    private static async Task<(TEntity? Entity, string? ErrorMessage)> CheckExistenceAsync<TEntity, TKey>(
         TKey key,
         string keyName,
         Func<Expression<Func<TEntity, bool>>, Task<TEntity?>> fetchFunc,
-        object? request,
-        string entityName,
         string errorMessage)
         where TEntity : class
+        where TKey : notnull
     {
-        ArgumentNullException.ThrowIfNull(fetchFunc, nameof(fetchFunc));
-        ArgumentException.ThrowIfNullOrWhiteSpace(keyName, nameof(keyName));
+        ArgumentNullException.ThrowIfNull(fetchFunc);
+        ArgumentException.ThrowIfNullOrWhiteSpace(keyName);
 
         var parameter = Expression.Parameter(typeof(TEntity), "x");
         Expression? property;
@@ -135,16 +111,9 @@ public class EntityExistenceService : IEntityExistenceService
         }
         catch (ArgumentException)
         {
-            var propertyNotFoundMessage = $"Property '{keyName}' not found on type '{typeof(TEntity).Name}'.";
-            var requestInfo = request ?? new
-            {
-                Service = nameof(EntityExistenceService),
-                Entity = entityName,
-                Key = keyName
-            };
-            _logger.LogError(requestInfo, propertyNotFoundMessage);
+            var propertyNotFoundErrorMessage = $"Property '{keyName}' not found on type '{typeof(TEntity).Name}'.";
 
-            return (false, propertyNotFoundMessage);
+            return (null, propertyNotFoundErrorMessage);
         }
 
         var constant = Expression.Constant(key, typeof(TKey));
@@ -154,21 +123,8 @@ public class EntityExistenceService : IEntityExistenceService
         var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameter);
 
         var entity = await fetchFunc(lambda);
-        if (entity is not null)
-        {
-            return (true, null);
-        }
 
-        var requestInfoNotFound = request ?? new
-        {
-            Service = nameof(EntityExistenceService),
-            Entity = entityName,
-            Key = keyName,
-            Value = key
-        };
-        _logger.LogError(requestInfoNotFound, errorMessage);
-
-        return (false, errorMessage);
+        return (entity, errorMessage);
     }
 
     private string BuildErrorMessage<TKey>(

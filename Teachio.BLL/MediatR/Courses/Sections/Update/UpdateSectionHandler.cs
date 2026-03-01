@@ -47,13 +47,14 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
             return Result.Fail(mappingErrorMessage);
         }
 
-        var (courseExists, existenceErrorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
+        var (course, existenceErrorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
             request.sectionUpdateRequestDto.CourseId,
-            nameof(request.sectionUpdateRequestDto.CourseId),
-            request);
+            nameof(request.sectionUpdateRequestDto.CourseId));
 
-        if (courseExists)
+        if (course is null)
         {
+            _logger.LogError(request, existenceErrorMessage!);
+
             return Result.Fail(existenceErrorMessage);
         }
 

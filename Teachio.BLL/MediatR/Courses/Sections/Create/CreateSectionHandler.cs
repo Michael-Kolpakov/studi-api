@@ -47,13 +47,14 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
             return Result.Fail(mappingErrorMessage);
         }
 
-        var (courseExists, existenceErrorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
+        var (course, existenceErrorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
             request.sectionCreateRequestDto.CourseId,
-            nameof(request.sectionCreateRequestDto.CourseId),
-            request);
+            nameof(request.sectionCreateRequestDto.CourseId));
 
-        if (courseExists)
+        if (course is null)
         {
+            _logger.LogError(request, existenceErrorMessage!);
+
             return Result.Fail(existenceErrorMessage);
         }
 
