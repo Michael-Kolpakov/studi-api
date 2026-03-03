@@ -9,6 +9,11 @@ public class NoPermissionsLocalizerMock : BaseLocalizerMock<NoPermissionsSharedR
         var groupedErrors = new Dictionary<int, List<string>>()
         {
             {
+                0, [
+                    "NoPermissionsToCreateSectionForCourseOfAnotherUser"
+                ]
+            },
+            {
                 1, [
                     "NoPermissionsToDeleteCourseForUser",
                     "NoPermissionsToUpdateCourseForUser"
@@ -18,6 +23,11 @@ public class NoPermissionsLocalizerMock : BaseLocalizerMock<NoPermissionsSharedR
                 2, [
                     "NoPermissionsToDeleteCourseForUserWithId",
                     "NoPermissionsToUpdateCourseForUserWithId"
+                ]
+            },
+            {
+                3, [
+                    "NoPermissionsToCreateSectionForCourseOfAnotherUserWithId"
                 ]
             }
         };

@@ -30,4 +30,10 @@
     <data name="NoPermissionsToUpdateCourseForUserWithId" xml:space="preserve">
         <value>User with Id '{1}' doesn't have any permission to update course with Id '{0}'</value>
     </data>
+    <data name="NoPermissionsToCreateSectionForCourseOfAnotherUserWithId" xml:space="preserve">
+        <value>User with Id '{0}' doesn't have any permission to create section for the course with Id {1} of another user with Id '{2}'</value>
+    </data>
+    <data name="NoPermissionsToCreateSectionForCourseOfAnotherUser" xml:space="preserve">
+        <value>User doesn't have any permission to create section for the course of another user</value>
+    </data>
 </root>

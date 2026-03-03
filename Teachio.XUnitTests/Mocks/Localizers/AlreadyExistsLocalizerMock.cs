@@ -15,7 +15,8 @@ public class AlreadyExistsLocalizerMock : BaseLocalizerMock<AlreadyExistsSharedR
             },
             {
                 2, [
-                    "CourseAlreadyExistsForUserWithId"
+                    "CourseAlreadyExistsForUserWithId",
+                    "SectionAlreadyExistsForCourse"
                 ]
             }
         };

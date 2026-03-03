@@ -18,19 +18,25 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
     private readonly IEntityExistenceService _entityExistenceService;
     private readonly ILoggerService _logger;
     private readonly IStringLocalizer<CannotMapSharedResource> _stringLocalizerFailedToMap;
+    private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
+    private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
 
     public CreateSectionHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         IEntityExistenceService entityExistenceService,
         ILoggerService logger,
-        IStringLocalizer<CannotMapSharedResource> stringLocalizerFailedToMap)
+        IStringLocalizer<CannotMapSharedResource> stringLocalizerFailedToMap,
+        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
+        IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _entityExistenceService = entityExistenceService;
         _logger = logger;
         _stringLocalizerFailedToMap = stringLocalizerFailedToMap;
+        _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
+        _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
     }
 
     public async Task<Result<SectionResponseDto>> Handle(CreateSectionCommand request, CancellationToken cancellationToken)
@@ -56,6 +62,40 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
             _logger.LogError(request, existenceErrorMessage!);
 
             return Result.Fail(existenceErrorMessage);
+        }
+
+        if (course.OwnerUserId != request.requestingUserId)
+        {
+            var logErrorMessage = _stringLocalizerNoPermissions[
+                nameof(NoPermissionsSharedResource_en.NoPermissionsToCreateSectionForCourseOfAnotherUserWithId),
+                request.requestingUserId,
+                request.sectionCreateRequestDto.CourseId,
+                course.OwnerUserId
+            ].Value;
+
+            _logger.LogError(request, logErrorMessage);
+
+            var responseErrorMessage = _stringLocalizerNoPermissions[
+                nameof(NoPermissionsSharedResource_en.NoPermissionsToCreateSectionForCourseOfAnotherUser)
+            ].Value;
+
+            return Result.Fail(responseErrorMessage);
+        }
+
+        var existingSection = await _repositoryWrapper.SectionsRepository
+            .GetSingleOrDefaultAsync(s => s.CourseId == newSection.CourseId && s.OrderIndex == newSection.OrderIndex);
+
+        if (existingSection is not null)
+        {
+            var errorMessage = _stringLocalizerAlreadyExists[
+                nameof(AlreadyExistsSharedResource_en.SectionAlreadyExistsForCourse),
+                newSection.OrderIndex,
+                newSection.CourseId
+            ].Value;
+
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
         }
 
         await _repositoryWrapper.SectionsRepository.CreateAsync(newSection);

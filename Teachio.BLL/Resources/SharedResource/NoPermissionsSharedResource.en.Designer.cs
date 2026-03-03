@@ -60,6 +60,24 @@ namespace Teachio.BLL.Resources.SharedResource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User doesn&apos;t have any permission to create section for the course of another user.
+        /// </summary>
+        internal static string NoPermissionsToCreateSectionForCourseOfAnotherUser {
+            get {
+                return ResourceManager.GetString("NoPermissionsToCreateSectionForCourseOfAnotherUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User with Id &apos;{0}&apos; doesn&apos;t have any permission to create section for the course with Id {1} of another user with Id &apos;{2}&apos;.
+        /// </summary>
+        internal static string NoPermissionsToCreateSectionForCourseOfAnotherUserWithId {
+            get {
+                return ResourceManager.GetString("NoPermissionsToCreateSectionForCourseOfAnotherUserWithId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User doesn&apos;t have any permission to delete course with Id &apos;{0}&apos;.
         /// </summary>
         internal static string NoPermissionsToDeleteCourseForUser {

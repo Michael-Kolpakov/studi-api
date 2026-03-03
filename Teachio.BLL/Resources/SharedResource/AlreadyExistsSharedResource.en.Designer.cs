@@ -76,5 +76,14 @@ namespace Teachio.BLL.Resources.SharedResource {
                 return ResourceManager.GetString("CourseAlreadyExistsForUserWithId", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Course with Id &apos;{1}&apos; already has a section with order index &apos;{0}&apos;.
+        /// </summary>
+        internal static string SectionAlreadyExistsForCourse {
+            get {
+                return ResourceManager.GetString("SectionAlreadyExistsForCourse", resourceCulture);
+            }
+        }
     }
 }
