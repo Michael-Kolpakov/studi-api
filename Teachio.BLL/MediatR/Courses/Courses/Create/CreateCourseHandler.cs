@@ -52,7 +52,7 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
         }
 
         var existingCourse = await _repositoryWrapper.CoursesRepository
-            .GetFirstOrDefaultAsync(c => c.OwnerUserId == newCourse.OwnerUserId && c.CourseName == newCourse.CourseName);
+            .GetSingleOrDefaultAsync(c => c.OwnerUserId == newCourse.OwnerUserId && c.CourseName == newCourse.CourseName);
 
         if (existingCourse is not null)
         {
