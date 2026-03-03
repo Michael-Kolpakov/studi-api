@@ -16,13 +16,15 @@ public class NoPermissionsLocalizerMock : BaseLocalizerMock<NoPermissionsSharedR
             {
                 1, [
                     "NoPermissionsToDeleteCourseForUser",
-                    "NoPermissionsToUpdateCourseForUser"
+                    "NoPermissionsToUpdateCourseForUser",
+                    "NoPermissionsToDeleteSectionForUser"
                 ]
             },
             {
                 2, [
                     "NoPermissionsToDeleteCourseForUserWithId",
-                    "NoPermissionsToUpdateCourseForUserWithId"
+                    "NoPermissionsToUpdateCourseForUserWithId",
+                    "NoPermissionsToDeleteSectionForUserWithId"
                 ]
             },
             {

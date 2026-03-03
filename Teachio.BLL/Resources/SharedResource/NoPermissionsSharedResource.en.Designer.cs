@@ -96,6 +96,24 @@ namespace Teachio.BLL.Resources.SharedResource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User doesn&apos;t have any permission to delete section with Id &apos;{0}&apos;.
+        /// </summary>
+        internal static string NoPermissionsToDeleteSectionForUser {
+            get {
+                return ResourceManager.GetString("NoPermissionsToDeleteSectionForUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User with Id &apos;{1}&apos; doesn&apos;t have any permission to delete section with Id &apos;{0}&apos;.
+        /// </summary>
+        internal static string NoPermissionsToDeleteSectionForUserWithId {
+            get {
+                return ResourceManager.GetString("NoPermissionsToDeleteSectionForUserWithId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User doesn&apos;t have any permission to update course with Id &apos;{0}&apos;.
         /// </summary>
         internal static string NoPermissionsToUpdateCourseForUser {
