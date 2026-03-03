@@ -34,7 +34,8 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
         var paginatedCourses = await _repositoryWrapper.CoursesRepository.GetAllPaginatedAsync(
             request.pageNumber,
             request.pageSize,
-            include: IncludeCourseRelatedEntities);
+            include: IncludeCourseRelatedEntities,
+            descendingSortKeySelector: c => c.WatchingUsersCount);
 
         var getAllCoursesResponseDto = new PaginatedCoursesResponseDto()
         {
