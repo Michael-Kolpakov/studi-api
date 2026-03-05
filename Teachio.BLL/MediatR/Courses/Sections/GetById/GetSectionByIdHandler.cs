@@ -1,12 +1,16 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics.CodeAnalysis;
+using AutoMapper;
 using FluentResults;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Sections.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
 using Teachio.DAL.Repositories.Interfaces.Base;
+using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.MediatR.Courses.Sections.GetById;
 
@@ -31,13 +35,17 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
 
     public async Task<Result<SectionResponseDto>> Handle(GetSectionByIdQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to get section by Id: {request.id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to get section by Id: {request.sectionId}");
 
-        var section = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(x => x.Id == request.id);
+        // TODO: validate whether the user has access to the course
+
+        var section = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
+            x => x.Id == request.sectionId,
+            IncludeSectionRelatedEntities);
 
         if (section is null)
         {
-            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindSectionById), request.id].Value;
+            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindSectionById), request.sectionId].Value;
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);
@@ -46,5 +54,13 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
         var sectionResponseDto = _mapper.Map<SectionResponseDto>(section);
 
         return Result.Ok(sectionResponseDto);
+    }
+
+    [ExcludeFromCodeCoverage]
+    private static IIncludableQueryable<SectionEntity, object> IncludeSectionRelatedEntities(IQueryable<SectionEntity> query)
+    {
+        return query
+            .Include(s => s.Videos)
+            .ThenInclude(v => v.VideoProgress);
     }
 }
