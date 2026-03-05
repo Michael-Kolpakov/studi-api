@@ -6,7 +6,6 @@ using Teachio.BLL.SharedResource;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
-using Teachio.DAL.Entities.Users;
 using Teachio.DAL.Repositories.Interfaces.Base;
 
 namespace Teachio.BLL.Services.Realizations;
@@ -58,18 +57,6 @@ public class EntityExistenceService : IEntityExistenceService
             nameof(Video),
             nameof(CannotFindSharedResource_en.CannotFindVideoById),
             nameof(CannotFindSharedResource_en.CannotFindVideoByKey));
-    }
-
-    public async Task<(AppUser? Entity, string? ErrorMessage)> CheckUserExistenceAsync<TKey>(TKey key, string keyName)
-        where TKey : notnull
-    {
-        return await CheckExistenceWithErrorHandlingAsync<AppUser, TKey>(
-            key,
-            keyName,
-            expr => _repositoryWrapper.AppUsersRepository.GetSingleOrDefaultAsync(expr),
-            nameof(AppUser),
-            nameof(CannotFindSharedResource_en.CannotFindUserById),
-            nameof(CannotFindSharedResource_en.CannotFindUserByKey));
     }
 
     private async Task<(TEntity? Entity, string? ErrorMessage)> CheckExistenceWithErrorHandlingAsync<TEntity, TKey>(

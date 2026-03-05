@@ -1,7 +1,6 @@
 ﻿using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
-using Teachio.DAL.Entities.Users;
 
 namespace Teachio.BLL.Services.Interfaces;
 
@@ -14,8 +13,5 @@ public interface IEntityExistenceService
         where TKey : notnull;
 
     Task<(Video? Entity, string? ErrorMessage)> CheckVideoExistenceAsync<TKey>(TKey key, string keyName)
-        where TKey : notnull;
-
-    Task<(AppUser? Entity, string? ErrorMessage)> CheckUserExistenceAsync<TKey>(TKey key, string keyName)
         where TKey : notnull;
 }
