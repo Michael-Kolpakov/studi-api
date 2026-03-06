@@ -7,7 +7,6 @@ using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
 using Teachio.DAL.Repositories.Interfaces.Base;
-using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.MediatR.Courses.Sections.Update;
 
@@ -15,53 +14,71 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
 {
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
-    private readonly IEntityExistenceService _entityExistenceService;
     private readonly ILoggerService _logger;
-    private readonly IStringLocalizer<CannotMapSharedResource> _stringLocalizerFailedToMap;
+    private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
+    private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
 
     public UpdateSectionHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
-        IEntityExistenceService entityExistenceService,
         ILoggerService logger,
-        IStringLocalizer<CannotMapSharedResource> stringLocalizerFailedToMap)
+        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
+        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
-        _entityExistenceService = entityExistenceService;
         _logger = logger;
-        _stringLocalizerFailedToMap = stringLocalizerFailedToMap;
+        _stringLocalizerCannotFind = stringLocalizerCannotFind;
+        _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
     public async Task<Result<SectionResponseDto>> Handle(UpdateSectionCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to update a section with Id: {request.sectionUpdateRequestDto.Id}");
 
-        var section = _mapper.Map<SectionEntity>(request.sectionUpdateRequestDto);
+        var existingSection = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
+            x => x.Id == request.sectionUpdateRequestDto.Id);
 
-        if (section is null)
+        if (existingSection is null)
         {
-            var mappingErrorMessage = _stringLocalizerFailedToMap[nameof(CannotMapSharedResource_en.CannotMapNullToSection)].Value;
-            _logger.LogError(request, mappingErrorMessage);
+            var errorMessage = _stringLocalizerCannotFind[
+                nameof(CannotFindSharedResource_en.CannotFindSectionById),
+                request.sectionUpdateRequestDto.Id
+            ].Value;
 
-            return Result.Fail(mappingErrorMessage);
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
         }
 
-        var (course, existenceErrorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
-            request.sectionUpdateRequestDto.CourseId,
-            nameof(request.sectionUpdateRequestDto.CourseId));
+        var courseOwnerUserId = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultProjectedAsync(
+            s => s.Course!.OwnerUserId,
+            s => s.Id == request.sectionUpdateRequestDto.Id);
 
-        if (course is null)
+        if (courseOwnerUserId != request.requestingUserId)
         {
-            _logger.LogError(request, existenceErrorMessage!);
+            var logErrorMessage = _stringLocalizerNoPermissions[
+                nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateSectionForUserWithId),
+                request.sectionUpdateRequestDto.Id,
+                request.requestingUserId
+            ].Value;
 
-            return Result.Fail(existenceErrorMessage);
+            _logger.LogError(request, logErrorMessage);
+
+            var responseErrorMessage = _stringLocalizerNoPermissions[
+                nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateSectionForUser),
+                request.sectionUpdateRequestDto.Id
+            ].Value;
+
+            return Result.Fail(responseErrorMessage);
         }
 
-        _repositoryWrapper.SectionsRepository.Update(section);
+        _mapper.Map(request.sectionUpdateRequestDto, existingSection);
+
+        _repositoryWrapper.SectionsRepository.Update(existingSection);
         await _repositoryWrapper.SaveChangesAsync();
 
-        var sectionResponseDto = _mapper.Map<SectionResponseDto>(section);
+        var sectionResponseDto = _mapper.Map<SectionResponseDto>(existingSection);
 
         return Result.Ok(sectionResponseDto);
     }

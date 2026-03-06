@@ -69,7 +69,7 @@ namespace Teachio.BLL.Resources.SharedResource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User with Id &apos;{0}&apos; doesn&apos;t have any permission to create section for the course with Id {1} of another user with Id &apos;{2}&apos;.
+        ///   Looks up a localized string similar to User with Id &apos;{1}&apos; doesn&apos;t have any permission to create section for the course with Id {0} of another user with Id &apos;{2}&apos;.
         /// </summary>
         internal static string NoPermissionsToCreateSectionForCourseOfAnotherUserWithId {
             get {
@@ -128,6 +128,24 @@ namespace Teachio.BLL.Resources.SharedResource {
         internal static string NoPermissionsToUpdateCourseForUserWithId {
             get {
                 return ResourceManager.GetString("NoPermissionsToUpdateCourseForUserWithId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User doesn&apos;t have any permission to update section with Id &apos;{0}&apos;.
+        /// </summary>
+        internal static string NoPermissionsToUpdateSectionForUser {
+            get {
+                return ResourceManager.GetString("NoPermissionsToUpdateSectionForUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User with Id &apos;{1}&apos; doesn&apos;t have any permission to update section with Id &apos;{0}&apos;.
+        /// </summary>
+        internal static string NoPermissionsToUpdateSectionForUserWithId {
+            get {
+                return ResourceManager.GetString("NoPermissionsToUpdateSectionForUserWithId", resourceCulture);
             }
         }
     }

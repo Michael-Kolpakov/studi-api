@@ -149,6 +149,48 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return await GetQueryable(predicate, include, selector).FirstOrDefaultAsync();
     }
 
+    public async Task<TResult?> GetSingleOrDefaultProjectedAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        Expression<Func<T, bool>>? predicate = null)
+    {
+        var query = _dbContext.Set<T>().AsNoTracking();
+
+        if (predicate is not null)
+        {
+            query = query.Where(predicate);
+        }
+
+        return await query.Select(selector).SingleOrDefaultAsync();
+    }
+
+    public async Task<TResult?> GetFirstOrDefaultProjectedAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        Expression<Func<T, bool>>? predicate = null)
+    {
+        var query = _dbContext.Set<T>().AsNoTracking();
+
+        if (predicate is not null)
+        {
+            query = query.Where(predicate);
+        }
+
+        return await query.Select(selector).FirstOrDefaultAsync();
+    }
+
+    public async Task<List<TResult>> GetProjectedListAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        Expression<Func<T, bool>>? predicate = null)
+    {
+        var query = _dbContext.Set<T>().AsNoTracking();
+
+        if (predicate is not null)
+        {
+            query = query.Where(predicate);
+        }
+
+        return await query.Select(selector).ToListAsync();
+    }
+
     public async Task<T?> GetFirstOrDefaultAsync(
         Expression<Func<T, T>> selector,
         Expression<Func<T, bool>>? predicate = default,

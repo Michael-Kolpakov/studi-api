@@ -43,7 +43,11 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
         if (existingCourse is null)
         {
-            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindCourseById), request.courseUpdateRequestDto.Id].Value;
+            var errorMessage = _stringLocalizerCannotFind[
+                nameof(CannotFindSharedResource_en.CannotFindCourseById),
+                request.courseUpdateRequestDto.Id
+            ].Value;
+
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);

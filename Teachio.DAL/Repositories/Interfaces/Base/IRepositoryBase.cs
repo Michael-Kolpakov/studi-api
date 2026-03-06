@@ -62,6 +62,18 @@ public interface IRepositoryBase<T>
         Expression<Func<T, object>>? descendingSortKeySelector = default,
         int? offset = null);
 
+    Task<TResult?> GetSingleOrDefaultProjectedAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        Expression<Func<T, bool>>? predicate = null);
+
+    Task<TResult?> GetFirstOrDefaultProjectedAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        Expression<Func<T, bool>>? predicate = null);
+
+    Task<List<TResult>> GetProjectedListAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        Expression<Func<T, bool>>? predicate = null);
+
     Task<int> GetSelfCountAsync(
         Expression<Func<T, bool>>? predicate = default,
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default);

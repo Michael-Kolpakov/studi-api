@@ -65,7 +65,11 @@ public class SectionsController : BaseApiController
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Update([FromBody] SectionUpdateRequestDto sectionUpdateRequestDto)
     {
-        return HandleResult(await Mediator.Send(new UpdateSectionCommand(sectionUpdateRequestDto)));
+        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
+        // var userId = GetUserIdOrThrow();
+        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
+
+        return HandleResult(await Mediator.Send(new UpdateSectionCommand(sectionUpdateRequestDto, userId)));
     }
 
     /// <summary>

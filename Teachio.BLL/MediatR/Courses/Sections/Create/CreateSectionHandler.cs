@@ -68,8 +68,8 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToCreateSectionForCourseOfAnotherUserWithId),
-                request.requestingUserId,
                 request.sectionCreateRequestDto.CourseId,
+                request.requestingUserId,
                 course.OwnerUserId
             ].Value;
 
