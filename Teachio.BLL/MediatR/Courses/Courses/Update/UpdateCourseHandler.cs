@@ -38,8 +38,8 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
         // TODO: validate whether course thumbnail exists (database relationships and ownership)
 
-        var existingCourse = await _repositoryWrapper.CoursesRepository
-            .GetSingleOrDefaultAsync(x => x.Id == request.courseUpdateRequestDto.Id);
+        var existingCourse = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
+            x => x.Id == request.courseUpdateRequestDto.Id);
 
         if (existingCourse is null)
         {

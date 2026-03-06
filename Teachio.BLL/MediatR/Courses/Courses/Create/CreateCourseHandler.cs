@@ -51,8 +51,8 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
             return Result.Fail(errorMessage);
         }
 
-        var existingCourse = await _repositoryWrapper.CoursesRepository
-            .GetSingleOrDefaultAsync(c => c.OwnerUserId == newCourse.OwnerUserId && c.CourseName == newCourse.CourseName);
+        var existingCourse = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
+            c => c.OwnerUserId == newCourse.OwnerUserId && c.CourseName == newCourse.CourseName);
 
         if (existingCourse is not null)
         {

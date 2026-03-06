@@ -82,8 +82,8 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
             return Result.Fail(responseErrorMessage);
         }
 
-        var existingSection = await _repositoryWrapper.SectionsRepository
-            .GetSingleOrDefaultAsync(s => s.CourseId == newSection.CourseId && s.OrderIndex == newSection.OrderIndex);
+        var existingSection = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
+            s => s.CourseId == newSection.CourseId && s.OrderIndex == newSection.OrderIndex);
 
         if (existingSection is not null)
         {
