@@ -18,7 +18,5 @@ public class CoursePreviewResponseDto
 
     public int WatchingUsersCount { get; set; }
 
-    public Guid OwnerUserId { get; set; }
-
     public List<SectionPreviewResponseDto> Sections { get; set; } = new List<SectionPreviewResponseDto>();
 }

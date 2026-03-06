@@ -15,6 +15,4 @@ public class CoursePreviewShortResponseDto
     public string ThumbnailRelativePath { get; set; } = null!;
 
     public int WatchingUsersCount { get; set; }
-
-    public Guid OwnerUserId { get; set; }
 }

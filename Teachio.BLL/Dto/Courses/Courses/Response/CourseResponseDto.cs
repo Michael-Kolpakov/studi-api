@@ -17,8 +17,6 @@ public class CourseResponseDto
 
     public int WatchingUsersCount { get; set; }
 
-    public Guid OwnerUserId { get; set; }
-
     public VideoResponseDto? SelectedVideo { get; set; }
 
     public List<SectionShortResponseDto> Sections { get; set; } = new List<SectionShortResponseDto>();
