@@ -69,7 +69,6 @@ public static class CourseTestData
             SectionsCount = course.SectionsCount,
             TotalDuration = totalDuration,
             WatchingUsersCount = watchingUsersCount,
-            OwnerUserId = course.OwnerUserId
         };
     }
 
@@ -86,7 +85,6 @@ public static class CourseTestData
             SectionsCount = course.SectionsCount,
             TotalDuration = totalDuration,
             WatchingUsersCount = watchingUsersCount,
-            OwnerUserId = course.OwnerUserId
         };
     }
 
@@ -104,7 +102,6 @@ public static class CourseTestData
             VideosCount = course.Sections.Sum(s => s.VideosCount),
             TotalDuration = totalDuration + index,
             WatchingUsersCount = watchingUsersCount + index,
-            OwnerUserId = course.OwnerUserId
         };
     }
 

@@ -79,8 +79,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
             () => Assert.Equal(_testCourse.Title, returnedValue.Title),
             () => Assert.Equal(_testCourse.Description, returnedValue.Description),
             () => Assert.Equal(_testCourse.SectionsCount, returnedValue.SectionsCount),
-            () => Assert.Equal(_testCourse.WatchingUsersCount, returnedValue.WatchingUsersCount),
-            () => Assert.Equal(_testCourse.OwnerUserId, returnedValue.OwnerUserId));
+            () => Assert.Equal(_testCourse.WatchingUsersCount, returnedValue.WatchingUsersCount));
     }
 
     [Fact]
@@ -121,8 +120,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
             () => Assert.Equal(_testCourse.Title, returnedValue.Title),
             () => Assert.Equal(_testCourse.Description, returnedValue.Description),
             () => Assert.Equal(_testCourse.SectionsCount, returnedValue.SectionsCount),
-            () => Assert.Equal(_testCourse.WatchingUsersCount, returnedValue.WatchingUsersCount),
-            () => Assert.Equal(_testCourse.OwnerUserId, returnedValue.OwnerUserId));
+            () => Assert.Equal(_testCourse.WatchingUsersCount, returnedValue.WatchingUsersCount));
     }
 
     [Fact]
@@ -275,8 +273,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
             () => Assert.Equal(expectedCourse.Title, returnedValue.Title),
             () => Assert.Equal(expectedCourse.Description, returnedValue.Description),
             () => Assert.Equal(expectedCourse.SectionsCount, returnedValue.SectionsCount),
-            () => Assert.Equal(expectedCourse.WatchingUsersCount, returnedValue.WatchingUsersCount),
-            () => Assert.Equal(expectedCourse.OwnerUserId, returnedValue.OwnerUserId));
+            () => Assert.Equal(expectedCourse.WatchingUsersCount, returnedValue.WatchingUsersCount));
     }
 
     [Fact]
