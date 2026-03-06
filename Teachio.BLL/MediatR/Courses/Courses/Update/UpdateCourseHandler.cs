@@ -77,6 +77,8 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
         _mapper.Map(request.courseUpdateRequestDto, existingCourse);
 
+        // TODO: if user updated title of a course update a course folder name on Google Drive (or CDN in the future)
+
         _repositoryWrapper.CoursesRepository.Update(existingCourse);
         await _repositoryWrapper.SaveChangesAsync();
 

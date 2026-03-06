@@ -25,6 +25,6 @@
         <value>User already has a course with name '{0}'</value>
     </data>
     <data name="SectionAlreadyExistsForCourse" xml:space="preserve">
-        <value>Course with Id '{1}' already has a section with order index '{0}'</value>
+        <value>Course with Id '{1}' already has a section with Id '{0}' with order index '{2}'</value>
     </data>
 </root>

@@ -1,3 +1,9 @@
-﻿namespace Teachio.BLL.Dto.Courses.Sections.Request.Create;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class SectionCreateRequestDto : SectionCreateUpdateRequestDto;
+namespace Teachio.BLL.Dto.Courses.Sections.Request.Create;
+
+public class SectionCreateRequestDto : SectionCreateUpdateRequestDto
+{
+    [Required(ErrorMessage = "Required")]
+    public Guid CourseId { get; set; }
+};

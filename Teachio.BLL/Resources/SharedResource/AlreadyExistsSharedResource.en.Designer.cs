@@ -78,7 +78,7 @@ namespace Teachio.BLL.Resources.SharedResource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Course with Id &apos;{1}&apos; already has a section with order index &apos;{0}&apos;.
+        ///   Looks up a localized string similar to Course with Id &apos;{1}&apos; already has a section with Id &apos;{0}&apos; with order index &apos;{2}&apos;.
         /// </summary>
         internal static string SectionAlreadyExistsForCourse {
             get {

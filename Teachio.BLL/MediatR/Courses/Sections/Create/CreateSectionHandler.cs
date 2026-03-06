@@ -89,8 +89,9 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         {
             var errorMessage = _stringLocalizerAlreadyExists[
                 nameof(AlreadyExistsSharedResource_en.SectionAlreadyExistsForCourse),
-                newSection.OrderIndex,
-                newSection.CourseId
+                existingSection.Id,
+                course.Id,
+                existingSection.OrderIndex
             ].Value;
 
             _logger.LogError(request, errorMessage);

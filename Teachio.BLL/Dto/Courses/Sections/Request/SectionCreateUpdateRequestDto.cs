@@ -9,8 +9,5 @@ public abstract class SectionCreateUpdateRequestDto
     public string Title { get; set; } = null!;
 
     [Required(ErrorMessage = "Required")]
-    public Guid CourseId { get; set; }
-
-    [Required(ErrorMessage = "Required")]
     public int OrderIndex { get; set; }
 }
