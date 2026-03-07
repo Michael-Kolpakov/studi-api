@@ -42,10 +42,10 @@
     <data name="NoPermissionsToDeleteSectionForUserWithId" xml:space="preserve">
         <value>User with Id '{1}' doesn't have any permission to delete section with Id '{0}'</value>
     </data>
-    <data name="NoPermissionsToUpdateSectionForUserWithId" xml:space="preserve">
-        <value>User with Id '{1}' doesn't have any permission to update section with Id '{0}'</value>
-    </data>
     <data name="NoPermissionsToUpdateSectionForUser" xml:space="preserve">
         <value>User doesn't have any permission to update section with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToUpdateSectionForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to update section with Id '{0}'</value>
     </data>
 </root>

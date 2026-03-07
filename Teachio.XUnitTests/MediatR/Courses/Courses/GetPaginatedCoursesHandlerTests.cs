@@ -73,9 +73,12 @@ public class GetPaginatedCoursesHandlerTests
 
     #region Helper Methods
 
-    private static GetPaginatedCoursesQuery GetGetPaginatedCoursesQuery(ushort pageNumber = 1, ushort pageSize = 10)
+    private static GetPaginatedCoursesQuery GetGetPaginatedCoursesQuery(
+        ushort pageNumber = 1,
+        ushort pageSize = 10,
+        Guid? requestingUserId = null)
     {
-        return new GetPaginatedCoursesQuery(pageNumber, pageSize);
+        return new GetPaginatedCoursesQuery(pageNumber, pageSize, requestingUserId ?? Guid.NewGuid());
     }
 
     #endregion

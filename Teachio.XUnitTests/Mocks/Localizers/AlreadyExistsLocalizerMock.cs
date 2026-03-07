@@ -15,10 +15,14 @@ public class AlreadyExistsLocalizerMock : BaseLocalizerMock<AlreadyExistsSharedR
             },
             {
                 2, [
-                    "CourseAlreadyExistsForUserWithId",
+                    "CourseAlreadyExistsForUserWithId"
+                ]
+            },
+            {
+                3, [
                     "SectionAlreadyExistsForCourse"
                 ]
-            }
+            },
         };
 
         return groupedErrors;
