@@ -29,37 +29,37 @@ public interface IRepositoryBase<T>
     Task ExecuteSqlRaw(string query);
 
     Task<IEnumerable<T>> GetAllAsync(
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default);
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
 
     Task<PaginationResponse<T>> GetAllPaginatedAsync(
         ushort? pageNumber = null,
         ushort? pageSize = null,
-        Expression<Func<T, T>>? selector = default,
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default,
-        Expression<Func<T, object>>? ascendingSortKeySelector = default,
-        Expression<Func<T, object>>? descendingSortKeySelector = default);
+        Expression<Func<T, T>>? selector = null,
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+        Expression<Func<T, object>>? ascendingSortKeySelector = null,
+        Expression<Func<T, object>>? descendingSortKeySelector = null);
 
     Task<T?> GetSingleOrDefaultAsync(
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default);
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
 
     Task<T?> GetFirstOrDefaultAsync(
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default);
-
-    Task<T?> GetFirstOrDefaultAsync(
-        Expression<Func<T, T>> selector,
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default);
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
 
     Task<T?> GetFirstOrDefaultAsync(
         Expression<Func<T, T>> selector,
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default,
-        Expression<Func<T, object>>? ascendingSortKeySelector = default,
-        Expression<Func<T, object>>? descendingSortKeySelector = default,
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
+
+    Task<T?> GetFirstOrDefaultAsync(
+        Expression<Func<T, T>> selector,
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+        Expression<Func<T, object>>? ascendingSortKeySelector = null,
+        Expression<Func<T, object>>? descendingSortKeySelector = null,
         int? offset = null);
 
     Task<TResult?> GetSingleOrDefaultProjectedAsync<TResult>(
@@ -75,22 +75,22 @@ public interface IRepositoryBase<T>
         Expression<Func<T, bool>>? predicate = null);
 
     Task<int> GetSelfCountAsync(
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default);
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
 
     Task<int> GetNavigationCollectionsCountAsync<TProperty>(
         Expression<Func<T, IEnumerable<TProperty>>> collectionSelector,
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default);
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
 
     Task<Dictionary<TKey, int>> GetNavigationCollectionsCountsAsync<TKey, TProperty>(
         Expression<Func<T, TKey>> keySelector,
         Expression<Func<T, IEnumerable<TProperty>>> collectionSelector,
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default)
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null)
         where TKey : notnull;
 
     IQueryable<T> FindAll(
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default);
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
 }
