@@ -46,7 +46,11 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
 
         if (course is null)
         {
-            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindCourseById), request.courseId].Value;
+            var errorMessage = _stringLocalizerCannotFind[
+                nameof(CannotFindSharedResource_en.CannotFindCourseById),
+                request.courseId
+            ].Value;
+
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);

@@ -37,7 +37,7 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to get section by Id: {request.sectionId}");
 
-        // TODO: validate whether the user has access to the course
+        // TODO: validate whether the user has access to the course with this section
 
         var section = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.sectionId,
@@ -45,7 +45,11 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
 
         if (section is null)
         {
-            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindSectionById), request.sectionId].Value;
+            var errorMessage = _stringLocalizerCannotFind[
+                nameof(CannotFindSharedResource_en.CannotFindSectionById),
+                request.sectionId
+            ].Value;
+
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);
@@ -61,6 +65,6 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
     {
         return query
             .Include(s => s.Videos)
-            .ThenInclude(v => v.VideoProgress);
+                .ThenInclude(v => v.VideoProgress);
     }
 }

@@ -46,7 +46,11 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
 
         if (section is null)
         {
-            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindSectionById), request.sectionId].Value;
+            var errorMessage = _stringLocalizerCannotFind[
+                nameof(CannotFindSharedResource_en.CannotFindSectionById),
+                request.sectionId
+            ].Value;
+
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);
