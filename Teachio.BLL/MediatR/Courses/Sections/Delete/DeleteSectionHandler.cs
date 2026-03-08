@@ -56,7 +56,11 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
             return Result.Fail(errorMessage);
         }
 
-        if (section.Course?.OwnerUserId != request.requestingUserId)
+        var courseOwnerUserId = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultProjectedAsync(
+            s => s.Course!.OwnerUserId,
+            s => s.Id == request.sectionId);
+
+        if (courseOwnerUserId != request.requestingUserId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToDeleteSectionForUserWithId),
