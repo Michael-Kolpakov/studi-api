@@ -1,3 +1,9 @@
-﻿namespace Teachio.BLL.Dto.Courses.Videos.Videos.Request.Create;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class VideoCreateRequestDto : VideoCreateUpdateRequestDto;
+namespace Teachio.BLL.Dto.Courses.Videos.Videos.Request.Create;
+
+public class VideoCreateRequestDto : VideoCreateUpdateRequestDto
+{
+    [Required(ErrorMessage = "Required")]
+    public Guid SectionId { get; set; }
+}

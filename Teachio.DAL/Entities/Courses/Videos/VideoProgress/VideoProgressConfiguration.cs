@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Utils.Constants;
+using Teachio.DAL.Utils.Helpers;
 
 namespace Teachio.DAL.Entities.Courses.Videos.VideoProgress;
 
@@ -8,7 +10,7 @@ public static class VideoProgressConfiguration
     public static void ConfigureVideoProgress(this ModelBuilder builder)
     {
         builder.Entity<VideoProgress>()
-            .ToTable("VideoProgress", "courses")
+            .ToTable(nameof(VideoProgress), $"{nameof(Course).ToLowerInvariant()}s")
             .HasKey(vp => vp.Id);
 
         builder.Entity<VideoProgress>(typeBuilder =>
@@ -29,8 +31,8 @@ public static class VideoProgressConfiguration
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
-                    "CK_Video_PositionSeconds_Range",
-                    $"[PositionSeconds] >= 0 AND [PositionSeconds] <= {EntityConstants.MaxVideoDurationSeconds}"));
+                    $"CK_{nameof(VideoProgress)}_{nameof(VideoProgress.PositionSeconds)}_{nameof(CheckConstraintType.Range)}",
+                    Constraint.CreateSqlRangeCheck(nameof(VideoProgress.PositionSeconds), 0, EntityConstants.MaxVideoDurationSeconds)));
 
             typeBuilder.Property(vp => vp.UpdatedAt)
                 .HasDefaultValueSql("GETUTCDATE()")

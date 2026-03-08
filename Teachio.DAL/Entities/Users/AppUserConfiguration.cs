@@ -7,7 +7,7 @@ public static class AppUserConfiguration
     public static void ConfigureAppUsers(this ModelBuilder builder)
     {
         builder.Entity<AppUser>()
-            .ToTable("AppUsers", "users")
+            .ToTable($"{nameof(AppUser)}s", "users")
             .HasKey(au => au.Id);
 
         builder.Entity<AppUser>(typeBuilder =>

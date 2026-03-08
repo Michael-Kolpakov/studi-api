@@ -60,7 +60,7 @@ namespace Teachio.DAL.Resources.SharedResource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Length of &apos;{0}&apos; must be no longer than {1} characters.
+        ///   Looks up a localized string similar to The &apos;{0}&apos; field must be no longer than {1} characters.
         /// </summary>
         internal static string Length {
             get {
@@ -69,7 +69,7 @@ namespace Teachio.DAL.Resources.SharedResource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Range of &apos;{0}&apos; must be between {1} and {2}.
+        ///   Looks up a localized string similar to The &apos;{0}&apos; field must be between {1} and {2}.
         /// </summary>
         internal static string Range {
             get {
@@ -78,7 +78,34 @@ namespace Teachio.DAL.Resources.SharedResource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; field is required.
+        ///   Looks up a localized string similar to The &apos;{0}&apos; field can contain only alphabetic characters, numbers, spaces and punctuation marks (except for very weird ones).
+        /// </summary>
+        internal static string RegexDescription {
+            get {
+                return ResourceManager.GetString("RegexDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; field can contain only alphabetic characters, numbers, hyphens and punctuation marks (only dots, commas, !, ?).
+        /// </summary>
+        internal static string RegexName {
+            get {
+                return ResourceManager.GetString("RegexName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; field can contain only alphabetic characters, numbers, spaces and punctuation marks (only commas, !, ?, -).
+        /// </summary>
+        internal static string RegexTitle {
+            get {
+                return ResourceManager.GetString("RegexTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; field is required.
         /// </summary>
         internal static string Required {
             get {
