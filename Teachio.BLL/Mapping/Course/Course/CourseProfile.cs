@@ -41,7 +41,7 @@ public class CourseProfile : Profile
                 opt => opt.MapFrom<TotalDurationResolver>())
             .ForMember(
                 dest => dest.ThumbnailRelativePath,
-                opt => opt.MapFrom<ThumbnailRelativePathResolver>());
+                opt => opt.MapFrom<RelativePathResolver>());
 
         CreateMap<CourseEntity, CoursePreviewShortResponseDto>()
             .ForMember(
@@ -52,6 +52,6 @@ public class CourseProfile : Profile
                 opt => opt.MapFrom<VideosCountResolver>())
             .ForMember(
                 dest => dest.ThumbnailRelativePath,
-                opt => opt.MapFrom<ThumbnailRelativePathResolver>());
+                opt => opt.MapFrom<RelativePathResolver>());
     }
 }

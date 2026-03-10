@@ -1,11 +1,11 @@
 using AutoMapper;
-using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
+using Teachio.DAL.Entities.Courses.Courses;
 
 namespace Teachio.BLL.Utils.MappingResolvers;
 
-public class OwnerUserIdResolver : IValueResolver<object, CourseEntity, Guid>
+public class OwnerUserIdResolver : IValueResolver<object, Course, Guid>
 {
-    public Guid Resolve(object source, CourseEntity destination, Guid destMember, ResolutionContext context)
+    public Guid Resolve(object source, Course destination, Guid destMember, ResolutionContext context)
     {
         if (context.Items.TryGetValue("OwnerUserId", out var ownerUserId) && ownerUserId is Guid userId)
         {

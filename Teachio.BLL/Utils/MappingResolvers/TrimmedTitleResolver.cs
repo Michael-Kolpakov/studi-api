@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Teachio.BLL.Dto.Courses.Courses.Request;
 using Teachio.BLL.Dto.Courses.Sections.Request;
-using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
-using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
+using Teachio.BLL.Dto.Courses.Videos.Videos.Request;
+using Teachio.DAL.Entities.Courses.Courses;
+using Teachio.DAL.Entities.Courses.Sections;
+using Teachio.DAL.Entities.Courses.Videos.Videos;
 
 namespace Teachio.BLL.Utils.MappingResolvers;
 
@@ -12,10 +14,12 @@ public class TrimmedTitleResolver : IValueResolver<object, object, string>
     {
         return (source, destination) switch
         {
-            (CourseCreateUpdateRequestDto courseSource, CourseEntity) =>
+            (CourseCreateUpdateRequestDto courseSource, Course) =>
                 TrimTitle(courseSource.Title),
-            (SectionCreateUpdateRequestDto sectionSource, SectionEntity) =>
+            (SectionCreateUpdateRequestDto sectionSource, Section) =>
                 TrimTitle(sectionSource.Title),
+            (VideoCreateUpdateRequestDto videoSource, Video) =>
+                TrimTitle(videoSource.Title),
             (_, _) => throw new ArgumentException(
                 $"Unknown source '{source.GetType().Name}' and destination '{destination.GetType().Name}' types combination.")
         };

@@ -63,6 +63,7 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
     private static IIncludableQueryable<CourseEntity, object> IncludeCourseRelatedEntities(IQueryable<CourseEntity> query)
     {
         return query
+            .Include(c => c.OwnerUser)
             .Include(c => c.Sections)
                 .ThenInclude(v => v.Videos);
     }
