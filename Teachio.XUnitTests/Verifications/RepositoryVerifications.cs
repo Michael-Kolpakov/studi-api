@@ -17,7 +17,8 @@ public static class RepositoryVerifications
         Mock.Get(repository).Verify(
             repo => repo.GetFirstOrDefaultAsync(
                 It.IsAny<Expression<Func<TEntity, bool>>>(),
-                It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>()),
+                It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>(),
+                It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
@@ -31,7 +32,8 @@ public static class RepositoryVerifications
         Mock.Get(repository).Verify(
             repo => repo.GetSingleOrDefaultAsync(
                 It.IsAny<Expression<Func<TEntity, bool>>>(),
-                It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>()),
+                It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>(),
+                It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
@@ -43,7 +45,7 @@ public static class RepositoryVerifications
         var repository = GetRepository(mockRepositoryWrapper, repositorySelector);
 
         Mock.Get(repository).Verify(
-            repo => repo.CreateAsync(It.IsAny<TEntity>()),
+            repo => repo.CreateAsync(It.IsAny<TEntity>(), It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
@@ -62,7 +64,8 @@ public static class RepositoryVerifications
                 It.IsAny<Expression<Func<TEntity, bool>>>(),
                 It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>(),
                 It.IsAny<Expression<Func<TEntity, object>>>(),
-                It.IsAny<Expression<Func<TEntity, object>>>()),
+                It.IsAny<Expression<Func<TEntity, object>>>(),
+                It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
@@ -94,7 +97,7 @@ public static class RepositoryVerifications
         Mock<IRepositoryWrapper> mockRepositoryWrapper)
     {
         mockRepositoryWrapper.Verify(
-            repo => repo.SaveChangesAsync(),
+            repo => repo.SaveChangesAsync(It.IsAny<CancellationToken>()),
             Times.Once);
     }
 

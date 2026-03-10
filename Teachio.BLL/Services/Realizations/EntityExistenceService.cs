@@ -23,37 +23,46 @@ public class EntityExistenceService : IEntityExistenceService
         _stringLocalizerCannotFind = stringLocalizerCannotFind ?? throw new ArgumentNullException(nameof(stringLocalizerCannotFind));
     }
 
-    public async Task<(Course? Entity, string? ErrorMessage)> CheckCourseExistenceAsync<TKey>(TKey key, string keyName)
+    public async Task<(Course? Entity, string? ErrorMessage)> CheckCourseExistenceAsync<TKey>(
+        TKey key,
+        string keyName,
+        CancellationToken cancellationToken = default)
         where TKey : notnull
     {
         return await CheckExistenceWithErrorHandlingAsync<Course, TKey>(
             key,
             keyName,
-            expr => _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(expr),
+            expr => _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(expr, cancellationToken: cancellationToken),
             nameof(Course),
             nameof(CannotFindSharedResource_en.CannotFindCourseById),
             nameof(CannotFindSharedResource_en.CannotFindCourseByKey));
     }
 
-    public async Task<(Section? Entity, string? ErrorMessage)> CheckSectionExistenceAsync<TKey>(TKey key, string keyName)
+    public async Task<(Section? Entity, string? ErrorMessage)> CheckSectionExistenceAsync<TKey>(
+        TKey key,
+        string keyName,
+        CancellationToken cancellationToken = default)
         where TKey : notnull
     {
         return await CheckExistenceWithErrorHandlingAsync<Section, TKey>(
             key,
             keyName,
-            expr => _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(expr),
+            expr => _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(expr, cancellationToken: cancellationToken),
             nameof(Section),
             nameof(CannotFindSharedResource_en.CannotFindSectionById),
             nameof(CannotFindSharedResource_en.CannotFindSectionByKey));
     }
 
-    public async Task<(Video? Entity, string? ErrorMessage)> CheckVideoExistenceAsync<TKey>(TKey key, string keyName)
+    public async Task<(Video? Entity, string? ErrorMessage)> CheckVideoExistenceAsync<TKey>(
+        TKey key,
+        string keyName,
+        CancellationToken cancellationToken = default)
         where TKey : notnull
     {
         return await CheckExistenceWithErrorHandlingAsync<Video, TKey>(
             key,
             keyName,
-            expr => _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(expr),
+            expr => _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(expr, cancellationToken: cancellationToken),
             nameof(Video),
             nameof(CannotFindSharedResource_en.CannotFindVideoById),
             nameof(CannotFindSharedResource_en.CannotFindVideoByKey));

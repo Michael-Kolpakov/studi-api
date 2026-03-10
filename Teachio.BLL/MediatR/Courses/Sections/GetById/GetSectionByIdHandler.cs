@@ -41,7 +41,8 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
 
         var section = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.sectionId,
-            IncludeSectionRelatedEntities);
+            IncludeSectionRelatedEntities,
+            cancellationToken);
 
         if (section is null)
         {

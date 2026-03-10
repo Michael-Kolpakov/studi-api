@@ -19,7 +19,8 @@ public static class RepositoryMocks
         Mock.Get(repository)
             .Setup(repo => repo.GetSingleOrDefaultAsync(
                 It.IsAny<Expression<Func<TEntity, bool>>>(),
-                It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>()))
+                It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(entity);
     }
 
@@ -34,7 +35,8 @@ public static class RepositoryMocks
         Mock.Get(repository)
             .Setup(repo => repo.GetFirstOrDefaultAsync(
                 It.IsAny<Expression<Func<TEntity, bool>>>(),
-                It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>()))
+                It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(entity);
     }
 
@@ -47,7 +49,7 @@ public static class RepositoryMocks
         var repository = GetRepository(mockRepositoryWrapper, repositorySelector);
 
         Mock.Get(repository)
-            .Setup(repo => repo.CreateAsync(It.IsAny<TEntity>()))
+            .Setup(repo => repo.CreateAsync(It.IsAny<TEntity>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(entity);
     }
 
@@ -62,7 +64,8 @@ public static class RepositoryMocks
         Mock.Get(repository)
             .Setup(repo => repo.GetAllAsync(
                 It.IsAny<Expression<Func<TEntity, bool>>>(),
-                It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>()))
+                It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(entities);
     }
     
@@ -82,7 +85,8 @@ public static class RepositoryMocks
                 It.IsAny<Expression<Func<TEntity, bool>>>(),
                 It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>(),
                 It.IsAny<Expression<Func<TEntity, object>>>(),
-                It.IsAny<Expression<Func<TEntity, object>>>()))
+                It.IsAny<Expression<Func<TEntity, object>>>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(entities);
     }
 

@@ -39,7 +39,8 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
 
         var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.courseId,
-            IncludeCourseRelatedEntities);
+            IncludeCourseRelatedEntities,
+            cancellationToken);
 
         if (course is null)
         {

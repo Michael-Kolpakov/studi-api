@@ -52,8 +52,8 @@ public class RepositoryWrapper : IRepositoryWrapper
         return _dbContext.SaveChanges();
     }
 
-    public async Task<int> SaveChangesAsync()
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return await _dbContext.SaveChangesAsync();
+        return await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

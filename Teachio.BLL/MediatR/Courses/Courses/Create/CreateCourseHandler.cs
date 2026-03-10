@@ -52,7 +52,8 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
         }
 
         var existingCourse = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
-            c => c.OwnerUserId == newCourse.OwnerUserId && c.CourseName == newCourse.CourseName);
+            c => c.OwnerUserId == newCourse.OwnerUserId && c.CourseName == newCourse.CourseName,
+            cancellationToken: cancellationToken);
 
         if (existingCourse is not null)
         {
@@ -74,8 +75,8 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
 
         // TODO: validate whether course was created successfully, if not - address Google Drive API (or CDN in the future) to delete thumbnail image
 
-        await _repositoryWrapper.CoursesRepository.CreateAsync(newCourse);
-        await _repositoryWrapper.SaveChangesAsync();
+        await _repositoryWrapper.CoursesRepository.CreateAsync(newCourse, cancellationToken);
+        await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
         var courseResponseDto = _mapper.Map<CourseResponseDto>(newCourse);
 

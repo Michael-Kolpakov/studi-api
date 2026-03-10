@@ -42,7 +42,8 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
 
         var section = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.sectionId,
-            IncludeSectionRelatedEntities);
+            IncludeSectionRelatedEntities,
+            cancellationToken);
 
         if (section is null)
         {
@@ -58,7 +59,8 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
 
         var courseOwnerUserId = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultProjectedAsync(
             s => s.Course!.OwnerUserId,
-            s => s.Id == request.sectionId);
+            s => s.Id == request.sectionId,
+            cancellationToken);
 
         if (courseOwnerUserId != request.requestingUserId)
         {
@@ -81,7 +83,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
         // TODO: make sure whether we really delete all section dependent entities: Videos and VideoProgress
 
         _repositoryWrapper.SectionsRepository.Delete(section);
-        await _repositoryWrapper.SaveChangesAsync();
+        await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
         var sectionResponseDto = _mapper.Map<SectionResponseDto>(section);
 

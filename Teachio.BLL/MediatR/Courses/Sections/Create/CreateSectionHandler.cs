@@ -55,7 +55,8 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
 
         var (course, existenceErrorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
             request.sectionCreateRequestDto.CourseId,
-            nameof(request.sectionCreateRequestDto.CourseId));
+            nameof(request.sectionCreateRequestDto.CourseId),
+            cancellationToken);
 
         if (course is null)
         {
@@ -83,7 +84,8 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         }
 
         var existingSection = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
-            s => s.CourseId == newSection.CourseId && s.OrderIndex == newSection.OrderIndex);
+            s => s.CourseId == newSection.CourseId && s.OrderIndex == newSection.OrderIndex,
+            cancellationToken: cancellationToken);
 
         if (existingSection is not null)
         {
@@ -99,8 +101,8 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
             return Result.Fail(errorMessage);
         }
 
-        await _repositoryWrapper.SectionsRepository.CreateAsync(newSection);
-        await _repositoryWrapper.SaveChangesAsync();
+        await _repositoryWrapper.SectionsRepository.CreateAsync(newSection, cancellationToken);
+        await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
         var sectionResponseDto = _mapper.Map<SectionResponseDto>(newSection);
 

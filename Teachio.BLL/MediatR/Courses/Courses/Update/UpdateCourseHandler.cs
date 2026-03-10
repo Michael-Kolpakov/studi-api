@@ -39,7 +39,8 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
         // TODO: validate whether course thumbnail exists (database relationships and ownership)
 
         var existingCourse = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
-            x => x.Id == request.courseUpdateRequestDto.Id);
+            x => x.Id == request.courseUpdateRequestDto.Id,
+            cancellationToken: cancellationToken);
 
         if (existingCourse is null)
         {
@@ -80,7 +81,7 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
         // TODO: if user updated title of a course update a course folder name on Google Drive (or CDN in the future)
 
         _repositoryWrapper.CoursesRepository.Update(existingCourse);
-        await _repositoryWrapper.SaveChangesAsync();
+        await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
         var courseResponseDto = _mapper.Map<CourseResponseDto>(existingCourse);
 

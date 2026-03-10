@@ -42,7 +42,8 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
 
         var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.courseId,
-            IncludeCourseRelatedEntities);
+            IncludeCourseRelatedEntities,
+            cancellationToken);
 
         if (course is null)
         {
@@ -79,7 +80,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
         // TODO: address Google Drive API (or CDN in the future) to delete thumbnail image
 
         _repositoryWrapper.CoursesRepository.Delete(course);
-        await _repositoryWrapper.SaveChangesAsync();
+        await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
         var courseResponseDto = _mapper.Map<CourseResponseDto>(course);
 

@@ -36,7 +36,8 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
             request.pageSize,
             predicate: x => x.OwnerUserId != request.requestingUserId,
             include: IncludeCourseRelatedEntities,
-            descendingSortKeySelector: c => c.WatchingUsersCount);
+            descendingSortKeySelector: c => c.WatchingUsersCount,
+            cancellationToken: cancellationToken);
 
         var getAllCoursesResponseDto = new PaginatedCoursesResponseDto()
         {

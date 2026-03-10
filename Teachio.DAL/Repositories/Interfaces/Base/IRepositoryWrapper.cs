@@ -20,5 +20,5 @@ public interface IRepositoryWrapper
 
     public int SaveChanges();
 
-    public Task<int> SaveChangesAsync();
+    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

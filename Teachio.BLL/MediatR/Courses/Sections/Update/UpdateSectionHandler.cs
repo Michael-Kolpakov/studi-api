@@ -40,7 +40,8 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
         _logger.LogInformation($"Entered '{GetType().Name}' to update a section with Id: {request.sectionUpdateRequestDto.Id}");
 
         var existingSection = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
-            x => x.Id == request.sectionUpdateRequestDto.Id);
+            x => x.Id == request.sectionUpdateRequestDto.Id,
+            cancellationToken: cancellationToken);
 
         if (existingSection is null)
         {
@@ -56,7 +57,8 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
 
         var courseOwnerUserId = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultProjectedAsync(
             s => s.Course!.OwnerUserId,
-            s => s.Id == request.sectionUpdateRequestDto.Id);
+            s => s.Id == request.sectionUpdateRequestDto.Id,
+            cancellationToken);
 
         if (courseOwnerUserId != request.requestingUserId)
         {
@@ -79,7 +81,8 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
         var sectionWithSameOrderIndexExists = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
             s => s.CourseId == existingSection.CourseId
                  && s.OrderIndex == request.sectionUpdateRequestDto.OrderIndex
-                 && s.Id != request.sectionUpdateRequestDto.Id);
+                 && s.Id != request.sectionUpdateRequestDto.Id,
+            cancellationToken: cancellationToken);
 
         if (sectionWithSameOrderIndexExists is not null)
         {
@@ -100,7 +103,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
         // TODO: if user updated title of a section update a section folder name on Google Drive (or CDN in the future)
 
         _repositoryWrapper.SectionsRepository.Update(existingSection);
-        await _repositoryWrapper.SaveChangesAsync();
+        await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
         var sectionResponseDto = _mapper.Map<SectionResponseDto>(existingSection);
 
