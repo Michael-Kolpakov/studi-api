@@ -21,7 +21,8 @@ public class NoPermissionsLocalizerMock : BaseLocalizerMock<NoPermissionsSharedR
                     "NoPermissionsToDeleteSectionForUser",
                     "NoPermissionsToUpdateSectionForUser",
                     "NoPermissionsToDeleteVideoForUser",
-                    "NoPermissionsToUpdateVideoForUser"
+                    "NoPermissionsToUpdateVideoForUser",
+                    "NoPermissionsToUpdateVideoProgressForUser"
                 ]
             },
             {
@@ -31,7 +32,8 @@ public class NoPermissionsLocalizerMock : BaseLocalizerMock<NoPermissionsSharedR
                     "NoPermissionsToDeleteSectionForUserWithId",
                     "NoPermissionsToUpdateSectionForUserWithId",
                     "NoPermissionsToDeleteVideoForUserWithId",
-                    "NoPermissionsToUpdateVideoForUserWithId"
+                    "NoPermissionsToUpdateVideoForUserWithId",
+                    "NoPermissionsToUpdateVideoProgressForUserWithId"
                 ]
             },
             {

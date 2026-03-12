@@ -105,15 +105,6 @@ namespace Teachio.BLL.Resources.SharedResource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is no user with key &apos;{1}&apos;: {0}.
-        /// </summary>
-        internal static string CannotFindUserByKey {
-            get {
-                return ResourceManager.GetString("CannotFindUserByKey", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to There is no video with such Id: {0}.
         /// </summary>
         internal static string CannotFindVideoById {
@@ -128,6 +119,15 @@ namespace Teachio.BLL.Resources.SharedResource {
         internal static string CannotFindVideoByKey {
             get {
                 return ResourceManager.GetString("CannotFindVideoByKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no video progress with such Id: {0}.
+        /// </summary>
+        internal static string CannotFindVideoProgressById {
+            get {
+                return ResourceManager.GetString("CannotFindVideoProgressById", resourceCulture);
             }
         }
     }

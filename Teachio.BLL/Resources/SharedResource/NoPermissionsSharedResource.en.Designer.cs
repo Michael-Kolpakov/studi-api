@@ -202,5 +202,23 @@ namespace Teachio.BLL.Resources.SharedResource {
                 return ResourceManager.GetString("NoPermissionsToUpdateVideoForUserWithId", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User doesn&apos;t have any permission to update video progress with Id &apos;{0}&apos;.
+        /// </summary>
+        internal static string NoPermissionsToUpdateVideoProgressForUser {
+            get {
+                return ResourceManager.GetString("NoPermissionsToUpdateVideoProgressForUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User with Id &apos;{1}&apos; doesn&apos;t have any permission to update video progress with Id &apos;{0}&apos;.
+        /// </summary>
+        internal static string NoPermissionsToUpdateVideoProgressForUserWithId {
+            get {
+                return ResourceManager.GetString("NoPermissionsToUpdateVideoProgressForUserWithId", resourceCulture);
+            }
+        }
     }
 }

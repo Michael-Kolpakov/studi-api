@@ -66,4 +66,10 @@
     <data name="NoPermissionsToUpdateVideoForUserWithId" xml:space="preserve">
         <value>User with Id '{1}' doesn't have any permission to update video with Id '{0}'</value>
     </data>
+    <data name="NoPermissionsToUpdateVideoProgressForUser" xml:space="preserve">
+        <value>User doesn't have any permission to update video progress with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToUpdateVideoProgressForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to update video progress with Id '{0}'</value>
+    </data>
 </root>

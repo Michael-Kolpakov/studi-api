@@ -34,7 +34,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\Courses\Videos\VideoProgress\" />
       <Folder Include="Utils\" />
     </ItemGroup>
 
