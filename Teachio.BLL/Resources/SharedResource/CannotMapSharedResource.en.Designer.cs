@@ -76,5 +76,14 @@ namespace Teachio.BLL.Resources.SharedResource {
                 return ResourceManager.GetString("CannotMapNullToSection", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot map &apos;null&apos; value to video model.
+        /// </summary>
+        internal static string CannotMapNullToVideo {
+            get {
+                return ResourceManager.GetString("CannotMapNullToVideo", resourceCulture);
+            }
+        }
     }
 }

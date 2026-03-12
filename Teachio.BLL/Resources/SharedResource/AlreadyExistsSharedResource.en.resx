@@ -18,13 +18,16 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="CourseAlreadyExistsForUserWithId" xml:space="preserve">
-        <value>User with Id '{1}' already has a course with name '{0}'</value>
-    </data>
     <data name="CourseAlreadyExistsForUser" xml:space="preserve">
         <value>User already has a course with name '{0}'</value>
     </data>
+    <data name="CourseAlreadyExistsForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' already has a course with name '{0}'</value>
+    </data>
     <data name="SectionAlreadyExistsForCourse" xml:space="preserve">
-        <value>Course with Id '{1}' already has a section with Id '{0}' with order index '{2}'</value>
+        <value>Course with Id '{1}' already has a section (Id is '{0}') with order index '{2}'</value>
+    </data>
+    <data name="VideoAlreadyExistsForSection" xml:space="preserve">
+        <value>Section with Id '{1}' already has a video (Id is '{0}') with order index '{2}'</value>
     </data>
 </root>

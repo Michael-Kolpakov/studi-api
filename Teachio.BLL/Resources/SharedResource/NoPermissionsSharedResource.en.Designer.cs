@@ -78,6 +78,24 @@ namespace Teachio.BLL.Resources.SharedResource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User doesn&apos;t have any permission to create video for the section of another user&apos;s course.
+        /// </summary>
+        internal static string NoPermissionsToCreateVideoForSectionOfCourseOfAnotherUser {
+            get {
+                return ResourceManager.GetString("NoPermissionsToCreateVideoForSectionOfCourseOfAnotherUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User with Id &apos;{2}&apos; doesn&apos;t have any permission to create video for the section with Id &apos;{0}&apos; of course with Id &apos;{1}&apos; of another user with Id &apos;{3}&apos;.
+        /// </summary>
+        internal static string NoPermissionsToCreateVideoForSectionOfCourseOfAnotherUserWithId {
+            get {
+                return ResourceManager.GetString("NoPermissionsToCreateVideoForSectionOfCourseOfAnotherUserWithId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User doesn&apos;t have any permission to delete course with Id &apos;{0}&apos;.
         /// </summary>
         internal static string NoPermissionsToDeleteCourseForUser {
@@ -114,6 +132,24 @@ namespace Teachio.BLL.Resources.SharedResource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User doesn&apos;t have any permission to delete video with Id &apos;{0}&apos;.
+        /// </summary>
+        internal static string NoPermissionsToDeleteVideoForUser {
+            get {
+                return ResourceManager.GetString("NoPermissionsToDeleteVideoForUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User with Id &apos;{1}&apos; doesn&apos;t have any permission to delete video with Id &apos;{0}&apos;.
+        /// </summary>
+        internal static string NoPermissionsToDeleteVideoForUserWithId {
+            get {
+                return ResourceManager.GetString("NoPermissionsToDeleteVideoForUserWithId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User doesn&apos;t have any permission to update course with Id &apos;{0}&apos;.
         /// </summary>
         internal static string NoPermissionsToUpdateCourseForUser {
@@ -146,6 +182,24 @@ namespace Teachio.BLL.Resources.SharedResource {
         internal static string NoPermissionsToUpdateSectionForUserWithId {
             get {
                 return ResourceManager.GetString("NoPermissionsToUpdateSectionForUserWithId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User doesn&apos;t have any permission to update video with Id &apos;{0}&apos;.
+        /// </summary>
+        internal static string NoPermissionsToUpdateVideoForUser {
+            get {
+                return ResourceManager.GetString("NoPermissionsToUpdateVideoForUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User with Id &apos;{1}&apos; doesn&apos;t have any permission to update video with Id &apos;{0}&apos;.
+        /// </summary>
+        internal static string NoPermissionsToUpdateVideoForUserWithId {
+            get {
+                return ResourceManager.GetString("NoPermissionsToUpdateVideoForUserWithId", resourceCulture);
             }
         }
     }

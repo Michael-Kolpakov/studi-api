@@ -20,7 +20,8 @@ public class AlreadyExistsLocalizerMock : BaseLocalizerMock<AlreadyExistsSharedR
             },
             {
                 3, [
-                    "SectionAlreadyExistsForCourse"
+                    "SectionAlreadyExistsForCourse",
+                    "VideoAlreadyExistsForSection"
                 ]
             },
         };

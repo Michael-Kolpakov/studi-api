@@ -10,7 +10,8 @@ public class NoPermissionsLocalizerMock : BaseLocalizerMock<NoPermissionsSharedR
         {
             {
                 0, [
-                    "NoPermissionsToCreateSectionForCourseOfAnotherUser"
+                    "NoPermissionsToCreateSectionForCourseOfAnotherUser",
+                    "NoPermissionsToCreateVideoForSectionOfCourseOfAnotherUser"
                 ]
             },
             {
@@ -18,7 +19,9 @@ public class NoPermissionsLocalizerMock : BaseLocalizerMock<NoPermissionsSharedR
                     "NoPermissionsToDeleteCourseForUser",
                     "NoPermissionsToUpdateCourseForUser",
                     "NoPermissionsToDeleteSectionForUser",
-                    "NoPermissionsToUpdateSectionForUser"
+                    "NoPermissionsToUpdateSectionForUser",
+                    "NoPermissionsToDeleteVideoForUser",
+                    "NoPermissionsToUpdateVideoForUser"
                 ]
             },
             {
@@ -26,12 +29,19 @@ public class NoPermissionsLocalizerMock : BaseLocalizerMock<NoPermissionsSharedR
                     "NoPermissionsToDeleteCourseForUserWithId",
                     "NoPermissionsToUpdateCourseForUserWithId",
                     "NoPermissionsToDeleteSectionForUserWithId",
-                    "NoPermissionsToUpdateSectionForUserWithId"
+                    "NoPermissionsToUpdateSectionForUserWithId",
+                    "NoPermissionsToDeleteVideoForUserWithId",
+                    "NoPermissionsToUpdateVideoForUserWithId"
                 ]
             },
             {
                 3, [
                     "NoPermissionsToCreateSectionForCourseOfAnotherUserWithId"
+                ]
+            },
+            {
+                4, [
+                    "NoPermissionsToCreateVideoForSectionOfCourseOfAnotherUserWithId"
                 ]
             }
         };

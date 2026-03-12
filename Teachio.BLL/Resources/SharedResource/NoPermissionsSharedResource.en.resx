@@ -48,4 +48,22 @@
     <data name="NoPermissionsToUpdateSectionForUserWithId" xml:space="preserve">
         <value>User with Id '{1}' doesn't have any permission to update section with Id '{0}'</value>
     </data>
+    <data name="NoPermissionsToDeleteVideoForUser" xml:space="preserve">
+        <value>User doesn't have any permission to delete video with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToDeleteVideoForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to delete video with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToCreateVideoForSectionOfCourseOfAnotherUser" xml:space="preserve">
+        <value>User doesn't have any permission to create video for the section of another user's course</value>
+    </data>
+    <data name="NoPermissionsToCreateVideoForSectionOfCourseOfAnotherUserWithId" xml:space="preserve">
+        <value>User with Id '{2}' doesn't have any permission to create video for the section with Id '{0}' of course with Id '{1}' of another user with Id '{3}'</value>
+    </data>
+    <data name="NoPermissionsToUpdateVideoForUser" xml:space="preserve">
+        <value>User doesn't have any permission to update video with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToUpdateVideoForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to update video with Id '{0}'</value>
+    </data>
 </root>

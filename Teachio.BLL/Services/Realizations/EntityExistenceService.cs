@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
@@ -47,7 +48,10 @@ public class EntityExistenceService : IEntityExistenceService
         return await CheckExistenceWithErrorHandlingAsync<Section, TKey>(
             key,
             keyName,
-            expr => _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(expr, cancellationToken: cancellationToken),
+            expr => _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
+                expr,
+                x => x.Include(s => s.Course!),
+                cancellationToken),
             nameof(Section),
             nameof(CannotFindSharedResource_en.CannotFindSectionById),
             nameof(CannotFindSharedResource_en.CannotFindSectionByKey));

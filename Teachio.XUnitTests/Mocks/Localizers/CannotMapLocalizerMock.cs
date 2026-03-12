@@ -11,7 +11,8 @@ public class CannotMapLocalizerMock : BaseLocalizerMock<CannotMapSharedResource>
             {
                 0, [
                     "CannotMapNullToCourse",
-                    "CannotMapNullToSection"
+                    "CannotMapNullToSection",
+                    "CannotMapNullToVideo"
                 ]
             }
         };
