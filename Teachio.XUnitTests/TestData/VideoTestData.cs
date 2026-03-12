@@ -20,7 +20,6 @@ public static class VideoTestData
             Id = Guid.NewGuid(),
             Title = actualTitle,
             VideoName = string.Join("-", actualTitle.Trim().ToLowerInvariant().Split(" ", StringSplitOptions.RemoveEmptyEntries), ".mp4"),
-            ContentType = "video/mp4",
             SectionId = sectionId,
             OrderIndex = videoNumber,
             DurationSeconds = durationSeconds,
@@ -39,7 +38,6 @@ public static class VideoTestData
         {
             Id = video.Id,
             Title = video.Title,
-            ContentType = video.ContentType,
             VideoRelativePath = video.VideoName,
             SectionId = video.SectionId,
             OrderIndex = video.OrderIndex,

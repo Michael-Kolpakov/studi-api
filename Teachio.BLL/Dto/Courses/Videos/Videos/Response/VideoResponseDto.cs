@@ -8,8 +8,6 @@ public class VideoResponseDto
 
     public string Title { get; set; } = null!;
 
-    public string? ContentType { get; set; }
-
     public string VideoRelativePath { get; set; } = null!;
 
     public Guid SectionId { get; set; }

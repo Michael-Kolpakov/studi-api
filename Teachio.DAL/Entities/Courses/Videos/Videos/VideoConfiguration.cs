@@ -36,9 +36,6 @@ public static class VideoConfiguration
                     $"CK_{nameof(Video)}_{nameof(Video.VideoName)}_{nameof(CheckConstraintType.Regex)}",
                     Constraint.CreateSqlRegexCheck(nameof(Video.VideoName), ValidationRule.MediaName)));
 
-            typeBuilder.Property(v => v.ContentType)
-                .HasMaxLength(100);
-
             typeBuilder.Property(v => v.SectionId)
                 .IsRequired();
 
