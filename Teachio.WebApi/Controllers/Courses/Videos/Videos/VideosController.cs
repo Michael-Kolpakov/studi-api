@@ -4,6 +4,7 @@ using Teachio.BLL.Dto.Courses.Videos.Videos.Request.Create;
 using Teachio.BLL.Dto.Courses.Videos.Videos.Request.Update;
 using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 using Teachio.BLL.MediatR.Courses.Videos.Videos.Create;
+using Teachio.BLL.MediatR.Courses.Videos.Videos.Delete;
 using Teachio.BLL.MediatR.Courses.Videos.Videos.GetById;
 using Teachio.BLL.MediatR.Courses.Videos.Videos.Update;
 using Teachio.WebApi.Utils.RelativeRoutes;
@@ -69,5 +70,26 @@ public class VideosController : BaseApiController
         var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
 
         return HandleResult(await Mediator.Send(new UpdateVideoCommand(videoUpdateRequestDto, userId)));
+    }
+
+    /// <summary>
+    /// Deletes an existing course video by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the course video to delete.</param>
+    /// <returns>Returns the newly deleted course video.</returns>
+    [HttpDelete(VideosRelativeRoutes.Delete)]
+    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VideoResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
+    {
+        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
+        // var userId = GetUserIdOrThrow();
+        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
+
+        return HandleResult(await Mediator.Send(new DeleteVideoCommand(id, userId)));
     }
 }
