@@ -89,7 +89,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
             var errorMessage = _stringLocalizerAlreadyExists[
                 nameof(AlreadyExistsSharedResource_en.SectionAlreadyExistsForCourse),
                 sectionWithSameOrderIndexExists.Id,
-                courseOwnerUserId,
+                sectionWithSameOrderIndexExists.CourseId,
                 sectionWithSameOrderIndexExists.OrderIndex
             ].Value;
 

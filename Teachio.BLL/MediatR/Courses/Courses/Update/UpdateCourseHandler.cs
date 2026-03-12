@@ -6,6 +6,7 @@ using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
+using Teachio.BLL.Utils.MappingResolvers;
 using Teachio.DAL.Repositories.Interfaces.Base;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.Update;
@@ -17,19 +18,22 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
     private readonly ILoggerService _logger;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
+    private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
 
     public UpdateCourseHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
-        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
+        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
+        IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
+        _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
     }
 
     public async Task<Result<CourseResponseDto>> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
@@ -72,9 +76,33 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
             return Result.Fail(responseErrorMessage);
         }
 
-        // TODO: validate whether course was updated successfully, if yes - address Google Drive API (or CDN in the future) to delete old thumbnail image and set new one
+        var courseWithSameNameExists = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
+            c => c.OwnerUserId == existingCourse.OwnerUserId
+                 && c.CourseName == NameFromTitleResolver.CreateNameFromTitle(request.courseUpdateRequestDto.Title)
+                 && c.Id != request.courseUpdateRequestDto.Id,
+            cancellationToken: cancellationToken);
 
-        // TODO: validate whether course was updated successfully, if not - address Google Drive API (or CDN in the future) to delete current thumbnail image
+        if (courseWithSameNameExists is not null)
+        {
+            var logErrorMessage = _stringLocalizerAlreadyExists[
+                nameof(AlreadyExistsSharedResource_en.CourseAlreadyExistsForUserWithId),
+                existingCourse.CourseName,
+                existingCourse.OwnerUserId
+            ].Value;
+
+            _logger.LogError(request, logErrorMessage);
+
+            var responseErrorMessage = _stringLocalizerAlreadyExists[
+                nameof(AlreadyExistsSharedResource_en.CourseAlreadyExistsForUser),
+                existingCourse.Title
+            ].Value;
+
+            return Result.Fail(responseErrorMessage);
+        }
+
+        // TODO: validate whether course was updated successfully, if YES - address Google Drive API (or CDN in the future) to delete old thumbnail image and set new one
+
+        // TODO: validate whether course was updated successfully, if NO - address Google Drive API (or CDN in the future) to delete current thumbnail image
 
         _mapper.Map(request.courseUpdateRequestDto, existingCourse);
 

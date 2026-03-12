@@ -51,23 +51,23 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
             return Result.Fail(errorMessage);
         }
 
-        var existingCourse = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
+        var courseWithSameNameExists = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
             c => c.OwnerUserId == newCourse.OwnerUserId && c.CourseName == newCourse.CourseName,
             cancellationToken: cancellationToken);
 
-        if (existingCourse is not null)
+        if (courseWithSameNameExists is not null)
         {
             var logErrorMessage = _stringLocalizerAlreadyExists[
                 nameof(AlreadyExistsSharedResource_en.CourseAlreadyExistsForUserWithId),
-                newCourse.CourseName,
-                newCourse.OwnerUserId
+                courseWithSameNameExists.CourseName,
+                courseWithSameNameExists.OwnerUserId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);
 
             var responseErrorMessage = _stringLocalizerAlreadyExists[
                 nameof(AlreadyExistsSharedResource_en.CourseAlreadyExistsForUser),
-                newCourse.Title
+                courseWithSameNameExists.Title
             ].Value;
 
             return Result.Fail(responseErrorMessage);

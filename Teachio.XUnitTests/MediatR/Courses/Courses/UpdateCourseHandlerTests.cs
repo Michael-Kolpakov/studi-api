@@ -19,6 +19,7 @@ public class UpdateCourseHandlerTests
     private readonly Mock<ILoggerService> _mockLoggerService;
     private readonly CannotFindLocalizerMock _cannotFindLocalizerMock;
     private readonly NoPermissionsLocalizerMock _noPermissionsLocalizerMock;
+    private readonly AlreadyExistsLocalizerMock _alreadyExistsLocalizerMock;
 
     private readonly UpdateCourseHandler _sut;
 
@@ -31,6 +32,7 @@ public class UpdateCourseHandlerTests
         _mockLoggerService = new Mock<ILoggerService>();
         _cannotFindLocalizerMock = new CannotFindLocalizerMock();
         _noPermissionsLocalizerMock = new NoPermissionsLocalizerMock();
+        _alreadyExistsLocalizerMock = new AlreadyExistsLocalizerMock();
 
         _mockRepository
             .Setup(x => x.CoursesRepository)
@@ -41,7 +43,8 @@ public class UpdateCourseHandlerTests
             _mockRepository.Object,
             _mockLoggerService.Object,
             _cannotFindLocalizerMock,
-            _noPermissionsLocalizerMock);
+            _noPermissionsLocalizerMock,
+            _alreadyExistsLocalizerMock);
     }
 
     [Fact]

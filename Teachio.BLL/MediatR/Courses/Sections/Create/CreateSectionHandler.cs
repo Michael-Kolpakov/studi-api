@@ -83,17 +83,17 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
             return Result.Fail(responseErrorMessage);
         }
 
-        var existingSection = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
+        var sectionWithSameOrderIndexExists = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
             s => s.CourseId == newSection.CourseId && s.OrderIndex == newSection.OrderIndex,
             cancellationToken: cancellationToken);
 
-        if (existingSection is not null)
+        if (sectionWithSameOrderIndexExists is not null)
         {
             var errorMessage = _stringLocalizerAlreadyExists[
                 nameof(AlreadyExistsSharedResource_en.SectionAlreadyExistsForCourse),
-                existingSection.Id,
-                course.Id,
-                existingSection.OrderIndex
+                sectionWithSameOrderIndexExists.Id,
+                sectionWithSameOrderIndexExists.CourseId,
+                sectionWithSameOrderIndexExists.OrderIndex
             ].Value;
 
             _logger.LogError(request, errorMessage);
