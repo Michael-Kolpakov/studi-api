@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+set -e
+
+echo "Running StyleCop pre-commit checks..."
+
+# Skip when there are no staged C# or analyzer-related file changes.
+if ! git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(cs|csproj)$|\.editorconfig$|stylecop\.json$|Directory\.Build\.(props|targets)$' >/dev/null; then
+	echo "No staged C# or analyzer configuration changes. Skipping StyleCop checks."
+	exit 0
+fi
+
+# Block commit if compilation/analyzers (including StyleCop) fail.
+dotnet build Teachio.sln -p:NuGetAudit=false -p:RunAnalyzers=true -p:RunAnalyzersDuringBuild=true --nologo -v minimal
+
+echo "StyleCop pre-commit checks passed."

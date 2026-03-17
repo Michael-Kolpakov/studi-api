@@ -1,0 +1,24 @@
+{
+  "settings": {
+    "documentationRules": {
+      "companyName": "Teachio",
+      "documentExposedElements": false,
+      "documentInternalElements": false,
+      "documentPrivateElements": false,
+      "xmlHeader": false
+    },
+    "orderingRules": {
+      "usingDirectivesPlacement": "outsideNamespace",
+      "blankLinesBetweenUsingGroups": "allow",
+      "systemUsingDirectivesFirst": true
+    },
+    "maintainabilityRules": {
+      "topLevelTypes": ["class", "delegate", "enum", "interface", "struct"]
+    },
+    "layoutRules": {
+      "allowConsecutiveUsings": false,
+      "allowDoWhileOnClosingBrace": true,
+      "newlineAtEndOfFile": "require"
+    }
+  }
+}
