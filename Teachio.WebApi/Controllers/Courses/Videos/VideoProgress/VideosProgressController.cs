@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.Dto.Courses.Videos.VideoProgress.Request.Update;
 using Teachio.BLL.Dto.Courses.Videos.VideoProgress.Response;
@@ -15,7 +14,6 @@ public class VideosProgressController : BaseApiController
     /// <param name="videoProgressUpdateRequestDto">The updated data for the course video.</param>
     /// <returns>Returns the newly updated course video.</returns>
     [HttpPut(VideosProgressRelativeRoutes.Update)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VideoProgressResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

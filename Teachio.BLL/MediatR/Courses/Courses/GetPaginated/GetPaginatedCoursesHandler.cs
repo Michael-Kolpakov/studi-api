@@ -29,12 +29,12 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
 
     public async Task<Result<PaginatedCoursesResponseDto>> Handle(GetPaginatedCoursesQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to get paginated courses (page number: {request.pageNumber}, page size: {request.pageSize})");
+        _logger.LogInformation($"Entered '{GetType().Name}' to get paginated courses (page number: {request.PageNumber}, page size: {request.PageSize})");
 
         var paginatedCourses = await _repositoryWrapper.CoursesRepository.GetAllPaginatedAsync(
-            request.pageNumber,
-            request.pageSize,
-            predicate: x => x.OwnerUserId != request.requestingUserId,
+            request.PageNumber,
+            request.PageSize,
+            predicate: x => x.OwnerUserId != request.RequestingUserId,
             include: IncludeCourseRelatedEntities,
             descendingSortKeySelector: c => c.WatchingUsersCount,
             cancellationToken: cancellationToken);

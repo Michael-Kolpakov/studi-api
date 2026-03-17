@@ -12,7 +12,7 @@ namespace Teachio.XIntegrationTests.ControllerTests;
 public class CourseControllerTests : BaseControllerTests<CourseClient>
 {
     private readonly Course _testCourse;
-    
+
     public CourseControllerTests(CustomWebApplicationFactory<Program> factory)
         : base(factory, "/api/courses")
     {
@@ -30,7 +30,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
         // Arrange
         const int pageNumber = 1;
         const int pageSize = 10;
-        
+
         // Act
         var response = await Client.GetPaginatedAsync(pageNumber, pageSize);
         var returnedValue = CaseInsensitiveJsonDeserializer.Deserialize<PaginatedCoursesResponseDto>(response.Content);
@@ -69,7 +69,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
         // Act
         var response = await Client.GetByIdAsync(courseId);
         var returnedValue = CaseInsensitiveJsonDeserializer.Deserialize<CourseResponseDto>(response.Content);
-        
+
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotNull(returnedValue);
@@ -148,7 +148,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
     {
         // Arrange
         var courseCreateRequestDto = ExtractCreateTestCourseAttribute.CourseCreateRequestDto;
-        
+
         // Act
         var response = await Client.CreateAsync(courseCreateRequestDto);
         var returnedValue = CaseInsensitiveJsonDeserializer.Deserialize<CourseResponseDto>(response.Content);
@@ -203,7 +203,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
     {
         // Arrange
         var courseUpdateRequestDto = ExtractUpdateTestCourseAttribute.CourseUpdateRequestDto;
-        
+
         // Act
         var response = await Client.UpdateAsync(courseUpdateRequestDto);
         var returnedValue = CaseInsensitiveJsonDeserializer.Deserialize<CourseResponseDto>(response.Content);
@@ -260,15 +260,15 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
         var expectedCourse = ExtractDeleteTestCourseAttribute.Course;
         var courseId = expectedCourse.Id;
 
-         // Act
-         var response = await Client.DeleteAsync(courseId);
-         var returnedValue = CaseInsensitiveJsonDeserializer.Deserialize<CourseResponseDto>(response.Content);
+        // Act
+        var response = await Client.DeleteAsync(courseId);
+        var returnedValue = CaseInsensitiveJsonDeserializer.Deserialize<CourseResponseDto>(response.Content);
 
-         // Assert
-         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-         Assert.NotNull(returnedValue);
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.NotNull(returnedValue);
 
-         Assert.Multiple(
+        Assert.Multiple(
             () => Assert.Equal(expectedCourse.Id, returnedValue.Id),
             () => Assert.Equal(expectedCourse.Title, returnedValue.Title),
             () => Assert.Equal(expectedCourse.Description, returnedValue.Description),

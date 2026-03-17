@@ -4,5 +4,5 @@ using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 
 namespace Teachio.BLL.MediatR.Courses.Videos.Videos.GetById;
 
-public record GetVideoByIdQuery(Guid videoId, Guid requestingUserId)
+public record GetVideoByIdQuery(Guid VideoId, Guid RequestingUserId)
     : IRequest<Result<VideoResponseDto>>;

@@ -38,10 +38,10 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
 
     public async Task<Result<SectionResponseDto>> Handle(DeleteSectionCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to delete a section with Id: {request.sectionId}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to delete a section with Id: {request.SectionId}");
 
         var section = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
-            x => x.Id == request.sectionId,
+            x => x.Id == request.SectionId,
             IncludeSectionRelatedEntities,
             cancellationToken);
 
@@ -49,7 +49,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
         {
             var errorMessage = _stringLocalizerCannotFind[
                 nameof(CannotFindSharedResource_en.CannotFindSectionById),
-                request.sectionId
+                request.SectionId
             ].Value;
 
             _logger.LogError(request, errorMessage);
@@ -59,22 +59,22 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
 
         var courseOwnerUserId = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultProjectedAsync(
             s => s.Course!.OwnerUserId,
-            s => s.Id == request.sectionId,
+            s => s.Id == request.SectionId,
             cancellationToken);
 
-        if (courseOwnerUserId != request.requestingUserId)
+        if (courseOwnerUserId != request.RequestingUserId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToDeleteSectionForUserWithId),
-                request.sectionId,
-                request.requestingUserId
+                request.SectionId,
+                request.RequestingUserId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);
 
             var responseErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToDeleteSectionForUser),
-                request.sectionId
+                request.SectionId
             ].Value;
 
             return Result.Fail(responseErrorMessage);

@@ -35,10 +35,10 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
 
     public async Task<Result<CoursePreviewResponseDto>> Handle(GetCoursePreviewByIdQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to get course preview by Id: {request.courseId}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to get course preview by Id: {request.CourseId}");
 
         var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
-            x => x.Id == request.courseId,
+            x => x.Id == request.CourseId,
             IncludeCourseRelatedEntities,
             cancellationToken);
 
@@ -46,7 +46,7 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
         {
             var errorMessage = _stringLocalizerCannotFind[
                 nameof(CannotFindSharedResource_en.CannotFindCourseById),
-                request.courseId
+                request.CourseId
             ].Value;
 
             _logger.LogError(request, errorMessage);

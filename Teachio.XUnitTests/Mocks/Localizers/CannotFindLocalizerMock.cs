@@ -2,7 +2,7 @@
 
 namespace Teachio.XUnitTests.Mocks.Localizers;
 
-public class CannotFindLocalizerMock  : BaseLocalizerMock<CannotFindSharedResource>
+public class CannotFindLocalizerMock : BaseLocalizerMock<CannotFindSharedResource>
 {
     protected override Dictionary<int, List<string>> DefineGroupedErrors()
     {

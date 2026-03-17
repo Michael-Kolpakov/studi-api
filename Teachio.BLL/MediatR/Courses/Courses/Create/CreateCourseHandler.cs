@@ -40,8 +40,8 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
         // TODO: validate whether course thumbnail exists (database relationships and ownership)
 
         var newCourse = _mapper.Map<CourseEntity>(
-            request.courseCreateRequestDto,
-            opt => opt.Items["OwnerUserId"] = request.ownerUserId);
+            request.CourseCreateRequestDto,
+            opt => opt.Items["OwnerUserId"] = request.OwnerUserId);
 
         if (newCourse is null)
         {

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.Dto.Courses.Videos.Videos.Request.Create;
 using Teachio.BLL.Dto.Courses.Videos.Videos.Request.Update;
@@ -19,7 +18,6 @@ public class VideosController : BaseApiController
     /// <param name="id">The unique identifier of the course video to retrieve.</param>
     /// <returns>Returns the corresponding course video.</returns>
     [HttpGet(VideosRelativeRoutes.GetById)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VideoResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -38,7 +36,6 @@ public class VideosController : BaseApiController
     /// <param name="videoCreateRequestDto">The data for the new course video.</param>
     /// <returns>Returns the newly created course video.</returns>
     [HttpPost(VideosRelativeRoutes.Create)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(VideoResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -58,7 +55,6 @@ public class VideosController : BaseApiController
     /// <param name="videoUpdateRequestDto">The updated data for the course video.</param>
     /// <returns>Returns the newly updated course video.</returns>
     [HttpPut(VideosRelativeRoutes.Update)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VideoResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -78,7 +74,6 @@ public class VideosController : BaseApiController
     /// <param name="id">The unique identifier of the course video to delete.</param>
     /// <returns>Returns the newly deleted course video.</returns>
     [HttpDelete(VideosRelativeRoutes.Delete)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VideoResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

@@ -45,7 +45,7 @@ public class GetCourseByIdHandlerTests
     {
         // Arrange
         var request = GetGetCourseByIdQuery();
-        var expectedError = _cannotFindLocalizerMock["CannotFindCourseById", request.courseId].Value;
+        var expectedError = _cannotFindLocalizerMock["CannotFindCourseById", request.CourseId].Value;
 
         RepositoryMocks.SetupGetSingleOrDefaultAsyncMock(_mockRepository, wrapper => wrapper.CoursesRepository, null);
 

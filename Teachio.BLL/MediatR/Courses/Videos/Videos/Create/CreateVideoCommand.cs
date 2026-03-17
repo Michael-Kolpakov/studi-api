@@ -5,5 +5,5 @@ using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 
 namespace Teachio.BLL.MediatR.Courses.Videos.Videos.Create;
 
-public record CreateVideoCommand(VideoCreateRequestDto videoCreateRequestDto, Guid requestingUserId)
+public record CreateVideoCommand(VideoCreateRequestDto VideoCreateRequestDto, Guid RequestingUserId)
     : IRequest<Result<VideoResponseDto>>;

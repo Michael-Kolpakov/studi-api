@@ -35,12 +35,12 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
 
     public async Task<Result<SectionResponseDto>> Handle(GetSectionByIdQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to get section by Id: {request.sectionId}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to get section by Id: {request.SectionId}");
 
         // TODO: validate whether the user has access to the course with this section
 
         var section = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
-            x => x.Id == request.sectionId,
+            x => x.Id == request.SectionId,
             IncludeSectionRelatedEntities,
             cancellationToken);
 
@@ -48,7 +48,7 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
         {
             var errorMessage = _stringLocalizerCannotFind[
                 nameof(CannotFindSharedResource_en.CannotFindSectionById),
-                request.sectionId
+                request.SectionId
             ].Value;
 
             _logger.LogError(request, errorMessage);

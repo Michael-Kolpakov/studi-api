@@ -14,12 +14,12 @@ public class ExtractDeleteTestCourseAttribute : BeforeAfterTestAttribute
 
     public override void Before(MethodInfo methodUnderTest)
     {
-        const string CourseTitle = "Course for Delete Test";
+        const string courseTitle = "Course for Delete Test";
 
         var courseId = Guid.NewGuid();
         var appUserId = Guid.NewGuid();
 
-        Course = CourseExtractor.Extract(courseId, appUserId, CourseTitle);
+        Course = CourseExtractor.Extract(courseId, appUserId, courseTitle);
     }
 
     public override void After(MethodInfo methodUnderTest)

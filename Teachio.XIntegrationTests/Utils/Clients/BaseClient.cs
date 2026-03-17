@@ -3,11 +3,12 @@ using RestSharp.Interceptors;
 
 namespace Teachio.XIntegrationTests.Utils.Clients;
 
-public class BaseClient
+public class BaseClient : IDisposable
 {
     protected string SecondPartUrl { get; }
 
     private readonly RestClient _client;
+    private bool _disposed;
 
     public BaseClient(HttpClient client, string secondPartUrl = "")
     {
@@ -18,8 +19,31 @@ public class BaseClient
         SecondPartUrl = secondPartUrl;
     }
 
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            _client.Dispose();
+        }
+
+        _disposed = true;
+    }
+
     protected async Task<RestResponse> SendQuery(string requestString, string authToken = "")
     {
+        ThrowIfDisposed();
+
         var request = new RestRequest($"{SecondPartUrl}{requestString}");
         RestResponse response;
 
@@ -44,6 +68,8 @@ public class BaseClient
         Method method,
         string authToken = "")
     {
+        ThrowIfDisposed();
+
         return await SendCommand<object>(requestString, method, null, authToken);
     }
 
@@ -54,6 +80,8 @@ public class BaseClient
         string authToken = "")
         where TRequestDto : class
     {
+        ThrowIfDisposed();
+
         var request = new RestRequest($"{SecondPartUrl}{requestString}", method);
 
         if (requestDto is not null)
@@ -81,6 +109,8 @@ public class BaseClient
 
     private async Task<RestResponse> SendRequest(RestRequest request, string authToken)
     {
+        ThrowIfDisposed();
+
         request.Interceptors = [new ContentTypeInterceptor()];
 
         request.AddHeader("Authorization", $"Bearer {authToken}");
@@ -89,6 +119,11 @@ public class BaseClient
         var response = await _client.ExecuteAsync(request);
 
         return response;
+    }
+
+    private void ThrowIfDisposed()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, nameof(BaseClient));
     }
 }
 

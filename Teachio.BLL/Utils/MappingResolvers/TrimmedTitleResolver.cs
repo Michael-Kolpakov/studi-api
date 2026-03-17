@@ -20,7 +20,7 @@ public class TrimmedTitleResolver : IValueResolver<object, object, string>
                 TrimTitle(sectionSource.Title),
             (VideoCreateUpdateRequestDto videoSource, Video) =>
                 TrimTitle(videoSource.Title),
-            (_, _) => throw new ArgumentException(
+            _ => throw new ArgumentException(
                 $"Unknown source '{source.GetType().Name}' and destination '{destination.GetType().Name}' types combination.")
         };
     }

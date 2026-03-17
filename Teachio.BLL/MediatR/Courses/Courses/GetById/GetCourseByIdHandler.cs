@@ -36,12 +36,12 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
 
     public async Task<Result<CourseResponseDto>> Handle(GetCourseByIdQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to get course by Id: {request.courseId}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to get course by Id: {request.CourseId}");
 
         // TODO: validate whether the user has access to the course
 
         var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
-            x => x.Id == request.courseId,
+            x => x.Id == request.CourseId,
             IncludeCourseRelatedEntities,
             cancellationToken);
 
@@ -49,7 +49,7 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
         {
             var errorMessage = _stringLocalizerCannotFind[
                 nameof(CannotFindSharedResource_en.CannotFindCourseById),
-                request.courseId
+                request.CourseId
             ].Value;
 
             _logger.LogError(request, errorMessage);
@@ -59,11 +59,11 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
 
         var selectedVideo = course.Sections
             .SelectMany(s => s.Videos)
-            .FirstOrDefault(v => request.selectedVideoId.HasValue
-                ? v.Id == request.selectedVideoId.Value
+            .FirstOrDefault(v => request.SelectedVideoId.HasValue
+                ? v.Id == request.SelectedVideoId.Value
                 : !v.VideoProgress.IsCompleted);
 
-        if (selectedVideo is null && !request.selectedVideoId.HasValue)
+        if (selectedVideo is null && !request.SelectedVideoId.HasValue)
         {
             selectedVideo = course.Sections
                 .OrderBy(s => s.OrderIndex)

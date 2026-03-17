@@ -48,7 +48,7 @@ public class DeleteCourseHandlerTests
     {
         // Arrange
         var request = GetDeleteCourseCommand();
-        var expectedError = _cannotFindLocalizerMock["CannotFindCourseById", request.courseId].Value;
+        var expectedError = _cannotFindLocalizerMock["CannotFindCourseById", request.CourseId].Value;
 
         RepositoryMocks.SetupGetSingleOrDefaultAsyncMock(_mockRepository, wrapper => wrapper.CoursesRepository, null);
 
@@ -68,8 +68,8 @@ public class DeleteCourseHandlerTests
         var request = GetDeleteCourseCommand();
 
         var course = CourseTestData.GetCourse(
-            courseId: request.courseId,
-            ownerId: request.requestingUserId,
+            courseId: request.CourseId,
+            ownerId: request.RequestingUserId,
             title: "Title of a Course",
             description: "Description of a Course",
             thumbnailName: "title-of-a-course.png",

@@ -13,7 +13,7 @@ namespace Teachio.DAL.Persistence.Seed;
 
 public static class TeachioDbSeed
 {
-    private static readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
+    private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
     {
         PropertyNameCaseInsensitive = true,
         Converters = { new JsonStringEnumConverter() }
@@ -66,7 +66,7 @@ public static class TeachioDbSeed
 
         var jsonData = await File.ReadAllTextAsync(fullPath, cancellationToken);
 
-        var entities = JsonSerializer.Deserialize<List<TEntity>>(jsonData, jsonOptions);
+        var entities = JsonSerializer.Deserialize<List<TEntity>>(jsonData, _jsonOptions);
 
         if (entities is null || entities.Count == 0)
         {

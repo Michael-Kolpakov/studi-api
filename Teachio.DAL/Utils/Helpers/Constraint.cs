@@ -31,13 +31,13 @@ public class Constraint
 
     private static string ConvertRegexToSqlLike(string classicRegexPattern)
     {
-        if (!classicRegexPattern.StartsWith("^[") || !classicRegexPattern.EndsWith("]+$"))
+        if (!classicRegexPattern.StartsWith("^[", StringComparison.Ordinal)
+            || !classicRegexPattern.EndsWith("]+$", StringComparison.Ordinal))
         {
             throw new ArgumentException("Unsupported regex pattern format.", nameof(classicRegexPattern));
         }
 
-        var sqlRegexPattern = classicRegexPattern
-            .Substring(2, classicRegexPattern.Length - 5)
+        var sqlRegexPattern = classicRegexPattern[2..^3]
             .Replace("'", "''");
 
         return $"%[^{sqlRegexPattern}]%";

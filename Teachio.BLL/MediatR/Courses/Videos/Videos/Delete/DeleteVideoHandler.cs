@@ -38,18 +38,18 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
 
     public async Task<Result<VideoResponseDto>> Handle(DeleteVideoCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to delete a video with Id: {request.videoId}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to delete a video with Id: {request.VideoId}");
 
         // TODO: validate whether gained video really belongs to the user making the request (and perhaps remove check below)
 
         var video = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(
-            x => x.Id == request.videoId,
+            x => x.Id == request.VideoId,
             IncludeVideoRelatedEntities,
             cancellationToken);
 
         if (video is null)
         {
-            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindVideoById), request.videoId].Value;
+            var errorMessage = _stringLocalizerCannotFind[nameof(CannotFindSharedResource_en.CannotFindVideoById), request.VideoId].Value;
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);
@@ -57,22 +57,22 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
 
         var courseOwnerUserId = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultProjectedAsync(
             s => s.Section!.Course!.OwnerUserId,
-            s => s.Id == request.videoId,
+            s => s.Id == request.VideoId,
             cancellationToken);
 
-        if (courseOwnerUserId != request.requestingUserId)
+        if (courseOwnerUserId != request.RequestingUserId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToDeleteVideoForUserWithId),
-                request.videoId,
-                request.requestingUserId
+                request.VideoId,
+                request.RequestingUserId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);
 
             var responseErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToDeleteVideoForUser),
-                request.videoId
+                request.VideoId
             ].Value;
 
             return Result.Fail(responseErrorMessage);

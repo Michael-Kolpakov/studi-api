@@ -48,7 +48,7 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
 
         // TODO: validate whether video file exists (database relationships and ownership)
 
-        var newVideo = _mapper.Map<VideoEntity>(request.videoCreateRequestDto);
+        var newVideo = _mapper.Map<VideoEntity>(request.VideoCreateRequestDto);
 
         if (newVideo is null)
         {
@@ -59,8 +59,8 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         }
 
         var (section, existenceErrorMessage) = await _entityExistenceService.CheckSectionExistenceAsync(
-            request.videoCreateRequestDto.SectionId,
-            nameof(request.videoCreateRequestDto.SectionId),
+            request.VideoCreateRequestDto.SectionId,
+            nameof(request.VideoCreateRequestDto.SectionId),
             cancellationToken);
 
         if (section is null)
@@ -70,13 +70,13 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
             return Result.Fail(existenceErrorMessage);
         }
 
-        if (section.Course!.OwnerUserId != request.requestingUserId)
+        if (section.Course!.OwnerUserId != request.RequestingUserId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToCreateVideoForSectionOfCourseOfAnotherUserWithId),
-                request.videoCreateRequestDto.SectionId,
+                request.VideoCreateRequestDto.SectionId,
                 section.CourseId,
-                request.requestingUserId,
+                request.RequestingUserId,
                 section.Course.OwnerUserId
             ].Value;
 

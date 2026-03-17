@@ -19,8 +19,8 @@ public static class CourseTestData
     {
         var id = courseId ?? Guid.NewGuid();
         var ownerUserId = ownerId ?? Guid.NewGuid();
-        var actualTitle = courseNumber.HasValue 
-            ? string.Join(" ", title, courseNumber.Value) 
+        var actualTitle = courseNumber.HasValue
+            ? string.Join(" ", title, courseNumber.Value)
             : title;
 
         return new Course()
@@ -107,4 +107,3 @@ public static class CourseTestData
 
     #endregion
 }
-

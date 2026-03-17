@@ -38,19 +38,19 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
     public async Task<Result<CourseResponseDto>> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.courseUpdateRequestDto.Id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.CourseUpdateRequestDto.Id}");
 
         // TODO: validate whether course thumbnail exists (database relationships and ownership)
 
         var existingCourse = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
-            x => x.Id == request.courseUpdateRequestDto.Id,
+            x => x.Id == request.CourseUpdateRequestDto.Id,
             cancellationToken: cancellationToken);
 
         if (existingCourse is null)
         {
             var errorMessage = _stringLocalizerCannotFind[
                 nameof(CannotFindSharedResource_en.CannotFindCourseById),
-                request.courseUpdateRequestDto.Id
+                request.CourseUpdateRequestDto.Id
             ].Value;
 
             _logger.LogError(request, errorMessage);
@@ -58,19 +58,19 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
             return Result.Fail(errorMessage);
         }
 
-        if (existingCourse.OwnerUserId != request.requestingUserId)
+        if (existingCourse.OwnerUserId != request.RequestingUserId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateCourseForUserWithId),
-                request.courseUpdateRequestDto.Id,
-                request.requestingUserId
+                request.CourseUpdateRequestDto.Id,
+                request.RequestingUserId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);
 
             var responseErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateCourseForUser),
-                request.courseUpdateRequestDto.Id
+                request.CourseUpdateRequestDto.Id
             ].Value;
 
             return Result.Fail(responseErrorMessage);
@@ -78,8 +78,8 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
         var courseWithSameNameExists = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
             c => c.OwnerUserId == existingCourse.OwnerUserId
-                 && c.CourseName == NameFromTitleResolver.CreateNameFromTitle(request.courseUpdateRequestDto.Title)
-                 && c.Id != request.courseUpdateRequestDto.Id,
+                 && c.CourseName == NameFromTitleResolver.CreateNameFromTitle(request.CourseUpdateRequestDto.Title)
+                 && c.Id != request.CourseUpdateRequestDto.Id,
             cancellationToken: cancellationToken);
 
         if (courseWithSameNameExists is not null)
@@ -104,7 +104,7 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
         // TODO: validate whether course was updated successfully, if NO - address Google Drive API (or CDN in the future) to delete current thumbnail image
 
-        _mapper.Map(request.courseUpdateRequestDto, existingCourse);
+        _mapper.Map(request.CourseUpdateRequestDto, existingCourse);
 
         // TODO: if user updated title of a course update a course folder name on Google Drive (or CDN in the future)
 

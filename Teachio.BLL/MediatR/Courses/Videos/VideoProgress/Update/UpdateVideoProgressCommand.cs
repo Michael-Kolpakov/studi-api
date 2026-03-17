@@ -5,5 +5,5 @@ using Teachio.BLL.Dto.Courses.Videos.VideoProgress.Response;
 
 namespace Teachio.BLL.MediatR.Courses.Videos.VideoProgress.Update;
 
-public record UpdateVideoProgressCommand(VideoProgressUpdateRequestDto videoProgressUpdateRequestDto, Guid requestingUserId)
+public record UpdateVideoProgressCommand(VideoProgressUpdateRequestDto VideoProgressUpdateRequestDto, Guid RequestingUserId)
     : IRequest<Result<VideoProgressResponseDto>>;

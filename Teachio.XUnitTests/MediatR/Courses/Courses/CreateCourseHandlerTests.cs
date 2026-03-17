@@ -32,7 +32,7 @@ public class CreateCourseHandlerTests
         _mockLoggerService = new Mock<ILoggerService>();
         _cannotMapLocalizerMock = new CannotMapLocalizerMock();
         _alreadyExistsLocalizerMock = new AlreadyExistsLocalizerMock();
-        
+
         _mockRepository
             .Setup(x => x.CoursesRepository)
             .Returns(mockCoursesRepository.Object);
@@ -57,7 +57,7 @@ public class CreateCourseHandlerTests
 
         // Assert
         Assert.True(result.IsFailed);
-        MapperVerifications.VerifyMapWasCalled<CourseCreateRequestDto, CourseEntity>(_mockMapper, request.courseCreateRequestDto);
+        MapperVerifications.VerifyMapWasCalled<CourseCreateRequestDto, CourseEntity>(_mockMapper, request.CourseCreateRequestDto);
         LoggerVerifications.VerifyLoggerErrorWasCalled(_mockLoggerService, request, expectedError);
     }
 
@@ -66,8 +66,8 @@ public class CreateCourseHandlerTests
     {
         // Arrange
         var request = GetCreateCourseCommand();
-        var courseCreateRequestDto = request.courseCreateRequestDto;
-        var ownerId = request.ownerUserId;
+        var courseCreateRequestDto = request.CourseCreateRequestDto;
+        var ownerId = request.OwnerUserId;
 
         var course = CourseTestData.GetCourse(
             ownerId: ownerId,
@@ -78,8 +78,8 @@ public class CreateCourseHandlerTests
             videosCount: 0);
 
         var expectedError = _alreadyExistsLocalizerMock[
-            "CourseAlreadyExists", 
-            course.CourseName, 
+            "CourseAlreadyExists",
+            course.CourseName,
             course.OwnerUserId].Value;
 
         MapperMocks.MockMap(_mockMapper, courseCreateRequestDto, course);
@@ -100,7 +100,7 @@ public class CreateCourseHandlerTests
     {
         // Arrange
         var request = GetCreateCourseCommand();
-        var courseCreateRequestDto = request.courseCreateRequestDto;
+        var courseCreateRequestDto = request.CourseCreateRequestDto;
 
         var course = CourseTestData.GetCourse(
             title: courseCreateRequestDto.Title,
@@ -141,7 +141,7 @@ public class CreateCourseHandlerTests
         var courseCreateRequestDto = isDtoNull
             ? null
             : new CourseCreateRequestDto()
-            { 
+            {
                 Title = title,
                 Description = description,
                 ThumbnailName = thumbnailName

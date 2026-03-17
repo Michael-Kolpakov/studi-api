@@ -103,6 +103,25 @@ public class EntityExistenceService : IEntityExistenceService
         }
     }
 
+    private string BuildErrorMessage<TKey>(
+        TKey key,
+        string keyName,
+        string entityName,
+        string byIdResourceName,
+        string byKeyResourceName)
+        where TKey : notnull
+    {
+        var expectedIdName = string.Concat(entityName, "Id");
+
+        var isGuidKey = typeof(TKey) == typeof(Guid);
+        var isIdName = string.Equals(keyName, "Id", StringComparison.OrdinalIgnoreCase)
+                       || string.Equals(keyName, expectedIdName, StringComparison.OrdinalIgnoreCase);
+
+        return isGuidKey && isIdName
+            ? _stringLocalizerCannotFind[byIdResourceName, key].Value
+            : _stringLocalizerCannotFind[byKeyResourceName, key, keyName].Value;
+    }
+
     private static async Task<TEntity?> CheckExistenceAsync<TEntity, TKey>(
         TKey key,
         string keyName,
@@ -123,24 +142,5 @@ public class EntityExistenceService : IEntityExistenceService
         var entity = await fetchFunc(lambda);
 
         return entity;
-    }
-
-    private string BuildErrorMessage<TKey>(
-        TKey key,
-        string keyName,
-        string entityName,
-        string byIdResourceName,
-        string byKeyResourceName)
-        where TKey : notnull
-    {
-        var expectedIdName = string.Concat(entityName, "Id");
-
-        var isGuidKey = typeof(TKey) == typeof(Guid);
-        var isIdName = string.Equals(keyName, "Id", StringComparison.OrdinalIgnoreCase)
-                       || string.Equals(keyName, expectedIdName, StringComparison.OrdinalIgnoreCase);
-
-        return isGuidKey && isIdName
-            ? _stringLocalizerCannotFind[byIdResourceName, key].Value
-            : _stringLocalizerCannotFind[byKeyResourceName, key, keyName].Value;
     }
 }

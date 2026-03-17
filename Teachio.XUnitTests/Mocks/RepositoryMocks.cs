@@ -68,7 +68,7 @@ public static class RepositoryMocks
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(entities);
     }
-    
+
     public static void SetupGetAllPaginatedAsyncMock<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
         Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector,

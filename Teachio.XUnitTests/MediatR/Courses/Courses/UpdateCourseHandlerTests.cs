@@ -52,7 +52,7 @@ public class UpdateCourseHandlerTests
     {
         // Arrange
         var request = GetUpdateCourseCommand();
-        var expectedError = _cannotFindLocalizerMock["CannotFindCourseById", request.courseUpdateRequestDto.Id].Value;
+        var expectedError = _cannotFindLocalizerMock["CannotFindCourseById", request.CourseUpdateRequestDto.Id].Value;
 
         RepositoryMocks.SetupGetSingleOrDefaultAsyncMock(_mockRepository, wrapper => wrapper.CoursesRepository, null);
 
@@ -70,10 +70,10 @@ public class UpdateCourseHandlerTests
     {
         // Arrange
         var request = GetUpdateCourseCommand();
-        var courseUpdateRequestDto = request.courseUpdateRequestDto;
+        var courseUpdateRequestDto = request.CourseUpdateRequestDto;
 
         var existingCourse = CourseTestData.GetCourse(
-            ownerId: request.requestingUserId,
+            ownerId: request.RequestingUserId,
             title: "Old Title",
             description: "Old Description",
             thumbnailName: "old-title.png",

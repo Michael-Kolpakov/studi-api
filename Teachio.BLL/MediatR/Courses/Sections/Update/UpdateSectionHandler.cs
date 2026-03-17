@@ -37,17 +37,17 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
 
     public async Task<Result<SectionResponseDto>> Handle(UpdateSectionCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to update a section with Id: {request.sectionUpdateRequestDto.Id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to update a section with Id: {request.SectionUpdateRequestDto.Id}");
 
         var existingSection = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
-            x => x.Id == request.sectionUpdateRequestDto.Id,
+            x => x.Id == request.SectionUpdateRequestDto.Id,
             cancellationToken: cancellationToken);
 
         if (existingSection is null)
         {
             var errorMessage = _stringLocalizerCannotFind[
                 nameof(CannotFindSharedResource_en.CannotFindSectionById),
-                request.sectionUpdateRequestDto.Id
+                request.SectionUpdateRequestDto.Id
             ].Value;
 
             _logger.LogError(request, errorMessage);
@@ -57,22 +57,22 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
 
         var courseOwnerUserId = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultProjectedAsync(
             s => s.Course!.OwnerUserId,
-            s => s.Id == request.sectionUpdateRequestDto.Id,
+            s => s.Id == request.SectionUpdateRequestDto.Id,
             cancellationToken);
 
-        if (courseOwnerUserId != request.requestingUserId)
+        if (courseOwnerUserId != request.RequestingUserId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateSectionForUserWithId),
-                request.sectionUpdateRequestDto.Id,
-                request.requestingUserId
+                request.SectionUpdateRequestDto.Id,
+                request.RequestingUserId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);
 
             var responseErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateSectionForUser),
-                request.sectionUpdateRequestDto.Id
+                request.SectionUpdateRequestDto.Id
             ].Value;
 
             return Result.Fail(responseErrorMessage);
@@ -80,8 +80,8 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
 
         var sectionWithSameOrderIndexExists = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
             s => s.CourseId == existingSection.CourseId
-                 && s.OrderIndex == request.sectionUpdateRequestDto.OrderIndex
-                 && s.Id != request.sectionUpdateRequestDto.Id,
+                 && s.OrderIndex == request.SectionUpdateRequestDto.OrderIndex
+                 && s.Id != request.SectionUpdateRequestDto.Id,
             cancellationToken: cancellationToken);
 
         if (sectionWithSameOrderIndexExists is not null)
@@ -98,7 +98,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
             return Result.Fail(errorMessage);
         }
 
-        _mapper.Map(request.sectionUpdateRequestDto, existingSection);
+        _mapper.Map(request.SectionUpdateRequestDto, existingSection);
 
         // TODO: if user updated title of a section update a section folder name on Google Drive (or CDN in the future)
 

@@ -18,7 +18,7 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
     private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
-    
+
     public UpdateVideoHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
@@ -37,17 +37,17 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
 
     public async Task<Result<VideoResponseDto>> Handle(UpdateVideoCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to update a video with Id: {request.videoUpdateRequestDto.Id}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to update a video with Id: {request.VideoUpdateRequestDto.Id}");
 
         var existingVideo = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(
-            x => x.Id == request.videoUpdateRequestDto.Id,
+            x => x.Id == request.VideoUpdateRequestDto.Id,
             cancellationToken: cancellationToken);
 
         if (existingVideo is null)
         {
             var errorMessage = _stringLocalizerCannotFind[
                 nameof(CannotFindSharedResource_en.CannotFindVideoById),
-                request.videoUpdateRequestDto.Id
+                request.VideoUpdateRequestDto.Id
             ].Value;
 
             _logger.LogError(request, errorMessage);
@@ -57,22 +57,22 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
 
         var courseOwnerUserId = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultProjectedAsync(
             v => v.Section!.Course!.OwnerUserId,
-            v => v.Id == request.videoUpdateRequestDto.Id,
+            v => v.Id == request.VideoUpdateRequestDto.Id,
             cancellationToken);
 
-        if (courseOwnerUserId != request.requestingUserId)
+        if (courseOwnerUserId != request.RequestingUserId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateVideoForUserWithId),
-                request.videoUpdateRequestDto.Id,
-                request.requestingUserId
+                request.VideoUpdateRequestDto.Id,
+                request.RequestingUserId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);
 
             var responseErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateVideoForUser),
-                request.videoUpdateRequestDto.Id
+                request.VideoUpdateRequestDto.Id
             ].Value;
 
             return Result.Fail(responseErrorMessage);
@@ -80,8 +80,8 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
 
         var videoWithSameOrderIndexExists = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(
             v => v.SectionId == existingVideo.SectionId
-                 && v.OrderIndex == request.videoUpdateRequestDto.OrderIndex
-                 && v.Id != request.videoUpdateRequestDto.Id,
+                 && v.OrderIndex == request.VideoUpdateRequestDto.OrderIndex
+                 && v.Id != request.VideoUpdateRequestDto.Id,
             cancellationToken: cancellationToken);
 
         if (videoWithSameOrderIndexExists is not null)
@@ -102,7 +102,7 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
 
         // TODO: validate whether course was updated successfully, if NO - address Google Drive API (or CDN in the future) to delete current video file
 
-        _mapper.Map(request.videoUpdateRequestDto, existingVideo);
+        _mapper.Map(request.VideoUpdateRequestDto, existingVideo);
 
         _repositoryWrapper.VideosRepository.Update(existingVideo);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);

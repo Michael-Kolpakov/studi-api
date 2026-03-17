@@ -43,7 +43,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to create a new section");
 
-        var newSection = _mapper.Map<SectionEntity>(request.sectionCreateRequestDto);
+        var newSection = _mapper.Map<SectionEntity>(request.SectionCreateRequestDto);
 
         if (newSection is null)
         {
@@ -54,8 +54,8 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         }
 
         var (course, existenceErrorMessage) = await _entityExistenceService.CheckCourseExistenceAsync(
-            request.sectionCreateRequestDto.CourseId,
-            nameof(request.sectionCreateRequestDto.CourseId),
+            request.SectionCreateRequestDto.CourseId,
+            nameof(request.SectionCreateRequestDto.CourseId),
             cancellationToken);
 
         if (course is null)
@@ -65,12 +65,12 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
             return Result.Fail(existenceErrorMessage);
         }
 
-        if (course.OwnerUserId != request.requestingUserId)
+        if (course.OwnerUserId != request.RequestingUserId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToCreateSectionForCourseOfAnotherUserWithId),
-                request.sectionCreateRequestDto.CourseId,
-                request.requestingUserId,
+                request.SectionCreateRequestDto.CourseId,
+                request.RequestingUserId,
                 course.OwnerUserId
             ].Value;
 

@@ -14,5 +14,5 @@ public class SectionPreviewResponseDto
 
     public Guid CourseId { get; set; }
 
-    public List<VideoPreviewResponseDto> Videos { get; set; } =  new List<VideoPreviewResponseDto>();
+    public List<VideoPreviewResponseDto> Videos { get; set; } = new List<VideoPreviewResponseDto>();
 }

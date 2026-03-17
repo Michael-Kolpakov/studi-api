@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Globalization;
+using System.Reflection;
 using Serilog;
 using Serilog.Events;
 
@@ -21,7 +22,7 @@ public static class SerilogExtensions
             .Enrich.FromLogContext()
             .Enrich.WithMachineName()
             .Enrich.WithProperty("ProjectName", projectName)
-            .WriteTo.Console(LogEventLevel.Information, ConsoleLogTemplate);
+            .WriteTo.Console(LogEventLevel.Information, ConsoleLogTemplate, CultureInfo.InvariantCulture);
 
         Log.Logger = loggerConfiguration.CreateLogger();
 

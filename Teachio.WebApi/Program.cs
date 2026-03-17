@@ -27,10 +27,10 @@ public class Program
         app.UseRequestLocalization(new RequestLocalizationOptions()
         {
             DefaultRequestCulture = new RequestCulture("en"),
-            SupportedCultures = new[]
-            {
+            SupportedCultures =
+            [
                 new CultureInfo("en")
-            }
+            ]
         });
         app.UseHttpsRedirection();
         app.UseRouting();

@@ -5,5 +5,5 @@ using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 
 namespace Teachio.BLL.MediatR.Courses.Videos.Videos.Update;
 
-public record UpdateVideoCommand(VideoUpdateRequestDto videoUpdateRequestDto, Guid requestingUserId)
+public record UpdateVideoCommand(VideoUpdateRequestDto VideoUpdateRequestDto, Guid RequestingUserId)
     : IRequest<Result<VideoResponseDto>>;

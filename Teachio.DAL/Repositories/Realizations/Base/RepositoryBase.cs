@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Persistence;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using Teachio.DAL.Utils.Helpers;

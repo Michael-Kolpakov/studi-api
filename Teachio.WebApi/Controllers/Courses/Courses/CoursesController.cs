@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.Dto.Courses.Courses.Request.Create;
 using Teachio.BLL.Dto.Courses.Courses.Request.Update;
 using Teachio.BLL.Dto.Courses.Courses.Response;
@@ -54,7 +53,6 @@ public class CoursesController : BaseApiController
     /// <param name="selectedVideoId">The unique identifier of the selected video to load.</param>
     /// <returns>Returns the corresponding course.</returns>
     [HttpGet(CoursesRelativeRoutes.GetById)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -73,7 +71,6 @@ public class CoursesController : BaseApiController
     /// <param name="courseCreateRequestDto">The data for the new course.</param>
     /// <returns>Returns the newly created course.</returns>
     [HttpPost(CoursesRelativeRoutes.Create)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CourseResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -93,7 +90,6 @@ public class CoursesController : BaseApiController
     /// <param name="thumbnailUploadRequestDto">The data for uploading course thumbnail.</param>
     /// <returns>Returns the newly uploaded thumbnail unique identifier.</returns>
     [HttpPost(CoursesRelativeRoutes.UploadThumbnail)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ThumbnailUploadResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -109,7 +105,6 @@ public class CoursesController : BaseApiController
     /// <param name="courseUpdateRequestDto">The updated data for the course.</param>
     /// <returns>Returns the newly updated course.</returns>
     [HttpPut(CoursesRelativeRoutes.Update)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -129,7 +124,6 @@ public class CoursesController : BaseApiController
     /// <param name="id">The unique identifier of the course to delete.</param>
     /// <returns>Returns the newly deleted course.</returns>
     [HttpDelete(CoursesRelativeRoutes.Delete)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

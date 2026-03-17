@@ -45,15 +45,15 @@ public class GetPaginatedCoursesHandlerTests
     public async Task Handle_ShouldReturnPaginatedCoursesWithCorrectTotalAmount(int coursesCount)
     {
         // Arrange
-        const ushort PageNumber = 1;
-        const ushort PageSize = 10;
-        var request = GetGetPaginatedCoursesQuery(PageNumber, PageSize);
+        const ushort pageNumber = 1;
+        const ushort pageSize = 10;
+        var request = GetGetPaginatedCoursesQuery(pageNumber, pageSize);
 
         var courses = Enumerable.Range(1, coursesCount)
             .Select(i => CourseTestData.GetCourse(courseNumber: i))
             .ToList();
 
-        var paginatedCourses = PaginationResponse<CourseEntity>.Create(courses, coursesCount, PageNumber, PageSize);
+        var paginatedCourses = PaginationResponse<CourseEntity>.Create(courses, coursesCount, pageNumber, pageSize);
         var mappedCourses = courses.Select((c, index) => CourseTestData.GetCoursePreviewShortResponseDto(c, index)).ToList();
 
         RepositoryMocks.SetupGetAllPaginatedAsyncMock(_mockRepository, wrapper => wrapper.CoursesRepository, paginatedCourses);

@@ -35,12 +35,12 @@ public class GetVideoByIdHandler : IRequestHandler<GetVideoByIdQuery, Result<Vid
 
     public async Task<Result<VideoResponseDto>> Handle(GetVideoByIdQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to get video by Id: {request.videoId}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to get video by Id: {request.VideoId}");
 
         // TODO: validate whether the user has access to the course with this video
 
         var video = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(
-            x => x.Id == request.videoId,
+            x => x.Id == request.VideoId,
             IncludeVideoRelatedEntities,
             cancellationToken);
 
@@ -48,7 +48,7 @@ public class GetVideoByIdHandler : IRequestHandler<GetVideoByIdQuery, Result<Vid
         {
             var errorMessage = _stringLocalizerCannotFind[
                 nameof(CannotFindSharedResource_en.CannotFindVideoById),
-                request.videoId
+                request.VideoId
             ].Value;
 
             _logger.LogError(request, errorMessage);

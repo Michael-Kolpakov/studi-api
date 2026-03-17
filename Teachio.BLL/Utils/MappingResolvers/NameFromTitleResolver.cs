@@ -14,13 +14,13 @@ public class NameFromTitleResolver : IValueResolver<object, object, string>
     {
         return (source, destination) switch
         {
-            (CourseCreateUpdateRequestDto courseSource, Course) => 
+            (CourseCreateUpdateRequestDto courseSource, Course) =>
                 CreateNameFromTitle(courseSource.Title),
-            (SectionCreateUpdateRequestDto sectionSource, Section) => 
+            (SectionCreateUpdateRequestDto sectionSource, Section) =>
                 CreateNameFromTitle(sectionSource.Title),
-            (VideoCreateUpdateRequestDto videoSource, Video) => 
+            (VideoCreateUpdateRequestDto videoSource, Video) =>
                 CreateNameFromTitle(videoSource.Title),
-            (_, _) => throw new ArgumentException(
+            _ => throw new ArgumentException(
                 $"Unknown source '{source.GetType().Name}' and destination '{destination.GetType().Name}' types combination.")
         };
     }

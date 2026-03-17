@@ -4,5 +4,5 @@ using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 
 namespace Teachio.BLL.MediatR.Courses.Videos.Videos.Delete;
 
-public record DeleteVideoCommand(Guid videoId, Guid requestingUserId)
+public record DeleteVideoCommand(Guid VideoId, Guid RequestingUserId)
     : IRequest<Result<VideoResponseDto>>;

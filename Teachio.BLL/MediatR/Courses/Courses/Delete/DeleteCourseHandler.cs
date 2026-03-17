@@ -38,10 +38,10 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
 
     public async Task<Result<CourseResponseDto>> Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to delete a course with Id: {request.courseId}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to delete a course with Id: {request.CourseId}");
 
         var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
-            x => x.Id == request.courseId,
+            x => x.Id == request.CourseId,
             IncludeCourseRelatedEntities,
             cancellationToken);
 
@@ -49,7 +49,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
         {
             var errorMessage = _stringLocalizerCannotFind[
                 nameof(CannotFindSharedResource_en.CannotFindCourseById),
-                request.courseId
+                request.CourseId
             ].Value;
 
             _logger.LogError(request, errorMessage);
@@ -57,19 +57,19 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
             return Result.Fail(errorMessage);
         }
 
-        if (course.OwnerUserId != request.requestingUserId)
+        if (course.OwnerUserId != request.RequestingUserId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToDeleteCourseForUserWithId),
-                request.courseId,
-                request.requestingUserId
+                request.CourseId,
+                request.RequestingUserId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);
 
             var responseErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToDeleteCourseForUser),
-                request.courseId
+                request.CourseId
             ].Value;
 
             return Result.Fail(responseErrorMessage);
