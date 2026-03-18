@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Teachio.BLL.Dto.Courses.Videos.Videos.Request.Create;
 using Teachio.BLL.Dto.Courses.Videos.Videos.Request.Update;
 using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
@@ -7,6 +7,9 @@ using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Teachio.BLL.Mapping.Course.Video.Video;
 
+/// <summary>
+/// Represents the <see cref="VideoProfile"/> type.
+/// </summary>
 public class VideoProfile : Profile
 {
     public VideoProfile()

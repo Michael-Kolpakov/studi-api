@@ -2,6 +2,10 @@ using System.Linq.Expressions;
 
 namespace Teachio.XIntegrationTests.Utils;
 
+/// <summary>
+/// Represents the <see cref="ClientInitializer{TResult}"/> type.
+/// </summary>
+/// <typeparam name="TResult">The type of result.</typeparam>
 public static class ClientInitializer<TResult>
 {
     public static readonly Func<HttpClient, string, TResult> Initialize = CreateClientInitializerFunction();

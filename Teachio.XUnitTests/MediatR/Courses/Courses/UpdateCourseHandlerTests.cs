@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Moq;
 using Teachio.BLL.Dto.Courses.Courses.Request.Update;
 using Teachio.BLL.MediatR.Courses.Courses.Update;
@@ -12,6 +12,9 @@ using Teachio.XUnitTests.Verifications;
 
 namespace Teachio.XUnitTests.MediatR.Courses.Courses;
 
+/// <summary>
+/// Represents the <see cref="UpdateCourseHandlerTests"/> type.
+/// </summary>
 public class UpdateCourseHandlerTests
 {
     private readonly Mock<IRepositoryWrapper> _mockRepository;
@@ -47,6 +50,10 @@ public class UpdateCourseHandlerTests
             _alreadyExistsLocalizerMock);
     }
 
+    /// <summary>
+    /// Handles the incoming request.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task Handle_WhenCourseDoesNotExist_ShouldReturnFailResult()
     {
@@ -65,6 +72,10 @@ public class UpdateCourseHandlerTests
         LoggerVerifications.VerifyLoggerErrorWasCalled(_mockLoggerService, request, expectedError);
     }
 
+    /// <summary>
+    /// Handles the incoming request.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task Handle_WhenCourseExists_ShouldUpdateCourse()
     {

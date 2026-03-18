@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -11,6 +11,9 @@ using Teachio.DAL.Entities.Users;
 
 namespace Teachio.DAL.Persistence.Seed;
 
+/// <summary>
+/// Represents the <see cref="TeachioDbSeed"/> type.
+/// </summary>
 public static class TeachioDbSeed
 {
     private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
@@ -19,6 +22,13 @@ public static class TeachioDbSeed
         Converters = { new JsonStringEnumConverter() }
     };
 
+    /// <summary>
+    /// Seeds initial data.
+    /// </summary>
+    /// <param name="dbContext">The <paramref name="dbContext"/> argument.</param>
+    /// <param name="logger">The <paramref name="logger"/> argument.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public static async Task SeedAsync(
         TeachioDbContext dbContext,
         ILogger logger,

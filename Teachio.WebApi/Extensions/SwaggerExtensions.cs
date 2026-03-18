@@ -1,10 +1,18 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Microsoft.OpenApi.Models;
 
 namespace Teachio.WebApi.Extensions;
 
+/// <summary>
+/// Represents the <see cref="SwaggerExtensions"/> type.
+/// </summary>
 public static class SwaggerExtensions
 {
+    /// <summary>
+    /// Creates a new instance in the target store.
+    /// </summary>
+    /// <param name="services">The <paramref name="services"/> argument.</param>
+    /// <returns>The result produced by this operation.</returns>
     public static IServiceCollection AddSwagger(this IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
@@ -25,6 +33,11 @@ public static class SwaggerExtensions
         return services;
     }
 
+    /// <summary>
+    /// Performs the <see cref="UseCustomSwagger"/> operation.
+    /// </summary>
+    /// <param name="app">The <paramref name="app"/> argument.</param>
+    /// <returns>The result produced by this operation.</returns>
     public static IApplicationBuilder UseCustomSwagger(this IApplicationBuilder app)
     {
         app.UseSwagger();

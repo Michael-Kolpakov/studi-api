@@ -1,4 +1,4 @@
-﻿using Teachio.DAL.Persistence;
+using Teachio.DAL.Persistence;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using Teachio.DAL.Repositories.Interfaces.Courses.Courses;
 using Teachio.DAL.Repositories.Interfaces.Courses.Sections;
@@ -13,6 +13,9 @@ using Teachio.DAL.Repositories.Realizations.Users;
 
 namespace Teachio.DAL.Repositories.Realizations.Base;
 
+/// <summary>
+/// Represents the <see cref="RepositoryWrapper"/> type.
+/// </summary>
 public class RepositoryWrapper : IRepositoryWrapper
 {
     private readonly TeachioDbContext _dbContext;
@@ -47,11 +50,20 @@ public class RepositoryWrapper : IRepositoryWrapper
     public IAppUsersRepository AppUsersRepository
         => _appUsersRepository ??= new AppUsersRepository(_dbContext);
 
+    /// <summary>
+    /// Persists pending changes.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     public int SaveChanges()
     {
         return _dbContext.SaveChanges();
     }
 
+    /// <summary>
+    /// Persists pending changes.
+    /// </summary>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         return await _dbContext.SaveChangesAsync(cancellationToken);

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Entities.Courses.Courses;
@@ -10,6 +10,9 @@ using Teachio.DAL.Entities.Users;
 
 namespace Teachio.DAL.Persistence;
 
+/// <summary>
+/// Represents the <see cref="TeachioDbContext"/> type.
+/// </summary>
 public class TeachioDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
 {
     public TeachioDbContext()

@@ -6,6 +6,9 @@ using Xunit.Sdk;
 
 namespace Teachio.XIntegrationTests.Utils.BeforeAndAfterAttributes.Courses.Courses;
 
+/// <summary>
+/// Represents the <see cref="ExtractUpdateTestCourseAttribute"/> type.
+/// </summary>
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]
 public class ExtractUpdateTestCourseAttribute : BeforeAfterTestAttribute
 {
@@ -13,6 +16,10 @@ public class ExtractUpdateTestCourseAttribute : BeforeAfterTestAttribute
 
     private static Course PersistedCourse { get; set; } = null!;
 
+    /// <summary>
+    /// Performs the <see cref="Before"/> operation.
+    /// </summary>
+    /// <param name="methodUnderTest">The <paramref name="methodUnderTest"/> argument.</param>
     public override void Before(MethodInfo methodUnderTest)
     {
         var courseId = Guid.Parse("9d5400a6-9fba-48a1-b18c-517f2bd52db9");
@@ -29,6 +36,10 @@ public class ExtractUpdateTestCourseAttribute : BeforeAfterTestAttribute
         };
     }
 
+    /// <summary>
+    /// Performs the <see cref="After"/> operation.
+    /// </summary>
+    /// <param name="methodUnderTest">The <paramref name="methodUnderTest"/> argument.</param>
     public override void After(MethodInfo methodUnderTest)
     {
         CourseExtractor.Remove(PersistedCourse);

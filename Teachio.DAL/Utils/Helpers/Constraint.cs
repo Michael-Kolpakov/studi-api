@@ -2,8 +2,17 @@ using Teachio.DAL.Utils.Constants;
 
 namespace Teachio.DAL.Utils.Helpers;
 
+/// <summary>
+/// Represents the <see cref="Constraint"/> type.
+/// </summary>
 public class Constraint
 {
+    /// <summary>
+    /// Creates a new instance in the target store.
+    /// </summary>
+    /// <param name="columnName">The <paramref name="columnName"/> argument.</param>
+    /// <param name="rule">The <paramref name="rule"/> argument.</param>
+    /// <returns>The result produced by this operation.</returns>
     public static string CreateSqlRegexCheck(string columnName, ValidationRule rule)
     {
         string sqlRegexPattern = rule switch
@@ -19,11 +28,23 @@ public class Constraint
         return $"[{columnName}] NOT LIKE '{sqlRegexPattern}'";
     }
 
+    /// <summary>
+    /// Creates a new instance in the target store.
+    /// </summary>
+    /// <param name="columnName">The <paramref name="columnName"/> argument.</param>
+    /// <returns>The result produced by this operation.</returns>
     public static string CreateSqlNonNegativeCheck(string columnName)
     {
         return $"[{columnName}] >= 0";
     }
 
+    /// <summary>
+    /// Creates a new instance in the target store.
+    /// </summary>
+    /// <param name="columnName">The <paramref name="columnName"/> argument.</param>
+    /// <param name="minValue">The <paramref name="minValue"/> argument.</param>
+    /// <param name="maxValue">The <paramref name="maxValue"/> argument.</param>
+    /// <returns>The result produced by this operation.</returns>
     public static string CreateSqlRangeCheck(string columnName, int minValue, int maxValue)
     {
         return $"[{columnName}] >= {minValue} AND [{columnName}] <= {maxValue}";
@@ -44,6 +65,9 @@ public class Constraint
     }
 }
 
+/// <summary>
+/// Defines possible values for <see cref="ValidationRule"/>.
+/// </summary>
 public enum ValidationRule
 {
     Title,
@@ -53,6 +77,9 @@ public enum ValidationRule
     ProcessingError
 }
 
+/// <summary>
+/// Defines possible values for <see cref="CheckConstraintType"/>.
+/// </summary>
 public enum CheckConstraintType
 {
     Regex,

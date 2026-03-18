@@ -1,12 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Utils.Constants;
 using Teachio.DAL.Utils.Helpers;
 
 namespace Teachio.DAL.Entities.Courses.Videos.Videos;
 
+/// <summary>
+/// Represents the <see cref="VideoConfiguration"/> type.
+/// </summary>
 public static class VideoConfiguration
 {
+    /// <summary>
+    /// Configures the target component.
+    /// </summary>
+    /// <param name="builder">The <paramref name="builder"/> argument.</param>
     public static void ConfigureVideos(this ModelBuilder builder)
     {
         builder.Entity<Video>()

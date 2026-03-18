@@ -1,5 +1,8 @@
-﻿namespace Teachio.DAL.Utils.Constants;
+namespace Teachio.DAL.Utils.Constants;
 
+/// <summary>
+/// Represents the <see cref="EntityConstants"/> type.
+/// </summary>
 public static class EntityConstants
 {
     public const int MaxVideoDurationSeconds = 3600;

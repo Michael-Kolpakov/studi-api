@@ -1,8 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
 namespace Teachio.DAL.Utils.Validators;
 
+/// <summary>
+/// Represents the <see cref="DateValidatorAttribute"/> type.
+/// </summary>
 public class DateValidatorAttribute : ValidationAttribute
 {
     private DateTime MinDate { get; }

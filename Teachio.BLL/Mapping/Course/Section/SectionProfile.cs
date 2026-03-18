@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Teachio.BLL.Dto.Courses.Sections.Request.Create;
 using Teachio.BLL.Dto.Courses.Sections.Request.Update;
 using Teachio.BLL.Dto.Courses.Sections.Response;
@@ -7,6 +7,9 @@ using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.Mapping.Course.Section;
 
+/// <summary>
+/// Represents the <see cref="SectionProfile"/> type.
+/// </summary>
 public class SectionProfile : Profile
 {
     public SectionProfile()

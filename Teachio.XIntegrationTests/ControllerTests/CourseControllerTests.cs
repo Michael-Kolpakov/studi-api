@@ -9,6 +9,9 @@ using Teachio.XIntegrationTests.Utils.Extractors;
 
 namespace Teachio.XIntegrationTests.ControllerTests;
 
+/// <summary>
+/// Represents the <see cref="CourseControllerTests"/> type.
+/// </summary>
 public class CourseControllerTests : BaseControllerTests<CourseClient>
 {
     private readonly Course _testCourse;
@@ -24,6 +27,10 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
 
     #region GetPaginated Tests
 
+    /// <summary>
+    /// Gets the requested data.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task GetPaginated_WhenPaginationIsValid_ShouldReturnPaginatedCourses()
     {
@@ -42,6 +49,12 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
         Assert.Contains(returnedValue.Courses, course => course.Id == _testCourse.Id);
     }
 
+    /// <summary>
+    /// Gets the requested data.
+    /// </summary>
+    /// <param name="pageNumber">The page number to retrieve.</param>
+    /// <param name="pageSize">The number of items per page.</param>
+    /// <returns>The result produced by this operation.</returns>
     [Theory]
     [InlineData(-2, -2)]
     [InlineData(null, null)]
@@ -60,6 +73,10 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
 
     #region GetById Tests
 
+    /// <summary>
+    /// Gets the requested data.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task GetById_WhenCourseIdIsValid_ShouldReturnCourse()
     {
@@ -82,6 +99,10 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
             () => Assert.Equal(_testCourse.WatchingUsersCount, returnedValue.WatchingUsersCount));
     }
 
+    /// <summary>
+    /// Gets the requested data.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task GetById_WhenCourseIdIsInvalid_ShouldReturnBadRequest()
     {
@@ -101,6 +122,10 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
 
     #region GetByIdPreview Tests
 
+    /// <summary>
+    /// Gets the requested data.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task GetByIdPreview_WhenCourseIdIsValid_ShouldReturnCourse()
     {
@@ -123,6 +148,10 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
             () => Assert.Equal(_testCourse.WatchingUsersCount, returnedValue.WatchingUsersCount));
     }
 
+    /// <summary>
+    /// Gets the requested data.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task GetByIdPreview_WhenCourseIdIsInvalid_ShouldReturnBadRequest()
     {
@@ -142,6 +171,10 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
 
     #region Create Tests
 
+    /// <summary>
+    /// Creates a new instance in the target store.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     [ExtractCreateTestCourse]
     public async Task Create_WhenCourseCreateRequestDtoIsValid_ShouldCreateCourse()
@@ -163,6 +196,10 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
             () => Assert.Equal(courseCreateRequestDto.Description, returnedValue.Description));
     }
 
+    /// <summary>
+    /// Creates a new instance in the target store.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     [ExtractCreateTestCourse]
     public async Task Create_WhenCourseCreateRequestDtoIsInvalid_ShouldReturnBadRequest()
@@ -178,6 +215,10 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
+    /// <summary>
+    /// Creates a new instance in the target store.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     [ExtractCreateTestCourse]
     public async Task Create_WhenCourseForUserWithSuchNameAlreadyExists_ShouldReturnBadRequest()
@@ -197,6 +238,10 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
 
     #region Update Tests
 
+    /// <summary>
+    /// Updates the target entity.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     [ExtractUpdateTestCourse]
     public async Task Update_WhenCourseUpdateRequestDtoIsValid_ShouldUpdateCourse()
@@ -218,6 +263,10 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
             () => Assert.Equal(courseUpdateRequestDto.Description, returnedValue.Description));
     }
 
+    /// <summary>
+    /// Updates the target entity.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     [ExtractUpdateTestCourse]
     public async Task Update_WhenCourseUpdateRequestDtoIsInvalid_ShouldReturnBadRequest()
@@ -233,6 +282,10 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
+    /// <summary>
+    /// Updates the target entity.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     [ExtractUpdateTestCourse]
     public async Task Update_WhenCourseDoesNotExists_ShouldReturnBadRequest()
@@ -252,6 +305,10 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
 
     #region Delete Tests
 
+    /// <summary>
+    /// Deletes the target entity.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     [ExtractDeleteTestCourse]
     public async Task Delete_WhenCourseIdIsValid_ShouldDeleteCourse()
@@ -276,6 +333,10 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
             () => Assert.Equal(expectedCourse.WatchingUsersCount, returnedValue.WatchingUsersCount));
     }
 
+    /// <summary>
+    /// Deletes the target entity.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     [ExtractDeleteTestCourse]
     public async Task Delete_WhenCourseIdIsInvalid_ShouldReturnBadRequest()

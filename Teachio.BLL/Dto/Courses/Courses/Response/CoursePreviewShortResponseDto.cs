@@ -1,5 +1,8 @@
-﻿namespace Teachio.BLL.Dto.Courses.Courses.Response;
+namespace Teachio.BLL.Dto.Courses.Courses.Response;
 
+/// <summary>
+/// Represents the <see cref="CoursePreviewShortResponseDto"/> type.
+/// </summary>
 public class CoursePreviewShortResponseDto
 {
     public Guid Id { get; set; }

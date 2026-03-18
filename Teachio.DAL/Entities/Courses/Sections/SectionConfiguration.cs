@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Utils.Constants;
@@ -6,8 +6,15 @@ using Teachio.DAL.Utils.Helpers;
 
 namespace Teachio.DAL.Entities.Courses.Sections;
 
+/// <summary>
+/// Represents the <see cref="SectionConfiguration"/> type.
+/// </summary>
 public static class SectionConfiguration
 {
+    /// <summary>
+    /// Configures the target component.
+    /// </summary>
+    /// <param name="builder">The <paramref name="builder"/> argument.</param>
     public static void ConfigureSections(this ModelBuilder builder)
     {
         builder.Entity<Section>()

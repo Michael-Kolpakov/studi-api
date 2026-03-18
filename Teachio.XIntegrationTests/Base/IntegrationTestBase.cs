@@ -3,6 +3,9 @@ using Teachio.WebApi.Extensions;
 
 namespace Teachio.XIntegrationTests.Base;
 
+/// <summary>
+/// Represents the <see cref="IntegrationTestBase"/> type.
+/// </summary>
 public class IntegrationTestBase
 {
     public IntegrationTestBase()

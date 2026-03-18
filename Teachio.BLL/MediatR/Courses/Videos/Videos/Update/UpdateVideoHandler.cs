@@ -10,6 +10,9 @@ using Teachio.DAL.Repositories.Interfaces.Base;
 
 namespace Teachio.BLL.MediatR.Courses.Videos.Videos.Update;
 
+/// <summary>
+/// Represents the <see cref="UpdateVideoHandler"/> type.
+/// </summary>
 public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<VideoResponseDto>>
 {
     private readonly IMapper _mapper;
@@ -35,6 +38,12 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
         _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
     }
 
+    /// <summary>
+    /// Handles the incoming request.
+    /// </summary>
+    /// <param name="request">The request payload in <paramref name="request"/>.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<Result<VideoResponseDto>> Handle(UpdateVideoCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to update a video with Id: {request.VideoUpdateRequestDto.Id}");

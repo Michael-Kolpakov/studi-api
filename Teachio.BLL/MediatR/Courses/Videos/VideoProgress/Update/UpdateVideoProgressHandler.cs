@@ -10,6 +10,9 @@ using Teachio.DAL.Repositories.Interfaces.Base;
 
 namespace Teachio.BLL.MediatR.Courses.Videos.VideoProgress.Update;
 
+/// <summary>
+/// Represents the <see cref="UpdateVideoProgressHandler"/> type.
+/// </summary>
 public class UpdateVideoProgressHandler : IRequestHandler<UpdateVideoProgressCommand, Result<VideoProgressResponseDto>>
 {
     private readonly IMapper _mapper;
@@ -32,6 +35,12 @@ public class UpdateVideoProgressHandler : IRequestHandler<UpdateVideoProgressCom
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
+    /// <summary>
+    /// Handles the incoming request.
+    /// </summary>
+    /// <param name="request">The request payload in <paramref name="request"/>.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<Result<VideoProgressResponseDto>> Handle(UpdateVideoProgressCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to update a video progress with Id: {request.VideoProgressUpdateRequestDto.Id}");

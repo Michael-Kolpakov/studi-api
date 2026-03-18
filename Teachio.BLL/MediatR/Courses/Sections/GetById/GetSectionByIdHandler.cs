@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
 using FluentResults;
 using MediatR;
@@ -14,6 +14,9 @@ using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.MediatR.Courses.Sections.GetById;
 
+/// <summary>
+/// Represents the <see cref="GetSectionByIdHandler"/> type.
+/// </summary>
 public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result<SectionResponseDto>>
 {
     private readonly IMapper _mapper;
@@ -33,6 +36,12 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
     }
 
+    /// <summary>
+    /// Handles the incoming request.
+    /// </summary>
+    /// <param name="request">The request payload in <paramref name="request"/>.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<Result<SectionResponseDto>> Handle(GetSectionByIdQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to get section by Id: {request.SectionId}");

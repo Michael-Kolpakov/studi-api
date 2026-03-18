@@ -11,6 +11,9 @@ using Teachio.XUnitTests.Verifications;
 
 namespace Teachio.XUnitTests.MediatR.Courses.Courses;
 
+/// <summary>
+/// Represents the <see cref="DeleteCourseHandlerTests"/> type.
+/// </summary>
 public class DeleteCourseHandlerTests
 {
     private readonly Mock<IRepositoryWrapper> _mockRepository;
@@ -43,6 +46,10 @@ public class DeleteCourseHandlerTests
             _noPermissionsLocalizerMock);
     }
 
+    /// <summary>
+    /// Handles the incoming request.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task Handle_WhenCourseDoesNotExist_ShouldReturnFailResult()
     {
@@ -61,6 +68,10 @@ public class DeleteCourseHandlerTests
         LoggerVerifications.VerifyLoggerErrorWasCalled(_mockLoggerService, request, expectedError);
     }
 
+    /// <summary>
+    /// Handles the incoming request.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task Handle_WhenCourseExists_ShouldDeleteCourse()
     {

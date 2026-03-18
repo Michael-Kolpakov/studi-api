@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
@@ -8,6 +8,10 @@ using Teachio.DAL.Utils.Helpers;
 
 namespace Teachio.DAL.Repositories.Realizations.Base;
 
+/// <summary>
+/// Represents the <see cref="RepositoryBase{T}"/> type.
+/// </summary>
+/// <typeparam name="T">The type of t.</typeparam>
 public abstract class RepositoryBase<T> : IRepositoryBase<T>
     where T : class
 {
@@ -18,6 +22,12 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         _dbContext = dbContext;
     }
 
+    /// <summary>
+    /// Finds the requested data.
+    /// </summary>
+    /// <param name="predicate">A predicate used to filter <paramref name="predicate"/>.</param>
+    /// <param name="include">A value indicating whether <paramref name="include"/> is enabled.</param>
+    /// <returns>The result produced by this operation.</returns>
     public IQueryable<T> FindAll(
         Expression<Func<T, bool>>? predicate = null,
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null)
@@ -25,11 +35,22 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return GetQueryable(predicate, include).AsNoTracking();
     }
 
+    /// <summary>
+    /// Creates a new instance in the target store.
+    /// </summary>
+    /// <param name="entity">The <paramref name="entity"/> argument.</param>
+    /// <returns>The result produced by this operation.</returns>
     public T Create(T entity)
     {
         return _dbContext.Set<T>().Add(entity).Entity;
     }
 
+    /// <summary>
+    /// Creates a new instance in the target store.
+    /// </summary>
+    /// <param name="entity">The <paramref name="entity"/> argument.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<T> CreateAsync(T entity, CancellationToken cancellationToken = default)
     {
         var entityEntry = await _dbContext.Set<T>().AddAsync(entity, cancellationToken);
@@ -37,46 +58,92 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return entityEntry.Entity;
     }
 
+    /// <summary>
+    /// Creates a new instance in the target store.
+    /// </summary>
+    /// <param name="items">The <paramref name="items"/> argument.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task CreateRangeAsync(IEnumerable<T> items, CancellationToken cancellationToken = default)
     {
         return _dbContext.Set<T>().AddRangeAsync(items, cancellationToken);
     }
 
+    /// <summary>
+    /// Updates the target entity.
+    /// </summary>
+    /// <param name="entity">The <paramref name="entity"/> argument.</param>
+    /// <returns>The result produced by this operation.</returns>
     public T Update(T entity)
     {
         return _dbContext.Set<T>().Update(entity).Entity;
     }
 
+    /// <summary>
+    /// Updates the target entity.
+    /// </summary>
+    /// <param name="items">The <paramref name="items"/> argument.</param>
     public void UpdateRange(IEnumerable<T> items)
     {
         _dbContext.Set<T>().UpdateRange(items);
     }
 
+    /// <summary>
+    /// Deletes the target entity.
+    /// </summary>
+    /// <param name="entity">The <paramref name="entity"/> argument.</param>
+    /// <returns>The result produced by this operation.</returns>
     public T Delete(T entity)
     {
         return _dbContext.Set<T>().Remove(entity).Entity;
     }
 
+    /// <summary>
+    /// Deletes the target entity.
+    /// </summary>
+    /// <param name="items">The <paramref name="items"/> argument.</param>
     public void DeleteRange(IEnumerable<T> items)
     {
         _dbContext.Set<T>().RemoveRange(items);
     }
 
+    /// <summary>
+    /// Performs the Attach operation.
+    /// </summary>
+    /// <param name="entity">The <paramref name="entity"/> argument.</param>
     public void Attach(T entity)
     {
         _dbContext.Set<T>().Attach(entity);
     }
 
+    /// <summary>
+    /// Performs the Entry operation.
+    /// </summary>
+    /// <param name="entity">The <paramref name="entity"/> argument.</param>
+    /// <returns>The result produced by this operation.</returns>
     public EntityEntry<T> Entry(T entity)
     {
         return _dbContext.Entry(entity);
     }
 
+    /// <summary>
+    /// Performs the ExecuteSqlRaw operation.
+    /// </summary>
+    /// <param name="query">The query payload in <paramref name="query"/>.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task ExecuteSqlRaw(string query, CancellationToken cancellationToken = default)
     {
         return _dbContext.Database.ExecuteSqlRawAsync(query, cancellationToken);
     }
 
+    /// <summary>
+    /// Gets the requested data.
+    /// </summary>
+    /// <param name="predicate">A predicate used to filter <paramref name="predicate"/>.</param>
+    /// <param name="include">A value indicating whether <paramref name="include"/> is enabled.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<IEnumerable<T>> GetAllAsync(
         Expression<Func<T, bool>>? predicate = null,
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
@@ -85,6 +152,18 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return await GetQueryable(predicate, include).ToListAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Gets the requested data.
+    /// </summary>
+    /// <param name="pageNumber">The page number to retrieve.</param>
+    /// <param name="pageSize">The number of items per page.</param>
+    /// <param name="selector">A selector used to project <paramref name="selector"/>.</param>
+    /// <param name="predicate">A predicate used to filter <paramref name="predicate"/>.</param>
+    /// <param name="include">A value indicating whether <paramref name="include"/> is enabled.</param>
+    /// <param name="ascendingSortKeySelector">A selector used to project <paramref name="ascendingSortKeySelector"/>.</param>
+    /// <param name="descendingSortKeySelector">A selector used to project <paramref name="descendingSortKeySelector"/>.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<PaginationResponse<T>> GetAllPaginatedAsync(
         ushort? pageNumber = null,
         ushort? pageSize = null,
@@ -129,6 +208,13 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return PaginationResponse<T>.Create(items, totalItems, pageNumber, pageSize);
     }
 
+    /// <summary>
+    /// Gets the requested data.
+    /// </summary>
+    /// <param name="predicate">A predicate used to filter <paramref name="predicate"/>.</param>
+    /// <param name="include">A value indicating whether <paramref name="include"/> is enabled.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<T?> GetSingleOrDefaultAsync(
         Expression<Func<T, bool>>? predicate = null,
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
@@ -137,6 +223,13 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return await GetQueryable(predicate, include).SingleOrDefaultAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Gets the requested data.
+    /// </summary>
+    /// <param name="predicate">A predicate used to filter <paramref name="predicate"/>.</param>
+    /// <param name="include">A value indicating whether <paramref name="include"/> is enabled.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<T?> GetFirstOrDefaultAsync(
         Expression<Func<T, bool>>? predicate = null,
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
@@ -145,6 +238,14 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return await GetQueryable(predicate, include).FirstOrDefaultAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Gets the requested data.
+    /// </summary>
+    /// <param name="selector">A selector used to project <paramref name="selector"/>.</param>
+    /// <param name="predicate">A predicate used to filter <paramref name="predicate"/>.</param>
+    /// <param name="include">A value indicating whether <paramref name="include"/> is enabled.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<T?> GetFirstOrDefaultAsync(
         Expression<Func<T, T>> selector,
         Expression<Func<T, bool>>? predicate = null,
@@ -154,6 +255,14 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return await GetQueryable(predicate, include, selector).FirstOrDefaultAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Performs this operation.
+    /// </summary>
+    /// <typeparam name="TResult">The type of result.</typeparam>
+    /// <param name="selector">A selector used to project <paramref name="selector"/>.</param>
+    /// <param name="predicate">A predicate used to filter <paramref name="predicate"/>.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<TResult?> GetSingleOrDefaultProjectedAsync<TResult>(
         Expression<Func<T, TResult>> selector,
         Expression<Func<T, bool>>? predicate = null,
@@ -169,6 +278,14 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return await query.Select(selector).SingleOrDefaultAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Performs this operation.
+    /// </summary>
+    /// <typeparam name="TResult">The type of result.</typeparam>
+    /// <param name="selector">A selector used to project <paramref name="selector"/>.</param>
+    /// <param name="predicate">A predicate used to filter <paramref name="predicate"/>.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<TResult?> GetFirstOrDefaultProjectedAsync<TResult>(
         Expression<Func<T, TResult>> selector,
         Expression<Func<T, bool>>? predicate = null,
@@ -184,6 +301,14 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return await query.Select(selector).FirstOrDefaultAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Performs this operation.
+    /// </summary>
+    /// <typeparam name="TResult">The type of result.</typeparam>
+    /// <param name="selector">A selector used to project <paramref name="selector"/>.</param>
+    /// <param name="predicate">A predicate used to filter <paramref name="predicate"/>.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<List<TResult>> GetProjectedListAsync<TResult>(
         Expression<Func<T, TResult>> selector,
         Expression<Func<T, bool>>? predicate = null,
@@ -199,6 +324,17 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return await query.Select(selector).ToListAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Gets the requested data.
+    /// </summary>
+    /// <param name="selector">A selector used to project <paramref name="selector"/>.</param>
+    /// <param name="predicate">A predicate used to filter <paramref name="predicate"/>.</param>
+    /// <param name="include">A value indicating whether <paramref name="include"/> is enabled.</param>
+    /// <param name="ascendingSortKeySelector">A selector used to project <paramref name="ascendingSortKeySelector"/>.</param>
+    /// <param name="descendingSortKeySelector">A selector used to project <paramref name="descendingSortKeySelector"/>.</param>
+    /// <param name="offset">The <paramref name="offset"/> argument.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<T?> GetFirstOrDefaultAsync(
         Expression<Func<T, T>> selector,
         Expression<Func<T, bool>>? predicate = null,
@@ -218,6 +354,13 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Gets the requested data.
+    /// </summary>
+    /// <param name="predicate">A predicate used to filter <paramref name="predicate"/>.</param>
+    /// <param name="include">A value indicating whether <paramref name="include"/> is enabled.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<int> GetSelfCountAsync(
         Expression<Func<T, bool>>? predicate = null,
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
@@ -229,6 +372,15 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return count;
     }
 
+    /// <summary>
+    /// Performs this operation.
+    /// </summary>
+    /// <typeparam name="TProperty">The type of property.</typeparam>
+    /// <param name="collectionSelector">A selector used to project <paramref name="collectionSelector"/>.</param>
+    /// <param name="predicate">A predicate used to filter <paramref name="predicate"/>.</param>
+    /// <param name="include">A value indicating whether <paramref name="include"/> is enabled.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<int> GetNavigationCollectionsCountAsync<TProperty>(
         Expression<Func<T, IEnumerable<TProperty>>> collectionSelector,
         Expression<Func<T, bool>>? predicate = null,

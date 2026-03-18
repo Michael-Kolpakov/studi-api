@@ -1,4 +1,4 @@
-﻿using FluentResults;
+using FluentResults;
 using MediatR;
 using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.BLL.Services.Interfaces;
@@ -6,6 +6,9 @@ using Teachio.BLL.Utils.MappingResolvers;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.UploadThumbnail;
 
+/// <summary>
+/// Represents the <see cref="UploadThumbnailHandler"/> type.
+/// </summary>
 public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Result<ThumbnailUploadResponseDto>>
 {
     // TODO: move validation logic to the separate DTO model Attribute
@@ -25,6 +28,12 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
     }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+    /// <summary>
+    /// Handles the incoming request.
+    /// </summary>
+    /// <param name="request">The request payload in <paramref name="request"/>.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<Result<ThumbnailUploadResponseDto>> Handle(UploadThumbnailCommand request, CancellationToken cancellationToken)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {

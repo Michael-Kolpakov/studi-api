@@ -3,6 +3,9 @@ using Teachio.DAL.Persistence;
 
 namespace Teachio.XIntegrationTests.Base;
 
+/// <summary>
+/// Represents the <see cref="TestDbFixture"/> type.
+/// </summary>
 public class TestDbFixture : IntegrationTestBase
 {
     private static readonly Lock _lock = new Lock();

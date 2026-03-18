@@ -6,6 +6,9 @@ using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Videos.VideoProgress;
 
+/// <summary>
+/// Represents the <see cref="VideosProgressController"/> type.
+/// </summary>
 public class VideosProgressController : BaseApiController
 {
     /// <summary>

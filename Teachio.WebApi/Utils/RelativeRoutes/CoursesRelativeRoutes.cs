@@ -1,5 +1,8 @@
-﻿namespace Teachio.WebApi.Utils.RelativeRoutes;
+namespace Teachio.WebApi.Utils.RelativeRoutes;
 
+/// <summary>
+/// Represents the <see cref="CoursesRelativeRoutes"/> type.
+/// </summary>
 public static class CoursesRelativeRoutes
 {
     public const string GetPaginated = "get-paginated";

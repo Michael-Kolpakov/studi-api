@@ -1,7 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Teachio.BLL.Dto.Users.Request;
 
+/// <summary>
+/// Represents the <see cref="AppUserCreateUpdateRequestDto"/> type.
+/// </summary>
 public abstract class AppUserCreateUpdateRequestDto
 {
     [Required(ErrorMessage = "Required")]

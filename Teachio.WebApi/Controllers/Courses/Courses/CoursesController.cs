@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.Dto.Courses.Courses.Request.Create;
 using Teachio.BLL.Dto.Courses.Courses.Request.Update;
 using Teachio.BLL.Dto.Courses.Courses.Response;
@@ -13,6 +13,9 @@ using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Courses;
 
+/// <summary>
+/// Represents the <see cref="CoursesController"/> type.
+/// </summary>
 public class CoursesController : BaseApiController
 {
     /// <summary>

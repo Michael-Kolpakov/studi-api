@@ -1,7 +1,10 @@
-﻿using Teachio.DAL.Entities.Courses.Sections;
+using Teachio.DAL.Entities.Courses.Sections;
 
 namespace Teachio.DAL.Entities.Courses.Videos.Videos;
 
+/// <summary>
+/// Represents the <see cref="Video"/> type.
+/// </summary>
 public class Video
 {
     public Guid Id { get; set; }
@@ -29,6 +32,9 @@ public class Video
     public VideoProgress.VideoProgress VideoProgress { get; set; } = null!;
 }
 
+/// <summary>
+/// Defines possible values for <see cref="VideoStatus"/>.
+/// </summary>
 public enum VideoStatus
 {
     Uploaded,

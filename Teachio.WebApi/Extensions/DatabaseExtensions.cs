@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Persistence;
 using Teachio.DAL.Persistence.Seed;
 using Teachio.DAL.Utils.Constants;
@@ -7,8 +7,17 @@ using ILogger = Serilog.ILogger;
 
 namespace Teachio.WebApi.Extensions;
 
+/// <summary>
+/// Represents the <see cref="DatabaseExtensions"/> type.
+/// </summary>
 public static class DatabaseExtensions
 {
+    /// <summary>
+    /// Creates a new instance in the target store.
+    /// </summary>
+    /// <param name="services">The <paramref name="services"/> argument.</param>
+    /// <param name="configuration">The <paramref name="configuration"/> argument.</param>
+    /// <returns>The result produced by this operation.</returns>
     public static IServiceCollection AddCustomDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<TeachioDbContext>((serviceProvider, options) =>
@@ -30,6 +39,12 @@ public static class DatabaseExtensions
         return services;
     }
 
+    /// <summary>
+    /// Performs the <see cref="InitializeDatabase"/> operation.
+    /// </summary>
+    /// <param name="app">The <paramref name="app"/> argument.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public static async Task InitializeDatabase(IApplicationBuilder app, CancellationToken cancellationToken)
     {
         using var scope = app.ApplicationServices.CreateScope();

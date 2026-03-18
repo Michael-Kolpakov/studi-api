@@ -10,6 +10,10 @@ using Teachio.XIntegrationTests.Utils.Helpers;
 
 namespace Teachio.XIntegrationTests.ControllerTests;
 
+/// <summary>
+/// Represents the <see cref="BaseControllerTests{TClient}"/> type.
+/// </summary>
+/// <typeparam name="TClient">The type of client.</typeparam>
 public abstract class BaseControllerTests<TClient> : IntegrationTestBase, IClassFixture<CustomWebApplicationFactory<Program>>, IDisposable
 {
     private bool _disposed;
@@ -21,6 +25,10 @@ public abstract class BaseControllerTests<TClient> : IntegrationTestBase, IClass
         Client = ClientInitializer<TClient>.Initialize(factory.CreateClient(), secondPartUrl);
     }
 
+    /// <summary>
+    /// Gets the requested data.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     public static SqlDbHelper GetSqlDbHelper()
     {
         var optionsBuilder = new DbContextOptionsBuilder<TeachioDbContext>()
@@ -29,6 +37,9 @@ public abstract class BaseControllerTests<TClient> : IntegrationTestBase, IClass
         return new SqlDbHelper(optionsBuilder.Options);
     }
 
+    /// <summary>
+    /// Releases resources used by this test instance.
+    /// </summary>
     public void Dispose()
     {
         Dispose(true);
@@ -51,5 +62,8 @@ public abstract class BaseControllerTests<TClient> : IntegrationTestBase, IClass
     }
 }
 
+/// <summary>
+/// Represents the <see cref="BaseControllerTests"/> type.
+/// </summary>
 public class BaseControllerTests(CustomWebApplicationFactory<Program> factory, string secondPartUrl = "")
     : BaseControllerTests<BaseClient>(factory, secondPartUrl);

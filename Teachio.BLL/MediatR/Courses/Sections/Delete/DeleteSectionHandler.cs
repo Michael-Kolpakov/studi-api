@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
 using FluentResults;
 using MediatR;
@@ -14,6 +14,9 @@ using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.MediatR.Courses.Sections.Delete;
 
+/// <summary>
+/// Represents the <see cref="DeleteSectionHandler"/> type.
+/// </summary>
 public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result<SectionResponseDto>>
 {
     private readonly IMapper _mapper;
@@ -36,6 +39,12 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
+    /// <summary>
+    /// Handles the incoming request.
+    /// </summary>
+    /// <param name="request">The request payload in <paramref name="request"/>.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<Result<SectionResponseDto>> Handle(DeleteSectionCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to delete a section with Id: {request.SectionId}");

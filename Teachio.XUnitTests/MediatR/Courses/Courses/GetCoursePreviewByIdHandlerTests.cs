@@ -11,6 +11,9 @@ using Teachio.XUnitTests.Verifications;
 
 namespace Teachio.XUnitTests.MediatR.Courses.Courses;
 
+/// <summary>
+/// Represents the <see cref="GetCoursePreviewByIdHandlerTests"/> type.
+/// </summary>
 public class GetCoursePreviewByIdHandlerTests
 {
     private readonly Mock<IRepositoryWrapper> _mockRepository;
@@ -40,6 +43,10 @@ public class GetCoursePreviewByIdHandlerTests
             _cannotFindLocalizerMock);
     }
 
+    /// <summary>
+    /// Handles the incoming request.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task Handle_WhenCourseDoesNotExist_ShouldReturnFailResult()
     {
@@ -58,6 +65,10 @@ public class GetCoursePreviewByIdHandlerTests
         LoggerVerifications.VerifyLoggerErrorWasCalled(_mockLoggerService, request, expectedError);
     }
 
+    /// <summary>
+    /// Handles the incoming request.
+    /// </summary>
+    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task Handle_WhenCourseExists_ShouldReturnCoursePreview()
     {

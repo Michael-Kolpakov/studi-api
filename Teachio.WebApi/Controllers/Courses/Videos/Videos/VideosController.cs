@@ -10,6 +10,9 @@ using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Videos.Videos;
 
+/// <summary>
+/// Represents the <see cref="VideosController"/> type.
+/// </summary>
 public class VideosController : BaseApiController
 {
     /// <summary>

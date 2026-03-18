@@ -12,6 +12,9 @@ using VideoProgressEntity = Teachio.DAL.Entities.Courses.Videos.VideoProgress.Vi
 
 namespace Teachio.BLL.MediatR.Courses.Videos.Videos.Create;
 
+/// <summary>
+/// Represents the <see cref="CreateVideoHandler"/> type.
+/// </summary>
 public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<VideoResponseDto>>
 {
     private readonly IMapper _mapper;
@@ -40,6 +43,12 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
     }
 
+    /// <summary>
+    /// Handles the incoming request.
+    /// </summary>
+    /// <param name="request">The request payload in <paramref name="request"/>.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task<Result<VideoResponseDto>> Handle(CreateVideoCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to create a new video");

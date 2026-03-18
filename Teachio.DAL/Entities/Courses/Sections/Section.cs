@@ -1,8 +1,11 @@
-﻿using Teachio.DAL.Entities.Courses.Courses;
+using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 
 namespace Teachio.DAL.Entities.Courses.Sections;
 
+/// <summary>
+/// Represents the <see cref="Section"/> type.
+/// </summary>
 public class Section
 {
     public Guid Id { get; set; }

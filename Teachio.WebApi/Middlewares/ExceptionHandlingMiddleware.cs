@@ -1,10 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using FluentResults;
 using Teachio.BLL.Services.Interfaces;
 
 namespace Teachio.WebApi.Middlewares;
 
+/// <summary>
+/// Represents the <see cref="ExceptionHandlingMiddleware"/> type.
+/// </summary>
 public class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
@@ -31,6 +34,11 @@ public class ExceptionHandlingMiddleware
         };
     }
 
+    /// <summary>
+    /// Performs the <see cref="InvokeAsync"/> operation.
+    /// </summary>
+    /// <param name="context">The mapping context.</param>
+    /// <returns>The result produced by this operation.</returns>
     public async Task InvokeAsync(HttpContext context)
     {
         try
