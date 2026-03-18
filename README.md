@@ -21,6 +21,8 @@ This repository contains the backend service responsible for business logic, dat
 - [Environment Variables](#environment-variables)
 - [Database](#database)
 - [API Documentation](#api-documentation)
+- [Documentation Standards](#documentation-standards)
+- [Public API Inventory](#public-api-inventory)
 - [Testing](#testing)
 - [Code Style & Quality](#code-style--quality)
 - [Project Structure](#project-structure)
@@ -62,14 +64,14 @@ Typical responsibilities include:
 
 ## Tech Stack
 
-- **Language:** C# 
+- **Language:** C#
 - **Framework:** ASP.NET Core
-- **Runtime:** .NET 9 
+- **Runtime:** .NET 9
 - **ORM/Data Access:** Entity Framework Core
 - **DBMS**: MS SQL Server
-- **Requests handling**: MediatR, AutoMapper, FluentResults 
-- **Logging**: Serilog 
-- **Documentation:** Swagger / OpenAPI 
+- **Requests handling**: MediatR, AutoMapper, FluentResults
+- **Logging**: Serilog
+- **Documentation:** Swagger / OpenAPI
 - **Testing:** xUnit, WebApplicationFatory, Moq, FluetAssertions, RestSharp
 
 ---
@@ -78,9 +80,9 @@ Typical responsibilities include:
 
 The project follows clean and maintainable backend practices:
 
-- **Web API Layer (WebApi)** — Controllers, endpoint definitions, middlewares 
-- **Data Access Layer (DAL)** — Database, models, repositories 
-- **Business Logic Layer (BLL)** — Use cases, application services, DTOs 
+- **Web API Layer (WebApi)** — Controllers, endpoint definitions, middlewares
+- **Data Access Layer (DAL)** — Database, models, repositories
+- **Business Logic Layer (BLL)** — Use cases, application services, DTOs
 
 This separation improves testability, readability, and long-term maintainability.
 
@@ -132,14 +134,14 @@ By default, the API will start on configured HTTP/HTTPS ports (see launch settin
 
 Below is an example list of common variables used in ASP.NET APIs:
 
-| Variable | Description | Example |
-|---|---|---|
-| `ASPNETCORE_ENVIRONMENT` | Runtime environment | `Development` |
+| Variable                               | Description                        | Example                    |
+| -------------------------------------- | ---------------------------------- | -------------------------- |
+| `ASPNETCORE_ENVIRONMENT`               | Runtime environment                | `Development`              |
 | `ConnectionStrings__DefaultConnection` | Primary database connection string | `Server=...;Database=...;` |
-| `Jwt__Issuer` | JWT token issuer | `teachio-api` |
-| `Jwt__Audience` | JWT token audience | `teachio-clients` |
-| `Jwt__Key` | JWT signing key | `your-very-strong-secret` |
-| `Logging__LogLevel__Default` | Default log level | `Information` |
+| `Jwt__Issuer`                          | JWT token issuer                   | `teachio-api`              |
+| `Jwt__Audience`                        | JWT token audience                 | `teachio-clients`          |
+| `Jwt__Key`                             | JWT signing key                    | `your-very-strong-secret`  |
+| `Logging__LogLevel__Default`           | Default log level                  | `Information`              |
 
 ---
 
@@ -170,6 +172,41 @@ For Swagger open:
 - or `http://localhost:<port>/swagger`
 
 Use this UI to explore endpoints, request/response schemas, and test operations.
+
+---
+
+## Documentation Standards
+
+To keep the project maintainable for new contributors, all public API and behavior changes must be documented in the same pull request.
+
+Required documentation rules:
+
+- Add XML comments (`///`) for every new or changed public class, interface, record, enum, struct, and public method.
+- Keep comments concise and useful: purpose, key parameters, return value, side effects, and possible failure cases.
+- For endpoint handlers and controllers, document authorization expectations and validation behavior.
+- For repository and service methods, document domain assumptions and expected invariants.
+- For breaking changes, include migration notes in the PR description and release notes.
+
+Documentation checklist for PR review:
+
+- Public signatures are documented.
+- Business rules and edge cases are described where they matter.
+- Renamed/removed APIs are reflected in the public API inventory.
+
+---
+
+## Public API Inventory
+
+All current public interfaces (functions, classes, methods, and other public declarations) are documented in:
+
+- [docs/public-api.md](docs/public-api.md)
+- [docs/public-api-reference.md](docs/public-api-reference.md)
+
+This inventory is generated from production projects:
+
+- `Teachio.BLL`
+- `Teachio.DAL`
+- `Teachio.WebApi`
 
 ---
 
@@ -277,7 +314,7 @@ teachio-api/
 │  ├─ SharedResource/
 │  └─ Utils/
 │     ├─ Constants/
-│     └─ MappingResolvers/ 
+│     └─ MappingResolvers/
 ├─ Teachio.DAL/
 │  ├─ Entities/
 │  │  ├─ Courses/

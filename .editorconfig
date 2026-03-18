@@ -117,3 +117,11 @@ dotnet_diagnostic.SA1600.severity = none
 # Exclude EF Core migrations from analyzer checks
 generated_code = true
 dotnet_diagnostic.IDE0005.severity = none
+
+[Teachio.WebApi/Controllers/**/*.cs]
+# Enforce high-quality XML docs for Swagger-facing endpoints
+dotnet_diagnostic.SA1600.severity = error
+dotnet_diagnostic.SA1611.severity = error
+dotnet_diagnostic.SA1615.severity = error
+dotnet_diagnostic.SA1629.severity = error
+dotnet_diagnostic.SA1642.severity = error
