@@ -1,6 +1,6 @@
 # Teachio API
 
-A robust, scalable, and maintainable **ASP.NET Code Web API (C#)** for the LMS Teachio platform.  
+A robust, scalable, and maintainable **ASP.NET Core Web API (C#)** for the LMS Teachio platform.  
 This repository contains the backend service responsible for business logic, data access, and external integrations required by Teachio clients.
 
 > **Status:** Active development
@@ -14,13 +14,13 @@ This repository contains the backend service responsible for business logic, dat
 - [Tech Stack](#tech-stack)
 - [Architecture](#architecture)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
-  - [Run the API](#run-the-api)
+  - [Developer Quick Start (Fresh Machine)](#developer-quick-start-fresh-machine)
 - [Environment Variables](#environment-variables)
 - [Database](#database)
 - [API Documentation](#api-documentation)
+- [Production Deployment Guide](#production-deployment-guide)
+- [Backup and Restore Runbook](#backup-and-restore-runbook)
+- [DevOps Automation Pack](#devops-automation-pack)
 - [Documentation Standards](#documentation-standards)
 - [Public API Inventory](#public-api-inventory)
 - [Testing](#testing)
@@ -52,9 +52,9 @@ Typical responsibilities include:
 
 - Clean RESTful API monolith design
 - N-Layer architecture (Web API Layer / Business Logic Layer / Data Access Layer)
-- JWT-based authentication & authorization
-- DTO mapping and request validation
 - Centralized exception handling and structured logging
+- Authentication/authorization flow is currently in progress
+- DTO mapping and request validation
 - Database migrations support
 - OpenAPI/Swagger support
 - Unit and integration testing support
@@ -72,7 +72,7 @@ Typical responsibilities include:
 - **Requests handling**: MediatR, AutoMapper, FluentResults
 - **Logging**: Serilog
 - **Documentation:** Swagger / OpenAPI
-- **Testing:** xUnit, WebApplicationFatory, Moq, FluetAssertions, RestSharp
+- **Testing:** xUnit, WebApplicationFactory, Moq, FluentAssertions, RestSharp
 
 ---
 
@@ -90,49 +90,111 @@ This separation improves testability, readability, and long-term maintainability
 
 ## Getting Started
 
-### Prerequisites
+### Developer Quick Start (Fresh Machine)
 
-- [.NET SDK](https://dotnet.microsoft.com/download) >= 9 (LTS version recommended)
-- A configured database server
-- Git
+This is a short end-to-end onboarding flow for a developer with a newly installed OS.
 
-### Installation
+1. Install required software
+   - [Git](https://git-scm.com/downloads)
+   - [.NET SDK 9](https://dotnet.microsoft.com/download)
+   - [SQL Server Developer or Express](https://www.microsoft.com/sql-server/sql-server-downloads)
+   - [PowerShell 7+](https://learn.microsoft.com/powershell/scripting/install/installing-powershell) (for project scripts in `scripts/*.ps1`)
+   - Optional but recommended DB client: [SQL Server Management Studio](https://aka.ms/ssmsfullsetup)
+   - Optional IDE/editor: VS Code + C# Dev Kit, Rider, or Visual Studio
+
+2. Clone and restore the project
 
 ```bash
 git clone https://github.com/Michael-Kolpakov/teachio-api.git
 cd teachio-api
-dotnet restore
+dotnet restore Teachio.sln
 ```
 
-### Configuration
+3. Configure development environment
+   - Set environment to Development.
+   - PowerShell (Windows/macOS/Linux):
 
-1. Create environment-specific configuration:
-   - `appsettings.Development.json`
-   - `appsettings.Staging.json`
-   - `appsettings.Production.json`
+```powershell
+$env:ASPNETCORE_ENVIRONMENT = "Development"
+```
 
-2. Configure required values:
-   - Connection strings
-   - JWT settings
-   - External service credentials
-   - Logging options
-
-3. (Optional) Use environment variables or user secrets for sensitive data.
-
-### Run the API
+- Bash/Zsh:
 
 ```bash
-dotnet build
-dotnet run
+export ASPNETCORE_ENVIRONMENT=Development
 ```
 
-By default, the API will start on configured HTTP/HTTPS ports (see launch settings or runtime logs).
+- Verify `Teachio.WebApi/appsettings.Development.json` contains a valid `ConnectionStrings:DefaultConnection` for your local SQL Server instance.
+- Example for local trusted SQL Server connection:
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Data Source=localhost;Database=teachio-db;TrustServerCertificate=True;MultipleActiveResultSets=True;Trusted_Connection=True;"
+}
+```
+
+4. Prepare database
+   - Install EF Core CLI once:
+
+```bash
+dotnet tool install --global dotnet-ef
+```
+
+- Apply migrations:
+
+```bash
+dotnet ef database update --project Teachio.DAL --startup-project Teachio.WebApi
+```
+
+- Note: the app also tries to run migrations and seed data on startup.
+
+5. Run in development mode
+
+```bash
+dotnet watch --project Teachio.WebApi run
+```
+
+- Swagger UI will be available at:
+- `https://localhost:<port>/swagger`
+- `http://localhost:<port>/swagger`
+
+6. Basic commands and operations
+
+```bash
+# Dev startup automation (Linux/macOS)
+./scripts/run/run-dev.sh
+
+# Dev startup automation (Windows)
+scripts\run\run-dev.bat
+
+# Production-like startup automation (Linux/macOS)
+./scripts/run/run-prod.sh
+
+# Production-like startup automation (Windows)
+scripts\run\run-prod.bat
+
+# Build solution
+dotnet build Teachio.sln
+
+# Run all tests
+dotnet test Teachio.sln
+
+# Verify formatting
+dotnet format Teachio.sln --verify-no-changes
+
+# Run full code-quality check script (PowerShell)
+pwsh ./scripts/check-code.ps1
+
+# Add and apply a new EF migration
+dotnet ef migrations add <MigrationName> --project Teachio.DAL --startup-project Teachio.WebApi
+dotnet ef database update --project Teachio.DAL --startup-project Teachio.WebApi
+```
 
 ---
 
 ## Environment Variables
 
-Below is an example list of common variables used in ASP.NET APIs:
+Below is an example list of common variables used in this project:
 
 | Variable                               | Description                        | Example                    |
 | -------------------------------------- | ---------------------------------- | -------------------------- |
@@ -162,6 +224,8 @@ dotnet ef database update --project "Teachio.DAL" --startup-project "Teachio.Web
 
 Make sure the correct startup project and connection string are configured before running commands.
 
+Note: application startup also runs pending migrations and DB seed automatically (except integration-test environment).
+
 ---
 
 ## API Documentation
@@ -172,6 +236,30 @@ For Swagger open:
 - or `http://localhost:<port>/swagger`
 
 Use this UI to explore endpoints, request/response schemas, and test operations.
+
+---
+
+## Production Deployment Guide
+
+For release engineer and DevOps production rollout instructions, see:
+
+- [docs/production-deployment.md](docs/production-deployment.md)
+
+---
+
+## Backup and Restore Runbook
+
+For backup strategy, automation scripts, integrity checks, and restore procedure, see:
+
+- [docs/backup-and-restore.md](docs/backup-and-restore.md)
+
+---
+
+## DevOps Automation Pack
+
+For deployment/update scripts, CI/CD configs, Docker, Kubernetes/Swarm, and Terraform templates, see:
+
+- [docs/devops-automation.md](docs/devops-automation.md)
 
 ---
 

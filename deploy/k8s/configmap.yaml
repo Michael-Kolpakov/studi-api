@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: teachio-api-config
+  namespace: teachio
+data:
+  ASPNETCORE_ENVIRONMENT: "Production"
