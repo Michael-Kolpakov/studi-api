@@ -1,0 +1,96 @@
+name: Swagger Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-pages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Restore
+        run: dotnet restore Teachio.sln -p:NuGetAudit=false
+
+      - name: Build
+        run: dotnet build Teachio.sln -c Release --no-restore -p:NuGetAudit=false
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Generate OpenAPI and static site
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p site
+
+          ASPNETCORE_ENVIRONMENT=IntegrationTests dotnet run \
+            --project Teachio.WebApi/Teachio.WebApi.csproj \
+            --configuration Release \
+            --no-build \
+            --urls http://127.0.0.1:5055 > site/webapi.log 2>&1 &
+
+          app_pid=$!
+
+          cleanup() {
+            if kill -0 "$app_pid" 2>/dev/null; then
+              kill "$app_pid" || true
+            fi
+          }
+
+          trap cleanup EXIT
+
+          for i in {1..60}; do
+            if curl --fail --silent --show-error \
+              http://127.0.0.1:5055/swagger/v1/swagger.json \
+              --output site/swagger.json; then
+              break
+            fi
+
+            sleep 2
+          done
+
+          if [ ! -s site/swagger.json ]; then
+            echo "Failed to download swagger.json. Application log:"
+            cat site/webapi.log
+            exit 1
+          fi
+
+          cp docs/swagger-pages/index.html site/index.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy-pages:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build-pages
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
