@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
 using FluentResults;
 using MediatR;
@@ -15,9 +15,6 @@ using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.GetById;
 
-/// <summary>
-/// Represents the <see cref="GetCourseByIdHandler"/> type.
-/// </summary>
 public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<CourseResponseDto>>
 {
     private readonly IMapper _mapper;
@@ -37,12 +34,6 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <param name="request">The request payload in <paramref name="request"/>.</param>
-    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-    /// <returns>The result produced by this operation.</returns>
     public async Task<Result<CourseResponseDto>> Handle(GetCourseByIdQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to get course by Id: {request.CourseId}");

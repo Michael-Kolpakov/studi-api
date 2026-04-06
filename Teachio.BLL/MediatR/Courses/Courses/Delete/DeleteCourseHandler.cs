@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
 using FluentResults;
 using MediatR;
@@ -14,9 +14,6 @@ using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.Delete;
 
-/// <summary>
-/// Represents the <see cref="DeleteCourseHandler"/> type.
-/// </summary>
 public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<CourseResponseDto>>
 {
     private readonly IMapper _mapper;
@@ -39,12 +36,6 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <param name="request">The request payload in <paramref name="request"/>.</param>
-    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-    /// <returns>The result produced by this operation.</returns>
     public async Task<Result<CourseResponseDto>> Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to delete a course with Id: {request.CourseId}");

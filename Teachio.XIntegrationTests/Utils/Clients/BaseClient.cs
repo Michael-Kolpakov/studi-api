@@ -3,9 +3,6 @@ using RestSharp.Interceptors;
 
 namespace Teachio.XIntegrationTests.Utils.Clients;
 
-/// <summary>
-/// Represents the <see cref="BaseClient"/> type.
-/// </summary>
 public class BaseClient : IDisposable
 {
     protected string SecondPartUrl { get; }
@@ -22,9 +19,6 @@ public class BaseClient : IDisposable
         SecondPartUrl = secondPartUrl;
     }
 
-    /// <summary>
-    /// Releases resources used by this client.
-    /// </summary>
     public void Dispose()
     {
         Dispose(disposing: true);
@@ -133,17 +127,8 @@ public class BaseClient : IDisposable
     }
 }
 
-/// <summary>
-/// Represents the <see cref="ContentTypeInterceptor"/> type.
-/// </summary>
 public class ContentTypeInterceptor : Interceptor
 {
-    /// <summary>
-    /// Performs the BeforeDeserialization operation.
-    /// </summary>
-    /// <param name="response">The <paramref name="response"/> argument.</param>
-    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-    /// <returns>The result produced by this operation.</returns>
     public override ValueTask BeforeDeserialization(RestResponse response, CancellationToken cancellationToken)
     {
         response.ContentType = "application/json";

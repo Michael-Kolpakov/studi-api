@@ -5,9 +5,6 @@ using Teachio.DAL.Persistence;
 
 namespace Teachio.XIntegrationTests.Utils.Helpers;
 
-/// <summary>
-/// Represents the <see cref="SqlDbHelper"/> type.
-/// </summary>
 public class SqlDbHelper : IDisposable
 {
     private const string IdPropertyName = "Id";
@@ -22,21 +19,12 @@ public class SqlDbHelper : IDisposable
         _dbContext = new TeachioDbContext(options);
     }
 
-    /// <summary>
-    /// Releases resources used by this helper.
-    /// </summary>
     public void Dispose()
     {
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Performs this operation.
-    /// </summary>
-    /// <typeparam name="TEntity">The type of entity.</typeparam>
-    /// <param name="isEnabled">A value indicating whether <paramref name="isEnabled"/> is enabled.</param>
-    /// <returns>The result produced by this operation.</returns>
     public string GetIdentityInsertString<TEntity>(bool isEnabled)
     {
         var value = isEnabled ? "ON" : "OFF";
@@ -45,10 +33,6 @@ public class SqlDbHelper : IDisposable
         return identityInsertString;
     }
 
-    /// <summary>
-    /// Performs this operation.
-    /// </summary>
-    /// <returns>The result produced by this operation.</returns>
     public bool CheckIfExistsById<TEntity>(int id)
         where TEntity : class, new()
     {
@@ -63,10 +47,6 @@ public class SqlDbHelper : IDisposable
         return entityExists;
     }
 
-    /// <summary>
-    /// Performs this operation.
-    /// </summary>
-    /// <returns>The result produced by this operation.</returns>
     public TEntity? GetItemWithId<TEntity>(Guid id)
         where TEntity : class, new()
     {
@@ -103,10 +83,6 @@ public class SqlDbHelper : IDisposable
             : _dbContext.Set<TEntity>().AsNoTracking().Any();
     }
 
-    /// <summary>
-    /// Performs this operation.
-    /// </summary>
-    /// <returns>The result produced by this operation.</returns>
     public TEntity AddItem<TEntity>(TEntity newItem)
         where TEntity : class, new()
     {
@@ -128,9 +104,6 @@ public class SqlDbHelper : IDisposable
         }
     }
 
-    /// <summary>
-    /// Performs this operation.
-    /// </summary>
     public void AddItemWithCustomId<TEntity>(TEntity newItem)
         where TEntity : class, new()
     {
@@ -193,10 +166,6 @@ public class SqlDbHelper : IDisposable
         }
     }
 
-    /// <summary>
-    /// Performs this operation.
-    /// </summary>
-    /// <returns>The result produced by this operation.</returns>
     public TEntity DeleteItem<TEntity>(TEntity item)
         where TEntity : class, new()
     {
@@ -206,9 +175,6 @@ public class SqlDbHelper : IDisposable
         }
     }
 
-    /// <summary>
-    /// Persists pending changes.
-    /// </summary>
     public void SaveChanges()
     {
         lock (_lock)

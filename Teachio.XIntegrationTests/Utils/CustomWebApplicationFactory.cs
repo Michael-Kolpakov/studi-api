@@ -14,10 +14,6 @@ using Teachio.DAL.Utils.Database;
 
 namespace Teachio.XIntegrationTests.Utils;
 
-/// <summary>
-/// Represents the <see cref="CustomWebApplicationFactory{TProgram}"/> type.
-/// </summary>
-/// <typeparam name="TProgram">The type of program.</typeparam>
 public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram>
     where TProgram : class
 {
@@ -25,10 +21,6 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
 
     public Mock<IGoogleService> GoogleServiceMock { get; private set; } = new Mock<IGoogleService>();
 
-    /// <summary>
-    /// Performs the SetupMockEmailService operation.
-    /// </summary>
-    /// <param name="success">The <paramref name="success"/> argument.</param>
     public void SetupMockEmailService(bool success = true)
     {
         EmailServiceMock
@@ -36,11 +28,6 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             .ReturnsAsync(success);
     }
 
-    /// <summary>
-    /// Configures the Google token validation mock for the specified user.
-    /// </summary>
-    /// <param name="user">The <paramref name="user"/> argument.</param>
-    /// <param name="token">The <paramref name="token"/> argument.</param>
     public void SetupMockGoogleLogin(AppUser user, string? token = null)
     {
         if (token is null)

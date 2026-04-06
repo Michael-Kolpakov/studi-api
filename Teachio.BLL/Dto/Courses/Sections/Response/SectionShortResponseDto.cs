@@ -1,10 +1,7 @@
-using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
+﻿using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 
 namespace Teachio.BLL.Dto.Courses.Sections.Response;
 
-/// <summary>
-/// Represents the <see cref="SectionShortResponseDto"/> type.
-/// </summary>
 public class SectionShortResponseDto
 {
     public Guid Id { get; set; }

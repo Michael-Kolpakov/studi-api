@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Localization;
@@ -10,9 +10,6 @@ using Teachio.DAL.Repositories.Interfaces.Base;
 
 namespace Teachio.BLL.MediatR.Courses.Sections.Update;
 
-/// <summary>
-/// Represents the <see cref="UpdateSectionHandler"/> type.
-/// </summary>
 public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result<SectionResponseDto>>
 {
     private readonly IMapper _mapper;
@@ -38,12 +35,6 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
         _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <param name="request">The request payload in <paramref name="request"/>.</param>
-    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-    /// <returns>The result produced by this operation.</returns>
     public async Task<Result<SectionResponseDto>> Handle(UpdateSectionCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to update a section with Id: {request.SectionUpdateRequestDto.Id}");

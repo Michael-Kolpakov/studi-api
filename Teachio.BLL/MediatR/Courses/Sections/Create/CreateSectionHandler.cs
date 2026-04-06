@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Localization;
@@ -11,9 +11,6 @@ using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.MediatR.Courses.Sections.Create;
 
-/// <summary>
-/// Represents the <see cref="CreateSectionHandler"/> type.
-/// </summary>
 public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result<SectionResponseDto>>
 {
     private readonly IMapper _mapper;
@@ -42,12 +39,6 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <param name="request">The request payload in <paramref name="request"/>.</param>
-    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-    /// <returns>The result produced by this operation.</returns>
     public async Task<Result<SectionResponseDto>> Handle(CreateSectionCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to create a new section");

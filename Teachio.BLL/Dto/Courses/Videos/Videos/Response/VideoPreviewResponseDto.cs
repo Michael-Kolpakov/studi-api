@@ -1,8 +1,5 @@
-namespace Teachio.BLL.Dto.Courses.Videos.Videos.Response;
+﻿namespace Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 
-/// <summary>
-/// Represents the <see cref="VideoPreviewResponseDto"/> type.
-/// </summary>
 public class VideoPreviewResponseDto
 {
     public Guid Id { get; set; }

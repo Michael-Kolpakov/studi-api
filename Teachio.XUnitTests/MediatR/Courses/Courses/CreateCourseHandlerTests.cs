@@ -13,9 +13,6 @@ using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 
 namespace Teachio.XUnitTests.MediatR.Courses.Courses;
 
-/// <summary>
-/// Represents the <see cref="CreateCourseHandlerTests"/> type.
-/// </summary>
 public class CreateCourseHandlerTests
 {
     private readonly Mock<IRepositoryWrapper> _mockRepository;
@@ -48,10 +45,6 @@ public class CreateCourseHandlerTests
             _alreadyExistsLocalizerMock);
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task Handle_WhenCourseCreateRequestDtoIsNull_ShouldReturnFailResult()
     {
@@ -68,10 +61,6 @@ public class CreateCourseHandlerTests
         LoggerVerifications.VerifyLoggerErrorWasCalled(_mockLoggerService, request, expectedError);
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task Handle_WhenCourseAlreadyExists_ShouldReturnFailResult()
     {
@@ -106,10 +95,6 @@ public class CreateCourseHandlerTests
         LoggerVerifications.VerifyLoggerErrorWasCalled(_mockLoggerService, request, expectedError);
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task Handle_WhenCourseIsValid_ShouldCreateCourse()
     {

@@ -1,4 +1,4 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -7,9 +7,6 @@ using Teachio.BLL.MediatR.ResultValidations;
 
 namespace Teachio.WebApi.Controllers;
 
-/// <summary>
-/// Represents the <see cref="BaseApiController"/> type.
-/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class BaseApiController : ControllerBase

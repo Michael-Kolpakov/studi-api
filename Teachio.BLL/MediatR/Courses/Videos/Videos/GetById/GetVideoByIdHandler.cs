@@ -14,9 +14,6 @@ using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Teachio.BLL.MediatR.Courses.Videos.Videos.GetById;
 
-/// <summary>
-/// Represents the <see cref="GetVideoByIdHandler"/> type.
-/// </summary>
 public class GetVideoByIdHandler : IRequestHandler<GetVideoByIdQuery, Result<VideoResponseDto>>
 {
     private readonly IMapper _mapper;
@@ -36,12 +33,6 @@ public class GetVideoByIdHandler : IRequestHandler<GetVideoByIdQuery, Result<Vid
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <param name="request">The request payload in <paramref name="request"/>.</param>
-    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-    /// <returns>The result produced by this operation.</returns>
     public async Task<Result<VideoResponseDto>> Handle(GetVideoByIdQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to get video by Id: {request.VideoId}");

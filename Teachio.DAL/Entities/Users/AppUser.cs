@@ -1,11 +1,8 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Teachio.DAL.Entities.Courses.Courses;
 
 namespace Teachio.DAL.Entities.Users;
 
-/// <summary>
-/// Represents the <see cref="AppUser"/> type.
-/// </summary>
 public class AppUser : IdentityUser<Guid>
 {
     public string Name { get; set; } = null!;

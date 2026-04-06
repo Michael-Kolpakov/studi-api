@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.Services.Realizations;
@@ -8,19 +8,10 @@ using Teachio.DAL.SharedResource;
 
 namespace Teachio.WebApi.Extensions;
 
-/// <summary>
-/// Represents the <see cref="ApplicationServicesExtensions"/> type.
-/// </summary>
 public static class ApplicationServicesExtensions
 {
     private const string BllAssemblyName = "Teachio.BLL";
 
-    /// <summary>
-    /// Creates a new instance in the target store.
-    /// </summary>
-    /// <param name="services">The <paramref name="services"/> argument.</param>
-    /// <param name="configuration">The <paramref name="configuration"/> argument.</param>
-    /// <returns>The result produced by this operation.</returns>
     public static IServiceCollection AddApplicationServices(
         this IServiceCollection services,
         IConfiguration configuration)

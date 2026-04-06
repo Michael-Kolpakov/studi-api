@@ -1,12 +1,9 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using Teachio.DAL.Utils.Constants;
 
 namespace Teachio.BLL.Dto.Courses.Videos.Videos.Request;
 
-/// <summary>
-/// Represents the <see cref="VideoCreateUpdateRequestDto"/> type.
-/// </summary>
 public abstract class VideoCreateUpdateRequestDto
 {
     [Required(ErrorMessage = "Required")]

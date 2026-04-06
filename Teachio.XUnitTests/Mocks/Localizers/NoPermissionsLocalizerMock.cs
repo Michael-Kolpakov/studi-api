@@ -2,9 +2,6 @@ using Teachio.BLL.SharedResource;
 
 namespace Teachio.XUnitTests.Mocks.Localizers;
 
-/// <summary>
-/// Represents the <see cref="NoPermissionsLocalizerMock"/> type.
-/// </summary>
 public class NoPermissionsLocalizerMock : BaseLocalizerMock<NoPermissionsSharedResource>
 {
     protected override Dictionary<int, List<string>> DefineGroupedErrors()

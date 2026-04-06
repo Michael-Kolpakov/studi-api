@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Entities.Shared;
 using Teachio.DAL.Entities.Users;
@@ -7,15 +7,8 @@ using Teachio.DAL.Utils.Helpers;
 
 namespace Teachio.DAL.Entities.Courses.Courses;
 
-/// <summary>
-/// Represents the <see cref="CourseConfiguration"/> type.
-/// </summary>
 public static class CourseConfiguration
 {
-    /// <summary>
-    /// Configures the target component.
-    /// </summary>
-    /// <param name="builder">The <paramref name="builder"/> argument.</param>
     public static void ConfigureCourses(this ModelBuilder builder)
     {
         builder.Entity<Course>()

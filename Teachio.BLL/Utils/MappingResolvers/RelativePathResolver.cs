@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 using Teachio.BLL.Utils.Constants;
@@ -7,19 +7,8 @@ using Teachio.DAL.Entities.Courses.Videos.Videos;
 
 namespace Teachio.BLL.Utils.MappingResolvers;
 
-/// <summary>
-/// Represents the <see cref="RelativePathResolver"/> type.
-/// </summary>
 public class RelativePathResolver : IValueResolver<object, object, string>
 {
-    /// <summary>
-    /// Maps the input data to the target representation.
-    /// </summary>
-    /// <param name="source">The source object to map from.</param>
-    /// <param name="destination">The destination object to map to.</param>
-    /// <param name="destMember">The destination member value.</param>
-    /// <param name="context">The mapping context.</param>
-    /// <returns>The result produced by this operation.</returns>
     public string Resolve(object source, object destination, string destMember, ResolutionContext context)
     {
         return (source, destination) switch

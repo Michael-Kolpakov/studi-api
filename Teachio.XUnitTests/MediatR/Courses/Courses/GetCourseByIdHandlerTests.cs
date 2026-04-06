@@ -11,9 +11,6 @@ using Teachio.XUnitTests.Verifications;
 
 namespace Teachio.XUnitTests.MediatR.Courses.Courses;
 
-/// <summary>
-/// Represents the <see cref="GetCourseByIdHandlerTests"/> type.
-/// </summary>
 public class GetCourseByIdHandlerTests
 {
     private readonly Mock<IRepositoryWrapper> _mockRepository;
@@ -43,10 +40,6 @@ public class GetCourseByIdHandlerTests
             _cannotFindLocalizerMock);
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task Handle_WhenCourseDoesNotExist_ShouldReturnFailResult()
     {
@@ -65,10 +58,6 @@ public class GetCourseByIdHandlerTests
         LoggerVerifications.VerifyLoggerErrorWasCalled(_mockLoggerService, request, expectedError);
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task Handle_WhenCourseExistsWithSelectedVideoId_ShouldReturnCourseWithSelectedVideo()
     {
@@ -98,10 +87,6 @@ public class GetCourseByIdHandlerTests
         MapperVerifications.VerifyMapWasCalled(_mockMapper, selectedVideo, videoResponseDto);
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task Handle_WhenCourseExistsWithoutSelectedVideoId_ShouldReturnCourseWithFirstIncompleteVideo()
     {
@@ -131,10 +116,6 @@ public class GetCourseByIdHandlerTests
         MapperVerifications.VerifyMapWasCalled(_mockMapper, firstIncompleteVideo, videoResponseDto);
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <returns>The result produced by this operation.</returns>
     [Fact]
     public async Task Handle_WhenAllVideosAreCompleted_ShouldReturnCourseWithFirstVideoOfFirstSection()
     {

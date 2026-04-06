@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Teachio.BLL.Dto.Courses.Courses.Request.Create;
 using Teachio.BLL.Dto.Courses.Courses.Request.Update;
 using Teachio.BLL.Dto.Courses.Courses.Response;
@@ -7,9 +7,6 @@ using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 
 namespace Teachio.BLL.Mapping.Course.Course;
 
-/// <summary>
-/// Represents the <see cref="CourseProfile"/> type.
-/// </summary>
 public class CourseProfile : Profile
 {
     public CourseProfile()

@@ -1,8 +1,5 @@
 namespace Teachio.WebApi.Utils.RelativeRoutes;
 
-/// <summary>
-/// Represents the <see cref="VideosRelativeRoutes"/> type.
-/// </summary>
 public static class VideosRelativeRoutes
 {
     public const string GetById = "get-by-id/{id:guid}";

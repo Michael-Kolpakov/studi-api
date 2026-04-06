@@ -7,18 +7,11 @@ using Xunit.Sdk;
 
 namespace Teachio.XIntegrationTests.Utils.BeforeAndAfterAttributes.Courses.Courses;
 
-/// <summary>
-/// Represents the <see cref="ExtractDeleteTestCourseAttribute"/> type.
-/// </summary>
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]
 public class ExtractDeleteTestCourseAttribute : BeforeAfterTestAttribute
 {
     public static Course Course { get; private set; } = null!;
 
-    /// <summary>
-    /// Performs the <see cref="Before"/> operation.
-    /// </summary>
-    /// <param name="methodUnderTest">The <paramref name="methodUnderTest"/> argument.</param>
     public override void Before(MethodInfo methodUnderTest)
     {
         const string courseTitle = "Course for Delete Test";
@@ -29,10 +22,6 @@ public class ExtractDeleteTestCourseAttribute : BeforeAfterTestAttribute
         Course = CourseExtractor.Extract(courseId, appUserId, courseTitle);
     }
 
-    /// <summary>
-    /// Performs the <see cref="After"/> operation.
-    /// </summary>
-    /// <param name="methodUnderTest">The <paramref name="methodUnderTest"/> argument.</param>
     public override void After(MethodInfo methodUnderTest)
     {
         var sqlDbHelper = BaseControllerTests.GetSqlDbHelper();

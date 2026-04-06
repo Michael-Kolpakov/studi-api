@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.Dto.Courses.Sections.Request.Create;
 using Teachio.BLL.Dto.Courses.Sections.Request.Update;
 using Teachio.BLL.Dto.Courses.Sections.Response;
@@ -10,9 +10,6 @@ using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Sections;
 
-/// <summary>
-/// Represents the <see cref="SectionsController"/> type.
-/// </summary>
 public class SectionsController : BaseApiController
 {
     /// <summary>

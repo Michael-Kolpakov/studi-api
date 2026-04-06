@@ -6,18 +6,11 @@ using Xunit.Sdk;
 
 namespace Teachio.XIntegrationTests.Utils.BeforeAndAfterAttributes.Courses.Courses;
 
-/// <summary>
-/// Represents the <see cref="ExtractCreateTestCourseAttribute"/> type.
-/// </summary>
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]
 public class ExtractCreateTestCourseAttribute : BeforeAfterTestAttribute
 {
     public static CourseCreateRequestDto CourseCreateRequestDto { get; private set; } = null!;
 
-    /// <summary>
-    /// Performs the <see cref="Before"/> operation.
-    /// </summary>
-    /// <param name="methodUnderTest">The <paramref name="methodUnderTest"/> argument.</param>
     public override void Before(MethodInfo methodUnderTest)
     {
         CourseCreateRequestDto = new CourseCreateRequestDto()
@@ -28,10 +21,6 @@ public class ExtractCreateTestCourseAttribute : BeforeAfterTestAttribute
         };
     }
 
-    /// <summary>
-    /// Performs the <see cref="After"/> operation.
-    /// </summary>
-    /// <param name="methodUnderTest">The <paramref name="methodUnderTest"/> argument.</param>
     public override void After(MethodInfo methodUnderTest)
     {
         var sqlDbHelper = BaseControllerTests.GetSqlDbHelper();

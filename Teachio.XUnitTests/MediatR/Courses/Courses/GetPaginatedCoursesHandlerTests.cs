@@ -13,9 +13,6 @@ using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 
 namespace Teachio.XUnitTests.MediatR.Courses.Courses;
 
-/// <summary>
-/// Represents the <see cref="GetPaginatedCoursesHandlerTests"/> type.
-/// </summary>
 public class GetPaginatedCoursesHandlerTests
 {
     private readonly Mock<IRepositoryWrapper> _mockRepository;
@@ -42,11 +39,6 @@ public class GetPaginatedCoursesHandlerTests
             _mockLoggerService.Object);
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <param name="coursesCount">The <paramref name="coursesCount"/> argument.</param>
-    /// <returns>The result produced by this operation.</returns>
     [Theory]
     [InlineData(0)]
     [InlineData(3)]

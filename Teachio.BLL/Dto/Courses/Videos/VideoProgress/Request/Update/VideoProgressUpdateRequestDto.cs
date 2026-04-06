@@ -1,11 +1,8 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Teachio.DAL.Utils.Constants;
 
 namespace Teachio.BLL.Dto.Courses.Videos.VideoProgress.Request.Update;
 
-/// <summary>
-/// Represents the <see cref="VideoProgressUpdateRequestDto"/> type.
-/// </summary>
 public class VideoProgressUpdateRequestDto
 {
     [Required(ErrorMessage = "Required")]

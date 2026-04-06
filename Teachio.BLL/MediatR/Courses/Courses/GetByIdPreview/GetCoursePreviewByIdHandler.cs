@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
 using FluentResults;
 using MediatR;
@@ -14,9 +14,6 @@ using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.GetByIdPreview;
 
-/// <summary>
-/// Represents the <see cref="GetCoursePreviewByIdHandler"/> type.
-/// </summary>
 public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQuery, Result<CoursePreviewResponseDto>>
 {
     private readonly IMapper _mapper;
@@ -36,12 +33,6 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <param name="request">The request payload in <paramref name="request"/>.</param>
-    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-    /// <returns>The result produced by this operation.</returns>
     public async Task<Result<CoursePreviewResponseDto>> Handle(GetCoursePreviewByIdQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to get course preview by Id: {request.CourseId}");

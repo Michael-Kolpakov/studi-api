@@ -1,10 +1,7 @@
-using Teachio.BLL.SharedResource;
+﻿using Teachio.BLL.SharedResource;
 
 namespace Teachio.XUnitTests.Mocks.Localizers;
 
-/// <summary>
-/// Represents the <see cref="CannotMapLocalizerMock"/> type.
-/// </summary>
 public class CannotMapLocalizerMock : BaseLocalizerMock<CannotMapSharedResource>
 {
     protected override Dictionary<int, List<string>> DefineGroupedErrors()

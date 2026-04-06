@@ -1,9 +1,5 @@
-namespace Teachio.DAL.Utils.Helpers;
+﻿namespace Teachio.DAL.Utils.Helpers;
 
-/// <summary>
-/// Represents the <see cref="PaginationResponse{T}"/> type.
-/// </summary>
-/// <typeparam name="T">The type of t.</typeparam>
 public class PaginationResponse<T>
 {
     private PaginationResponse(
@@ -29,14 +25,6 @@ public class PaginationResponse<T>
 
     public IEnumerable<T> Entities { get; set; }
 
-    /// <summary>
-    /// Creates a new instance in the target store.
-    /// </summary>
-    /// <param name="items">The <paramref name="items"/> argument.</param>
-    /// <param name="totalItems">The <paramref name="totalItems"/> argument.</param>
-    /// <param name="pageNumber">The page number to retrieve.</param>
-    /// <param name="pageSize">The number of items per page.</param>
-    /// <returns>The result produced by this operation.</returns>
     public static PaginationResponse<T> Create(
         IEnumerable<T> items,
         int totalItems,

@@ -3,9 +3,6 @@ using Teachio.XIntegrationTests.Utils.Helpers;
 
 namespace Teachio.XIntegrationTests.Utils.Extractors;
 
-/// <summary>
-/// Represents the <see cref="BaseExtractor"/> type.
-/// </summary>
 public static class BaseExtractor
 {
     private static readonly Lock _lock = new Lock();
@@ -38,9 +35,6 @@ public static class BaseExtractor
         }
     }
 
-    /// <summary>
-    /// Performs <see cref="RemoveByPredicate"/> operation.
-    /// </summary>
     public static void RemoveByPredicate<T>(Func<T, bool> searchPredicate)
         where T : class, new()
     {
@@ -58,9 +52,6 @@ public static class BaseExtractor
         }
     }
 
-    /// <summary>
-    /// Performs <see cref="RemoveById"/> operation.
-    /// </summary>
     public static void RemoveById<TEntity>(Guid id)
         where TEntity : class, new()
     {

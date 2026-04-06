@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
 using FluentResults;
 using MediatR;
@@ -11,9 +11,6 @@ using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.GetPaginated;
 
-/// <summary>
-/// Represents the <see cref="GetPaginatedCoursesHandler"/> type.
-/// </summary>
 public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQuery, Result<PaginatedCoursesResponseDto>>
 {
     private readonly IMapper _mapper;
@@ -30,12 +27,6 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
         _logger = logger;
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <param name="request">The request payload in <paramref name="request"/>.</param>
-    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-    /// <returns>The result produced by this operation.</returns>
     public async Task<Result<PaginatedCoursesResponseDto>> Handle(GetPaginatedCoursesQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to get paginated courses (page number: {request.PageNumber}, page size: {request.PageSize})");

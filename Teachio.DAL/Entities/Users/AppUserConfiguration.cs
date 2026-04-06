@@ -1,16 +1,9 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Teachio.DAL.Entities.Users;
 
-/// <summary>
-/// Represents the <see cref="AppUserConfiguration"/> type.
-/// </summary>
 public static class AppUserConfiguration
 {
-    /// <summary>
-    /// Configures the target component.
-    /// </summary>
-    /// <param name="builder">The <paramref name="builder"/> argument.</param>
     public static void ConfigureAppUsers(this ModelBuilder builder)
     {
         builder.Entity<AppUser>()

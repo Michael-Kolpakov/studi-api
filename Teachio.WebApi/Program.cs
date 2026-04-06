@@ -6,16 +6,8 @@ using Teachio.WebApi.Middlewares;
 
 namespace Teachio.WebApi;
 
-/// <summary>
-/// Represents the <see cref="Program"/> type.
-/// </summary>
 public class Program
 {
-    /// <summary>
-    /// Performs the <see cref="Main"/> operation.
-    /// </summary>
-    /// <param name="args">The <paramref name="args"/> argument.</param>
-    /// <returns>The result produced by this operation.</returns>
     public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);

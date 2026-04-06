@@ -2,9 +2,6 @@ using System.Text.Json;
 
 namespace Teachio.XIntegrationTests.Utils;
 
-/// <summary>
-/// Represents the <see cref="CaseInsensitiveJsonDeserializer"/> type.
-/// </summary>
 public static class CaseInsensitiveJsonDeserializer
 {
     private static readonly JsonSerializerOptions _options = new JsonSerializerOptions

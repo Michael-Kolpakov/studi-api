@@ -1,10 +1,7 @@
-using Teachio.BLL.Dto.Courses.Sections.Response;
+﻿using Teachio.BLL.Dto.Courses.Sections.Response;
 
 namespace Teachio.BLL.Dto.Courses.Courses.Response;
 
-/// <summary>
-/// Represents the <see cref="CoursePreviewResponseDto"/> type.
-/// </summary>
 public class CoursePreviewResponseDto
 {
     public Guid Id { get; set; }

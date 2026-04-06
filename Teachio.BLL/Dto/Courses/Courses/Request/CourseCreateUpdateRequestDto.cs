@@ -1,11 +1,8 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Teachio.DAL.Utils.Constants;
 
 namespace Teachio.BLL.Dto.Courses.Courses.Request;
 
-/// <summary>
-/// Represents the <see cref="CourseCreateUpdateRequestDto"/> type.
-/// </summary>
 public abstract class CourseCreateUpdateRequestDto
 {
     [Required(ErrorMessage = "Required")]

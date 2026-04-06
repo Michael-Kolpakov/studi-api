@@ -1,27 +1,12 @@
-using Teachio.BLL.Dto.Courses.Courses.Response;
+﻿using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.DAL.Entities.Courses.Courses;
 
 namespace Teachio.XUnitTests.TestData;
 
-/// <summary>
-/// Represents the <see cref="CourseTestData"/> type.
-/// </summary>
 public static class CourseTestData
 {
     #region Entities
 
-    /// <summary>
-    /// Gets the requested data.
-    /// </summary>
-    /// <param name="courseId">The identifier of <paramref name="courseId"/>.</param>
-    /// <param name="ownerId">The identifier of <paramref name="ownerId"/>.</param>
-    /// <param name="courseNumber">The <paramref name="courseNumber"/> argument.</param>
-    /// <param name="sectionsCount">The <paramref name="sectionsCount"/> argument.</param>
-    /// <param name="videosCount">The <paramref name="videosCount"/> argument.</param>
-    /// <param name="title">The <paramref name="title"/> argument.</param>
-    /// <param name="description">The <paramref name="description"/> argument.</param>
-    /// <param name="thumbnailName">The <paramref name="thumbnailName"/> argument.</param>
-    /// <returns>The result produced by this operation.</returns>
     public static Course GetCourse(
         Guid? courseId = null,
         Guid? ownerId = null,
@@ -55,14 +40,6 @@ public static class CourseTestData
 
     #region DTOs
 
-    /// <summary>
-    /// Gets the requested data.
-    /// </summary>
-    /// <param name="title">The <paramref name="title"/> argument.</param>
-    /// <param name="description">The <paramref name="description"/> argument.</param>
-    /// <param name="totalDuration">The <paramref name="totalDuration"/> argument.</param>
-    /// <param name="watchingUsersCount">The <paramref name="watchingUsersCount"/> argument.</param>
-    /// <returns>The result produced by this operation.</returns>
     public static CourseResponseDto GetCourseResponseDto(
         string title = "Title of a Course",
         string description = "Description of a Course",
@@ -79,13 +56,6 @@ public static class CourseTestData
         };
     }
 
-    /// <summary>
-    /// Gets the requested data.
-    /// </summary>
-    /// <param name="course">The <paramref name="course"/> argument.</param>
-    /// <param name="totalDuration">The <paramref name="totalDuration"/> argument.</param>
-    /// <param name="watchingUsersCount">The <paramref name="watchingUsersCount"/> argument.</param>
-    /// <returns>The result produced by this operation.</returns>
     public static CourseResponseDto GetCourseResponseDto(
         Course course,
         float totalDuration = 999.9f,
@@ -102,13 +72,6 @@ public static class CourseTestData
         };
     }
 
-    /// <summary>
-    /// Gets the requested data.
-    /// </summary>
-    /// <param name="course">The <paramref name="course"/> argument.</param>
-    /// <param name="totalDuration">The <paramref name="totalDuration"/> argument.</param>
-    /// <param name="watchingUsersCount">The <paramref name="watchingUsersCount"/> argument.</param>
-    /// <returns>The result produced by this operation.</returns>
     public static CoursePreviewResponseDto GetCoursePreviewResponseDto(
         Course course,
         float totalDuration = 999.9f,
@@ -125,14 +88,6 @@ public static class CourseTestData
         };
     }
 
-    /// <summary>
-    /// Gets the requested data.
-    /// </summary>
-    /// <param name="course">The <paramref name="course"/> argument.</param>
-    /// <param name="index">The <paramref name="index"/> argument.</param>
-    /// <param name="totalDuration">The <paramref name="totalDuration"/> argument.</param>
-    /// <param name="watchingUsersCount">The <paramref name="watchingUsersCount"/> argument.</param>
-    /// <returns>The result produced by this operation.</returns>
     public static CoursePreviewShortResponseDto GetCoursePreviewShortResponseDto(
         Course course,
         int index = 0,

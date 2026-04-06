@@ -1,8 +1,5 @@
-namespace Teachio.WebApi.Utils.RelativeRoutes;
+﻿namespace Teachio.WebApi.Utils.RelativeRoutes;
 
-/// <summary>
-/// Represents the <see cref="SectionsRelativeRoutes"/> type.
-/// </summary>
 public static class SectionsRelativeRoutes
 {
     public const string GetById = "get-by-id/{id:guid}";

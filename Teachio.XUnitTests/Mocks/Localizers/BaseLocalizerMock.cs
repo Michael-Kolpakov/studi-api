@@ -1,11 +1,7 @@
-using Microsoft.Extensions.Localization;
+﻿using Microsoft.Extensions.Localization;
 
 namespace Teachio.XUnitTests.Mocks.Localizers;
 
-/// <summary>
-/// Represents the <see cref="BaseLocalizerMock{TResource}"/> type.
-/// </summary>
-/// <typeparam name="TResource">The type of resource.</typeparam>
 public abstract class BaseLocalizerMock<TResource> : IStringLocalizer<TResource>
 {
     private readonly List<LocalizedString> _localizedStrings;
@@ -20,11 +16,6 @@ public abstract class BaseLocalizerMock<TResource> : IStringLocalizer<TResource>
         _lazyGroupedErrors = new Lazy<Dictionary<int, List<string>>>(DefineGroupedErrors);
     }
 
-    /// <summary>
-    /// Gets a localized string by key without format arguments.
-    /// </summary>
-    /// <param name="name">The localization key.</param>
-    /// <returns>The localized string for the specified key.</returns>
     public LocalizedString this[string name]
     {
         get
@@ -38,12 +29,6 @@ public abstract class BaseLocalizerMock<TResource> : IStringLocalizer<TResource>
         }
     }
 
-    /// <summary>
-    /// Gets a localized string by key using format arguments.
-    /// </summary>
-    /// <param name="name">The localization key.</param>
-    /// <param name="arguments">The format arguments associated with the key.</param>
-    /// <returns>The localized string for the specified key and arguments.</returns>
     public LocalizedString this[string name, params object[] arguments]
     {
         get
@@ -58,11 +43,6 @@ public abstract class BaseLocalizerMock<TResource> : IStringLocalizer<TResource>
         }
     }
 
-    /// <summary>
-    /// Gets the requested data.
-    /// </summary>
-    /// <param name="includeParentCultures">A value indicating whether <paramref name="includeParentCultures"/> is enabled.</param>
-    /// <returns>The result produced by this operation.</returns>
     public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
     {
         return _localizedStrings;

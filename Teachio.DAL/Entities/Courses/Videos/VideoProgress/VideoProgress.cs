@@ -1,10 +1,7 @@
-using Teachio.DAL.Entities.Courses.Videos.Videos;
+﻿using Teachio.DAL.Entities.Courses.Videos.Videos;
 
 namespace Teachio.DAL.Entities.Courses.Videos.VideoProgress;
 
-/// <summary>
-/// Represents the <see cref="VideoProgress"/> type.
-/// </summary>
 public class VideoProgress
 {
     public Guid Id { get; set; }

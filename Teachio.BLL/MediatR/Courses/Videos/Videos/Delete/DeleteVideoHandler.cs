@@ -14,9 +14,6 @@ using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Teachio.BLL.MediatR.Courses.Videos.Videos.Delete;
 
-/// <summary>
-/// Represents the <see cref="DeleteVideoHandler"/> type.
-/// </summary>
 public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<VideoResponseDto>>
 {
     private readonly IMapper _mapper;
@@ -39,12 +36,6 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
-    /// <summary>
-    /// Handles the incoming request.
-    /// </summary>
-    /// <param name="request">The request payload in <paramref name="request"/>.</param>
-    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-    /// <returns>The result produced by this operation.</returns>
     public async Task<Result<VideoResponseDto>> Handle(DeleteVideoCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to delete a video with Id: {request.VideoId}");
