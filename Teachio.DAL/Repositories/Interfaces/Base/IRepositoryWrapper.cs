@@ -8,17 +8,17 @@ namespace Teachio.DAL.Repositories.Interfaces.Base;
 
 public interface IRepositoryWrapper
 {
-    public ICoursesRepository CoursesRepository { get; }
+    ICoursesRepository CoursesRepository { get; }
 
-    public ISectionsRepository SectionsRepository { get; }
+    ISectionsRepository SectionsRepository { get; }
 
-    public IVideosRepository VideosRepository { get; }
+    IVideosRepository VideosRepository { get; }
 
-    public IVideoProgressRepository VideoProgressRepository { get; }
+    IVideoProgressRepository VideoProgressRepository { get; }
 
-    public IAppUsersRepository AppUsersRepository { get; }
+    IAppUsersRepository AppUsersRepository { get; }
 
-    public int SaveChanges();
+    int SaveChanges();
 
-    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
