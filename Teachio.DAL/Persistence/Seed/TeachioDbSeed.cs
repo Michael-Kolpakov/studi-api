@@ -55,7 +55,7 @@ public static class TeachioDbSeed
         }
 
         var assemblyPath = Path.GetDirectoryName(typeof(TeachioDbSeed).Assembly.Location);
-        var fullPath = Path.Combine(assemblyPath!, $@"Persistence/Seed/Content/{jsonFileName}.json");
+        var fullPath = Path.Combine(assemblyPath!, "Persistence", "Seed", "Content", $"{jsonFileName}.json");
 
         if (!File.Exists(fullPath))
         {
