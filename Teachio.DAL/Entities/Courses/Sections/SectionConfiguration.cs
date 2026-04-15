@@ -59,7 +59,7 @@ public static class SectionConfiguration
 
             typeBuilder.Property(s => s.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()")
-                .ValueGeneratedOnAdd();
+                .IsRequired();
 
             typeBuilder.Property(s => s.UpdatedAt)
                 .HasDefaultValueSql("GETUTCDATE()")

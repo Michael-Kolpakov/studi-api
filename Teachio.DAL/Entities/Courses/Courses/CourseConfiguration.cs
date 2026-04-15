@@ -78,7 +78,7 @@ public static class CourseConfiguration
 
             typeBuilder.Property(c => c.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()")
-                .ValueGeneratedOnAdd();
+                .IsRequired();
 
             typeBuilder.Property(c => c.UpdatedAt)
                 .HasDefaultValueSql("GETUTCDATE()")

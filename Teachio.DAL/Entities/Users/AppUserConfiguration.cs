@@ -22,7 +22,7 @@ public static class AppUserConfiguration
 
             typeBuilder.Property(au => au.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()")
-                .ValueGeneratedOnAdd();
+                .IsRequired();
 
             typeBuilder.Property(au => au.UpdatedAt)
                 .HasDefaultValueSql("GETUTCDATE()")
