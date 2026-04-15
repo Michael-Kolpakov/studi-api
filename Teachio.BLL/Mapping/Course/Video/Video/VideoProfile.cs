@@ -14,18 +14,12 @@ public class VideoProfile : Profile
         CreateMap<VideoCreateRequestDto, VideoEntity>()
             .ForMember(
                 dest => dest.Title,
-                opt => opt.MapFrom<TrimmedTitleResolver>())
-            .ForMember(
-                dest => dest.VideoName,
-                opt => opt.MapFrom<NameFromTitleResolver>());
+                opt => opt.MapFrom<TrimmedTitleResolver>());
 
         CreateMap<VideoUpdateRequestDto, VideoEntity>()
             .ForMember(
                 dest => dest.Title,
-                opt => opt.MapFrom<TrimmedTitleResolver>())
-            .ForMember(
-                dest => dest.VideoName,
-                opt => opt.MapFrom<NameFromTitleResolver>());
+                opt => opt.MapFrom<TrimmedTitleResolver>());
 
         CreateMap<VideoEntity, VideoResponseDto>()
             .ForMember(

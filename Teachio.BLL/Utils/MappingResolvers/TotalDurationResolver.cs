@@ -19,7 +19,7 @@ public class TotalDurationResolver : IValueResolver<Course, object, float>
     {
         var durationSeconds = source.Sections
             .SelectMany(s => s.Videos)
-            .Sum(v => v.DurationSeconds);
+            .Sum(v => v.VideoFile?.DurationSeconds ?? 0);
 
         var durationHours = durationSeconds / 3600f;
 

@@ -7,9 +7,9 @@ using Teachio.DAL.Entities.Courses.Videos.Videos;
 
 namespace Teachio.BLL.Utils.MappingResolvers;
 
-public class RelativePathResolver : IValueResolver<object, object, string>
+public class RelativePathResolver : IValueResolver<object, object, string?>
 {
-    public string Resolve(object source, object destination, string destMember, ResolutionContext context)
+    public string? Resolve(object source, object destination, string? destMember, ResolutionContext context)
     {
         return (source, destination) switch
         {
@@ -27,12 +27,17 @@ public class RelativePathResolver : IValueResolver<object, object, string>
             .Replace("{ThumbnailName}", source.ThumbnailName);
     }
 
-    private static string CreateVideoRelativePath(Video source)
+    private static string? CreateVideoRelativePath(Video source)
     {
+        if (source.VideoFile is null)
+        {
+            return null;
+        }
+
         return HandlerConstants.VideoRelativePathTemplate
             .Replace("{AppUser}", source.Section!.Course!.OwnerUser.Email)
             .Replace("{CourseName}", source.Section.Course.CourseName)
             .Replace("{SectionName}", source.Section.SectionName)
-            .Replace("{VideoName}", source.VideoName);
+            .Replace("{VideoName}", source.VideoFile.VideoName);
     }
 }
