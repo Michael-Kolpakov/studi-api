@@ -49,6 +49,9 @@
       <None Update="Persistence\Seed\Content\Video.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="Persistence\Seed\Content\VideoFile.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
       <None Update="Persistence\Seed\Content\VideoProgress.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>

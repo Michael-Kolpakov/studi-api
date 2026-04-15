@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Sections;
+using Teachio.DAL.Entities.Courses.Videos.VideoFiles;
 using Teachio.DAL.Entities.Courses.Videos.VideoProgress;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Entities.Shared;
@@ -16,7 +17,10 @@ public static class TeachioDbSeed
     private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
     {
         PropertyNameCaseInsensitive = true,
-        Converters = { new JsonStringEnumConverter() }
+        Converters =
+        {
+            new JsonStringEnumConverter()
+        }
     };
 
     public static async Task SeedAsync(
@@ -34,6 +38,7 @@ public static class TeachioDbSeed
         await SeedEntityAsync(dbContext, dbContext.UserCourses, nameof(UserCourse), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.Sections, nameof(Section), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.Videos, nameof(Video), logger, cancellationToken);
+        await SeedEntityAsync(dbContext, dbContext.VideoFiles, nameof(VideoFile), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.VideoProgress, nameof(VideoProgress), logger, cancellationToken);
 
         logger.Information("Database seeding completed.");
