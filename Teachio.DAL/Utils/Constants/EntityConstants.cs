@@ -17,4 +17,10 @@ public static class EntityConstants
     public const string MediaNameRegexPattern = "^[A-Za-z0-9.,!?-]+$";
 
     public const string ProcessingErrorRegexPattern = "^[A-Za-z0-9 .,]+$";
+
+    public static readonly string[] AllowedVideoContentTypes =
+    [
+        "video/mp4",
+        "video/quicktime"
+    ];
 }

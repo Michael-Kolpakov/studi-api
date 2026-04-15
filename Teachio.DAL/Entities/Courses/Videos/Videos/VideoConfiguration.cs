@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Entities.Courses.Courses;
+using Teachio.DAL.Entities.Courses.Videos.VideoFiles;
 using Teachio.DAL.Utils.Constants;
 using Teachio.DAL.Utils.Helpers;
 
@@ -27,15 +28,6 @@ public static class VideoConfiguration
                     $"CK_{nameof(Video)}_{nameof(Video.Title)}_{nameof(CheckConstraintType.Regex)}",
                     Constraint.CreateSqlRegexCheck(nameof(Video.Title), ValidationRule.Title)));
 
-            typeBuilder.Property(v => v.VideoName)
-                .IsRequired()
-                .HasMaxLength(110);
-
-            typeBuilder.ToTable(t =>
-                t.HasCheckConstraint(
-                    $"CK_{nameof(Video)}_{nameof(Video.VideoName)}_{nameof(CheckConstraintType.Regex)}",
-                    Constraint.CreateSqlRegexCheck(nameof(Video.VideoName), ValidationRule.MediaName)));
-
             typeBuilder.Property(v => v.SectionId)
                 .IsRequired();
 
@@ -46,14 +38,6 @@ public static class VideoConfiguration
                 t.HasCheckConstraint(
                     $"CK_{nameof(Video)}_{nameof(Video.OrderIndex)}_{nameof(CheckConstraintType.Range)}",
                     Constraint.CreateSqlRangeCheck(nameof(Video.OrderIndex), 0, EntityConstants.MaxVideosPerSection - 1)));
-
-            typeBuilder.Property(v => v.DurationSeconds)
-                .IsRequired();
-
-            typeBuilder.ToTable(t =>
-                t.HasCheckConstraint(
-                    $"CK_{nameof(Video)}_{nameof(Video.DurationSeconds)}_{nameof(CheckConstraintType.Range)}",
-                    Constraint.CreateSqlRangeCheck(nameof(Video.DurationSeconds), 0, EntityConstants.MaxVideoDurationSeconds)));
 
             typeBuilder.Property(v => v.Status)
                 .IsRequired()
@@ -69,12 +53,18 @@ public static class VideoConfiguration
 
             typeBuilder.Property(v => v.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()")
-                .ValueGeneratedOnAdd();
+                .IsRequired();
 
             typeBuilder.Property(v => v.UpdatedAt)
                 .HasDefaultValueSql("GETUTCDATE()")
                 .IsRequired();
         });
+
+        builder.Entity<Video>()
+            .HasOne<VideoFile>(video => video.VideoFile)
+            .WithOne(videoFile => videoFile.Video)
+            .HasForeignKey<VideoFile>(videoFile => videoFile.VideoId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Video>()
             .HasOne<VideoProgress.VideoProgress>(video => video.VideoProgress)
