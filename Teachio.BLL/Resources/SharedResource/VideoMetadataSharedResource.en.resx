@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="VideoFilePathIsEmpty" xml:space="preserve">
+        <value>Video file path cannot be null or whitespace.</value>
+    </data>
+    <data name="VideoFileNotFound" xml:space="preserve">
+        <value>Video file was not found at '{0}'.</value>
+    </data>
+    <data name="FfprobeExecutablePathNotConfigured" xml:space="preserve">
+        <value>FFprobe executable path is not configured.</value>
+    </data>
+    <data name="FfprobeProcessNotStarted" xml:space="preserve">
+        <value>FFprobe process was not started.</value>
+    </data>
+    <data name="FfprobeAnalysisTimedOut" xml:space="preserve">
+        <value>FFprobe analysis timed out after {0} seconds.</value>
+    </data>
+    <data name="FfprobeFailedWithExitCode" xml:space="preserve">
+        <value>FFprobe failed with exit code {0}.</value>
+    </data>
+    <data name="FfprobeReturnedEmptyOutput" xml:space="preserve">
+        <value>FFprobe returned empty output.</value>
+    </data>
+    <data name="FfprobeExecutionFailed" xml:space="preserve">
+        <value>Failed to execute FFprobe for video metadata extraction.</value>
+    </data>
+    <data name="FfprobeOutputMissingFormat" xml:space="preserve">
+        <value>FFprobe output did not contain format information.</value>
+    </data>
+    <data name="FfprobeOutputMissingResolution" xml:space="preserve">
+        <value>FFprobe output did not contain video stream resolution information.</value>
+    </data>
+    <data name="FfprobeOutputInvalidDuration" xml:space="preserve">
+        <value>FFprobe output did not contain valid duration information.</value>
+    </data>
+    <data name="FfprobeInvalidDurationValue" xml:space="preserve">
+        <value>FFprobe returned invalid duration value.</value>
+    </data>
+    <data name="VideoDurationExceedsLimit" xml:space="preserve">
+        <value>Video duration exceeds the maximum allowed value of {0} seconds.</value>
+    </data>
+    <data name="ContentTypeExtensionCannotResolve" xml:space="preserve">
+        <value>Cannot resolve file extension for content type '{0}'.</value>
+    </data>
+    <data name="FfprobeOutputParseFailed" xml:space="preserve">
+        <value>Failed to parse FFprobe output.</value>
+    </data>
+    <data name="UnsupportedVideoFormat" xml:space="preserve">
+        <value>Unsupported video format. Allowed formats: {0}.</value>
+    </data>
+    <data name="UnsupportedContentType" xml:space="preserve">
+        <value>Unsupported content type '{0}'. Allowed values: {1}.</value>
+    </data>
+    <data name="InvalidVideoResolution" xml:space="preserve">
+        <value>FFprobe returned invalid video resolution information.</value>
+    </data>
+    <data name="UnsupportedVideoResolution" xml:space="preserve">
+        <value>Unsupported video resolution '{0}p'. Allowed resolutions: {1}.</value>
+    </data>
+</root>
