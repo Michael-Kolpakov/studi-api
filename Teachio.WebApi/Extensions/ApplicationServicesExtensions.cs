@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
+using Teachio.BLL.Models.Media;
+using Teachio.BLL.Models.Storage;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.Services.Realizations;
 using Teachio.DAL.Repositories.Interfaces.Base;
@@ -36,7 +38,8 @@ public static class ApplicationServicesExtensions
         services.AddCustomDbContext(configuration);
         services.AddSwagger();
         services.AddSerilogLogging();
-        services.AddCustomServices();
+        services.AddOptions(configuration);
+        services.AddCustomServices(configuration);
         services.AddRepositoryServices();
         services.AddAutoMapper(_ => { }, currentAssemblies);
         services.AddMediatR(config => config.RegisterServicesFromAssemblies(bllAssembly));
@@ -60,10 +63,21 @@ public static class ApplicationServicesExtensions
         });
     }
 
-    private static void AddCustomServices(this IServiceCollection services)
+    private static void AddCustomServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<ILoggerService, LoggerService>();
         services.AddScoped<IEntityExistenceService, EntityExistenceService>();
+        services.AddScoped<IGoogleDriveStorageService, GoogleDriveStorageService>();
+        services.AddScoped<IVideoMetadataService, FfprobeVideoMetadataService>();
+    }
+
+    private static void AddOptions(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<GoogleDriveStorageOptions>(
+            configuration.GetSection(GoogleDriveStorageOptions.SectionName));
+
+        services.Configure<FfprobeOptions>(
+            configuration.GetSection(FfprobeOptions.SectionName));
     }
 
     private static void AddRepositoryServices(this IServiceCollection services)
