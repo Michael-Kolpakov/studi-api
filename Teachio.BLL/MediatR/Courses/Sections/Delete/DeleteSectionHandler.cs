@@ -9,6 +9,7 @@ using Teachio.BLL.Dto.Courses.Sections.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
+using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
@@ -18,6 +19,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
 {
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
+    private readonly IGoogleDriveStorageService _googleDriveStorageService;
     private readonly ILoggerService _logger;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
@@ -25,12 +27,14 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
     public DeleteSectionHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
+        IGoogleDriveStorageService googleDriveStorageService,
         ILoggerService logger,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
+        _googleDriveStorageService = googleDriveStorageService;
         _logger = logger;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
@@ -57,10 +61,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
             return Result.Fail(errorMessage);
         }
 
-        var courseOwnerUserId = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultProjectedAsync(
-            s => s.Course!.OwnerUserId,
-            s => s.Id == request.SectionId,
-            cancellationToken);
+        var courseOwnerUserId = section.Course!.OwnerUserId;
 
         if (courseOwnerUserId != request.RequestingUserId)
         {
@@ -80,7 +81,31 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
             return Result.Fail(responseErrorMessage);
         }
 
-        // TODO: make sure whether we really delete all section dependent entities: Videos and VideoProgress
+        var sectionVideoFiles = section.Videos
+            .Where(video => video.VideoFile is not null)
+            .Select(video => video.VideoFile!)
+            .ToList();
+
+        var ownerUserEmail = section.Course.OwnerUser.Email;
+
+        foreach (var sectionVideoFile in sectionVideoFiles)
+        {
+            var deleteGoogleDriveFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
+                VideoStoragePathHelper.BuildVideoFolderSegments(
+                    ownerUserEmail!,
+                    section.Course.CourseName,
+                    section.SectionName),
+                sectionVideoFile.VideoName,
+                cancellationToken);
+
+            if (deleteGoogleDriveFileResult.IsFailed)
+            {
+                var errorMessage = deleteGoogleDriveFileResult.Errors[0].Message;
+                _logger.LogError(request, errorMessage);
+
+                return Result.Fail(errorMessage);
+            }
+        }
 
         _repositoryWrapper.SectionsRepository.Delete(section);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
@@ -94,6 +119,10 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
     private static IIncludableQueryable<SectionEntity, object> IncludeSectionRelatedEntities(IQueryable<SectionEntity> query)
     {
         return query
+            .Include(s => s.Course)
+                .ThenInclude(c => c!.OwnerUser)
+            .Include(s => s.Videos)
+                .ThenInclude(v => v.VideoFile)
             .Include(s => s.Videos)
                 .ThenInclude(v => v.VideoProgress);
     }

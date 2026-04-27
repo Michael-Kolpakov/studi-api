@@ -9,6 +9,7 @@ using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
+using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 
@@ -18,6 +19,7 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
 {
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
+    private readonly IGoogleDriveStorageService _googleDriveStorageService;
     private readonly ILoggerService _logger;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
@@ -25,12 +27,14 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
     public DeleteVideoHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
+        IGoogleDriveStorageService googleDriveStorageService,
         ILoggerService logger,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
+        _googleDriveStorageService = googleDriveStorageService;
         _logger = logger;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
@@ -55,10 +59,7 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
             return Result.Fail(errorMessage);
         }
 
-        var courseOwnerUserId = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultProjectedAsync(
-            s => s.Section!.Course!.OwnerUserId,
-            s => s.Id == request.VideoId,
-            cancellationToken);
+        var courseOwnerUserId = video.Section!.Course!.OwnerUserId;
 
         if (courseOwnerUserId != request.RequestingUserId)
         {
@@ -78,9 +79,26 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
             return Result.Fail(responseErrorMessage);
         }
 
-        // TODO: make sure whether we really delete all video dependent entities: VideoProgress
+        if (video.VideoFile is not null)
+        {
+            var ownerUserEmail = video.Section.Course.OwnerUser.Email;
 
-        // TODO: address Google Drive API (or CDN in the future) to delete video
+            var deleteGoogleDriveFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
+                VideoStoragePathHelper.BuildVideoFolderSegments(
+                    ownerUserEmail!,
+                    video.Section.Course.CourseName,
+                    video.Section.SectionName),
+                video.VideoFile.VideoName,
+                cancellationToken);
+
+            if (deleteGoogleDriveFileResult.IsFailed)
+            {
+                var errorMessage = deleteGoogleDriveFileResult.Errors[0].Message;
+                _logger.LogError(request, errorMessage);
+
+                return Result.Fail(errorMessage);
+            }
+        }
 
         _repositoryWrapper.VideosRepository.Delete(video);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
@@ -93,6 +111,11 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
     [ExcludeFromCodeCoverage]
     private static IIncludableQueryable<VideoEntity, object> IncludeVideoRelatedEntities(IQueryable<VideoEntity> query)
     {
-        return query.Include(v => v.VideoProgress);
+        return query
+            .Include(v => v.Section)
+                .ThenInclude(s => s!.Course)
+                    .ThenInclude(c => c!.OwnerUser)
+            .Include(v => v.VideoFile)
+            .Include(v => v.VideoProgress);
     }
 }

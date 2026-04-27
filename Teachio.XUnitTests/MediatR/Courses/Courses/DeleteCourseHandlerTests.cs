@@ -15,6 +15,7 @@ public class DeleteCourseHandlerTests
 {
     private readonly Mock<IRepositoryWrapper> _mockRepository;
     private readonly Mock<IMapper> _mockMapper;
+    private readonly Mock<IGoogleDriveStorageService> _mockGoogleDriveStorageService;
     private readonly Mock<ILoggerService> _mockLoggerService;
     private readonly CannotFindLocalizerMock _cannotFindLocalizerMock;
     private readonly NoPermissionsLocalizerMock _noPermissionsLocalizerMock;
@@ -27,6 +28,7 @@ public class DeleteCourseHandlerTests
 
         _mockRepository = new Mock<IRepositoryWrapper>();
         _mockMapper = new Mock<IMapper>();
+        _mockGoogleDriveStorageService = new Mock<IGoogleDriveStorageService>();
         _mockLoggerService = new Mock<ILoggerService>();
         _cannotFindLocalizerMock = new CannotFindLocalizerMock();
         _noPermissionsLocalizerMock = new NoPermissionsLocalizerMock();
@@ -38,6 +40,7 @@ public class DeleteCourseHandlerTests
         _sut = new DeleteCourseHandler(
             _mockMapper.Object,
             _mockRepository.Object,
+            _mockGoogleDriveStorageService.Object,
             _mockLoggerService.Object,
             _cannotFindLocalizerMock,
             _noPermissionsLocalizerMock);
