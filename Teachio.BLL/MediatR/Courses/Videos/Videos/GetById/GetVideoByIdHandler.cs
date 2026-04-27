@@ -68,6 +68,7 @@ public class GetVideoByIdHandler : IRequestHandler<GetVideoByIdQuery, Result<Vid
             .Include(v => v.Section)
                 .ThenInclude(s => s!.Course)
                     .ThenInclude(c => c!.OwnerUser)
+            .Include(v => v.VideoFile)
             .Include(v => v.VideoProgress);
     }
 }

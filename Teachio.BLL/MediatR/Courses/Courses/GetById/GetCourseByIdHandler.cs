@@ -85,6 +85,9 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
         return query
             .Include(c => c.Sections)
                 .ThenInclude(s => s.Videos)
+                    .ThenInclude(v => v.VideoFile)
+            .Include(c => c.Sections)
+                .ThenInclude(s => s.Videos)
                     .ThenInclude(v => v.VideoProgress);
     }
 }

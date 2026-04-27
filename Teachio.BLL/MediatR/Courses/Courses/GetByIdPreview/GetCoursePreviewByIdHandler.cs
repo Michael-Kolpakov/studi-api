@@ -65,6 +65,7 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
         return query
             .Include(c => c.OwnerUser)
             .Include(c => c.Sections)
-                .ThenInclude(v => v.Videos);
+                .ThenInclude(v => v.Videos)
+                    .ThenInclude(v => v.VideoFile!);
     }
 }

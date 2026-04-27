@@ -1,12 +1,16 @@
+using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
 using FluentResults;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
 using Teachio.DAL.Repositories.Interfaces.Base;
+using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Teachio.BLL.MediatR.Courses.Videos.Videos.Update;
 
@@ -41,6 +45,7 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
 
         var existingVideo = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.VideoUpdateRequestDto.Id,
+            IncludeVideoRelatedEntities,
             cancellationToken: cancellationToken);
 
         if (existingVideo is null)
@@ -110,5 +115,13 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
         var videoResponseDto = _mapper.Map<VideoResponseDto>(existingVideo);
 
         return Result.Ok(videoResponseDto);
+    }
+
+    [ExcludeFromCodeCoverage]
+    private static IIncludableQueryable<VideoEntity, object> IncludeVideoRelatedEntities(IQueryable<VideoEntity> query)
+    {
+        return query
+            .Include(v => v.VideoFile)
+            .Include(v => v.VideoProgress);
     }
 }
