@@ -4,6 +4,16 @@ public static class EntityConstants
 {
     public const int MaxVideoDurationSeconds = 3600;
 
+    public const long MaxVideoFileSizeBytes = 2L * 1024 * 1024 * 1024; // 2 GB
+
+    public const int MaxVideoTitleLength = 60;
+
+    public const int MinVideoResolution = 480;
+
+    public const int MaxVideoResolution = 1440;
+
+    public const int MaxVideoFileNameLength = 110;
+
     public const int MaxSectionsPerCourse = 35;
 
     public const int MaxVideosPerSection = 40;
@@ -22,5 +32,13 @@ public static class EntityConstants
     [
         "video/mp4",
         "video/quicktime"
+    ];
+
+    public static readonly int[] AllowedVideoResolutions =
+    [
+        480,
+        720,
+        1080,
+        1440
     ];
 }

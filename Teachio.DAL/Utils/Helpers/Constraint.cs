@@ -70,6 +70,24 @@ public static class Constraint
         return $"{sqlColumnName} IN ({string.Join(", ", escapedValues)})";
     }
 
+    public static string CreateSqlAllowedValuesCheck(string columnName, IEnumerable<int> allowedValues)
+    {
+        var sqlColumnName = EscapeSqlColumnName(columnName);
+        ArgumentNullException.ThrowIfNull(allowedValues);
+
+        var normalizedValues = allowedValues
+            .Distinct()
+            .OrderBy(value => value)
+            .ToList();
+
+        if (normalizedValues.Count == 0)
+        {
+            throw new ArgumentException("At least one allowed value must be provided.", nameof(allowedValues));
+        }
+
+        return $"{sqlColumnName} IN ({string.Join(", ", normalizedValues)})";
+    }
+
     private static string EscapeSqlColumnName(string columnName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(columnName);
