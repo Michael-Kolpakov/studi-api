@@ -21,7 +21,7 @@ public static class VideoConfiguration
 
             typeBuilder.Property(v => v.Title)
                 .IsRequired()
-                .HasMaxLength(60);
+                .HasMaxLength(EntityConstants.MaxVideoTitleLength);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(

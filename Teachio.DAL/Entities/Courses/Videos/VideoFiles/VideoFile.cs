@@ -12,6 +12,8 @@ public class VideoFile
 
     public int DurationSeconds { get; set; }
 
+    public int Resolution { get; set; }
+
     public Guid VideoId { get; set; }
 
     public Video? Video { get; set; }

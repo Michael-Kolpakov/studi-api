@@ -20,7 +20,7 @@ public static class VideoFileConfiguration
 
             typeBuilder.Property(v => v.VideoName)
                 .IsRequired()
-                .HasMaxLength(110);
+                .HasMaxLength(EntityConstants.MaxVideoFileNameLength);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
@@ -43,6 +43,14 @@ public static class VideoFileConfiguration
                 t.HasCheckConstraint(
                     $"CK_{nameof(VideoFile)}_{nameof(VideoFile.DurationSeconds)}_{nameof(CheckConstraintType.Range)}",
                     Constraint.CreateSqlRangeCheck(nameof(VideoFile.DurationSeconds), 0, EntityConstants.MaxVideoDurationSeconds)));
+
+            typeBuilder.Property(v => v.Resolution)
+                .IsRequired();
+
+            typeBuilder.ToTable(t =>
+                t.HasCheckConstraint(
+                    $"CK_{nameof(VideoFile)}_{nameof(VideoFile.Resolution)}_{nameof(CheckConstraintType.AllowedValues)}",
+                    Constraint.CreateSqlAllowedValuesCheck(nameof(VideoFile.Resolution), EntityConstants.AllowedVideoResolutions)));
 
             typeBuilder.Property(vp => vp.VideoId)
                 .IsRequired();

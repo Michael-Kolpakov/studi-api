@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using Teachio.BLL.Dto.Courses.Courses.Request;
 using Teachio.BLL.Dto.Courses.Sections.Request;
-using Teachio.BLL.Dto.Courses.Videos.Videos.Request;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Sections;
-using Teachio.DAL.Entities.Courses.Videos.Videos;
 
 namespace Teachio.BLL.Utils.MappingResolvers;
 
@@ -18,8 +16,6 @@ public class NameFromTitleResolver : IValueResolver<object, object, string>
                 CreateNameFromTitle(courseSource.Title),
             (SectionCreateUpdateRequestDto sectionSource, Section) =>
                 CreateNameFromTitle(sectionSource.Title),
-            (VideoCreateUpdateRequestDto videoSource, Video) =>
-                CreateNameFromTitle(videoSource.Title),
             _ => throw new ArgumentException(
                 $"Unknown source '{source.GetType().Name}' and destination '{destination.GetType().Name}' types combination.")
         };

@@ -24,10 +24,22 @@ public class VideoProfile : Profile
         CreateMap<VideoEntity, VideoResponseDto>()
             .ForMember(
                 dest => dest.VideoRelativePath,
-                opt => opt.MapFrom<RelativePathResolver>());
+                opt => opt.MapFrom<RelativePathResolver>())
+            .ForMember(
+                dest => dest.ContentType,
+                opt => opt.MapFrom(src => src.VideoFile == null ? null : src.VideoFile.ContentType))
+            .ForMember(
+                dest => dest.DurationSeconds,
+                opt => opt.MapFrom(src => src.VideoFile == null ? 0 : src.VideoFile.DurationSeconds));
 
-        CreateMap<VideoEntity, VideoPreviewResponseDto>();
+        CreateMap<VideoEntity, VideoPreviewResponseDto>()
+            .ForMember(
+                dest => dest.DurationSeconds,
+                opt => opt.MapFrom(src => src.VideoFile == null ? 0 : src.VideoFile.DurationSeconds));
 
-        CreateMap<VideoEntity, VideoShortResponseDto>();
+        CreateMap<VideoEntity, VideoShortResponseDto>()
+            .ForMember(
+                dest => dest.DurationSeconds,
+                opt => opt.MapFrom(src => src.VideoFile == null ? 0 : src.VideoFile.DurationSeconds));
     }
 }
