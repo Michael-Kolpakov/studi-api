@@ -6,7 +6,7 @@ public static class VideosRelativeRoutes
 
     public const string Create = "create";
 
-    public const string UploadVideo = "upload-video";
+    public const string Upload = "upload";
 
     public const string Update = "update";
 
