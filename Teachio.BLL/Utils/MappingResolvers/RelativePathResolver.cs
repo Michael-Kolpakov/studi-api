@@ -19,12 +19,17 @@ public class RelativePathResolver : IValueResolver<object, object, string?>
         };
     }
 
-    private static string CreateThumbnailRelativePath(Course source)
+    private static string? CreateThumbnailRelativePath(Course source)
     {
+        if (source.ThumbnailFile is null)
+        {
+            return null;
+        }
+
         return HandlerConstants.ThumbnailRelativePathTemplate
             .Replace("{AppUser}", source.OwnerUser.Email)
             .Replace("{CourseName}", source.CourseName)
-            .Replace("{ThumbnailName}", source.ThumbnailName);
+            .Replace("{ThumbnailName}", source.ThumbnailFile.ThumbnailName);
     }
 
     private static string? CreateVideoRelativePath(Video source)

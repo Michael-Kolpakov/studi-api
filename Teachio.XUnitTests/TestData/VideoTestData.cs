@@ -10,8 +10,7 @@ public static class VideoTestData
     public static Video GetVideo(
         int videoNumber,
         Guid sectionId,
-        string title = "Title of a Video",
-        int durationSeconds = 1260)
+        string title = "Title of a Video")
     {
         var actualTitle = string.Join(" ", title, videoNumber);
 

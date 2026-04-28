@@ -76,7 +76,6 @@ public class UpdateCourseHandlerTests
             ownerId: request.RequestingUserId,
             title: "Old Title",
             description: "Old Description",
-            thumbnailName: "old-title.png",
             sectionsCount: 0,
             videosCount: 0);
 
@@ -84,7 +83,6 @@ public class UpdateCourseHandlerTests
             courseId: courseUpdateRequestDto.Id,
             title: courseUpdateRequestDto.Title,
             description: courseUpdateRequestDto.Description!,
-            thumbnailName: courseUpdateRequestDto.ThumbnailName,
             sectionsCount: 0,
             videosCount: 0);
 

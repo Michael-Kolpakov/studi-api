@@ -75,7 +75,6 @@ public class DeleteCourseHandlerTests
             ownerId: request.RequestingUserId,
             title: "Title of a Course",
             description: "Description of a Course",
-            thumbnailName: "title-of-a-course.png",
             sectionsCount: 0,
             videosCount: 0);
 

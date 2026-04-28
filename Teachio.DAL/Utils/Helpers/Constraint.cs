@@ -43,6 +43,62 @@ public static class Constraint
         return $"{sqlColumnName} >= {minValue} AND {sqlColumnName} <= {maxValue}";
     }
 
+    public static string CreateSqlAspectRatioRangeCheck(
+        string columnName,
+        int minWidth,
+        int maxWidth,
+        int minHeight,
+        int maxHeight,
+        int widthRatio,
+        int heightRatio)
+    {
+        var sqlColumnName = EscapeSqlColumnName(columnName);
+
+        if (minWidth > maxWidth)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(minWidth),
+                minWidth,
+                "Minimum width cannot be greater than maximum width.");
+        }
+
+        if (minHeight > maxHeight)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(minHeight),
+                minHeight,
+                "Minimum height cannot be greater than maximum height.");
+        }
+
+        if (widthRatio <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(widthRatio),
+                widthRatio,
+                "Width ratio must be positive.");
+        }
+
+        if (heightRatio <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(heightRatio),
+                heightRatio,
+                "Height ratio must be positive.");
+        }
+
+        var indexExpression = $"CHARINDEX('x', {sqlColumnName})";
+        var widthExpression = $"TRY_CONVERT(int, LEFT({sqlColumnName}, {indexExpression} - 1))";
+        var heightExpression = $"TRY_CONVERT(int, SUBSTRING({sqlColumnName}, {indexExpression} + 1, LEN({sqlColumnName})))";
+
+        return $"{indexExpression} > 1 AND "
+            + $"{indexExpression} < LEN({sqlColumnName}) AND "
+            + $"CHARINDEX('x', {sqlColumnName}, {indexExpression} + 1) = 0 AND "
+            + $"{widthExpression} IS NOT NULL AND {heightExpression} IS NOT NULL AND "
+            + $"{widthExpression} >= {minWidth} AND {widthExpression} <= {maxWidth} AND "
+            + $"{heightExpression} >= {minHeight} AND {heightExpression} <= {maxHeight} AND "
+            + $"{widthExpression} * {heightRatio} = {heightExpression} * {widthRatio}";
+    }
+
     public static string CreateSqlAllowedValuesCheck(string columnName, IEnumerable<string> allowedValues)
     {
         var sqlColumnName = EscapeSqlColumnName(columnName);
@@ -143,5 +199,6 @@ public enum CheckConstraintType
     Regex,
     NonNegative,
     Range,
-    AllowedValues
+    AllowedValues,
+    AspectRatioRange
 }

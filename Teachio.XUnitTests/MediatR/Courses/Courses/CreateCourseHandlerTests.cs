@@ -73,7 +73,6 @@ public class CreateCourseHandlerTests
             ownerId: ownerId,
             title: courseCreateRequestDto.Title,
             description: courseCreateRequestDto.Description!,
-            thumbnailName: courseCreateRequestDto.ThumbnailName,
             sectionsCount: 0,
             videosCount: 0);
 
@@ -105,7 +104,6 @@ public class CreateCourseHandlerTests
         var course = CourseTestData.GetCourse(
             title: courseCreateRequestDto.Title,
             description: courseCreateRequestDto.Description!,
-            thumbnailName: courseCreateRequestDto.ThumbnailName,
             sectionsCount: 0,
             videosCount: 0);
 

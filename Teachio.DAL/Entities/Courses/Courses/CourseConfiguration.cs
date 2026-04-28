@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Entities.Courses.Sections;
+using Teachio.DAL.Entities.Courses.ThumbnailFiles;
 using Teachio.DAL.Entities.Shared;
 using Teachio.DAL.Entities.Users;
 using Teachio.DAL.Utils.Constants;
@@ -46,15 +47,6 @@ public static class CourseConfiguration
                     $"CK_{nameof(Course)}_{nameof(Course.CourseName)}_{nameof(CheckConstraintType.Regex)}",
                     Constraint.CreateSqlRegexCheck(nameof(Course.CourseName), ValidationRule.Name)));
 
-            typeBuilder.Property(c => c.ThumbnailName)
-                .IsRequired()
-                .HasMaxLength(110);
-
-            typeBuilder.ToTable(t =>
-                t.HasCheckConstraint(
-                    $"CK_{nameof(Course)}_{nameof(Course.ThumbnailName)}_{nameof(CheckConstraintType.Regex)}",
-                    Constraint.CreateSqlRegexCheck(nameof(Course.ThumbnailName), ValidationRule.MediaName)));
-
             typeBuilder.Property(s => s.SectionsCount)
                 .IsRequired()
                 .HasDefaultValue(0);
@@ -89,6 +81,12 @@ public static class CourseConfiguration
             .HasOne<AppUser>(course => course.OwnerUser)
             .WithMany(appUser => appUser.OwnedCourses)
             .HasForeignKey(course => course.OwnerUserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Course>()
+            .HasOne<ThumbnailFile>(course => course.ThumbnailFile)
+            .WithOne(thumbnailFile => thumbnailFile.Course)
+            .HasForeignKey<ThumbnailFile>(thumbnailFile => thumbnailFile.CourseId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Course>()

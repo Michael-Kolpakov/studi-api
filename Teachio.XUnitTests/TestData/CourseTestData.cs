@@ -14,8 +14,7 @@ public static class CourseTestData
         int sectionsCount = 2,
         int videosCount = 2,
         string title = "Title of a Course",
-        string description = "Description for a Course",
-        string thumbnailName = "title-of-a-course.png")
+        string description = "Description for a Course")
     {
         var id = courseId ?? Guid.NewGuid();
         var ownerUserId = ownerId ?? Guid.NewGuid();
@@ -29,7 +28,6 @@ public static class CourseTestData
             Title = actualTitle,
             Description = description,
             CourseName = string.Join("-", actualTitle.Trim().ToLowerInvariant().Split(" ", StringSplitOptions.RemoveEmptyEntries)),
-            ThumbnailName = thumbnailName,
             OwnerUserId = ownerUserId,
             OwnerUser = AppUserTestData.GetUser(ownerUserId),
             Sections = Enumerable.Range(1, sectionsCount).Select(i => SectionTestData.GetSection(i, videosCount, id)).ToList()

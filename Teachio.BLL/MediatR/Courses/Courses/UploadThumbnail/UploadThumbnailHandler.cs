@@ -13,8 +13,7 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
     [
         "jpg",
         "jpeg",
-        "png",
-        "webp"
+        "png"
     ];
 
     private readonly ILoggerService _logger;

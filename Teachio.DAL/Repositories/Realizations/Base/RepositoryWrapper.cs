@@ -2,12 +2,14 @@
 using Teachio.DAL.Repositories.Interfaces.Base;
 using Teachio.DAL.Repositories.Interfaces.Courses.Courses;
 using Teachio.DAL.Repositories.Interfaces.Courses.Sections;
+using Teachio.DAL.Repositories.Interfaces.Courses.ThumbnailFiles;
 using Teachio.DAL.Repositories.Interfaces.Courses.Videos.VideoFiles;
 using Teachio.DAL.Repositories.Interfaces.Courses.Videos.VideoProgress;
 using Teachio.DAL.Repositories.Interfaces.Courses.Videos.Videos;
 using Teachio.DAL.Repositories.Interfaces.Users;
 using Teachio.DAL.Repositories.Realizations.Courses.Courses;
 using Teachio.DAL.Repositories.Realizations.Courses.Sections;
+using Teachio.DAL.Repositories.Realizations.Courses.ThumbnailFiles;
 using Teachio.DAL.Repositories.Realizations.Courses.Videos.VideoFiles;
 using Teachio.DAL.Repositories.Realizations.Courses.Videos.VideoProgress;
 using Teachio.DAL.Repositories.Realizations.Courses.Videos.Videos;
@@ -20,6 +22,8 @@ public class RepositoryWrapper : IRepositoryWrapper
     private readonly TeachioDbContext _dbContext;
 
     private ICoursesRepository? _coursesRepository;
+
+    private IThumbnailFilesRepository? _thumbnailFilesRepository;
 
     private ISectionsRepository? _sectionsRepository;
 
@@ -38,6 +42,9 @@ public class RepositoryWrapper : IRepositoryWrapper
 
     public ICoursesRepository CoursesRepository
         => _coursesRepository ??= new CoursesRepository(_dbContext);
+
+    public IThumbnailFilesRepository ThumbnailFilesRepository
+        => _thumbnailFilesRepository ??= new ThumbnailFilesRepository(_dbContext);
 
     public ISectionsRepository SectionsRepository
         => _sectionsRepository ??= new SectionsRepository(_dbContext);

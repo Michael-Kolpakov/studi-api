@@ -1,5 +1,6 @@
 ﻿using Teachio.DAL.Repositories.Interfaces.Courses.Courses;
 using Teachio.DAL.Repositories.Interfaces.Courses.Sections;
+using Teachio.DAL.Repositories.Interfaces.Courses.ThumbnailFiles;
 using Teachio.DAL.Repositories.Interfaces.Courses.Videos.VideoFiles;
 using Teachio.DAL.Repositories.Interfaces.Courses.Videos.VideoProgress;
 using Teachio.DAL.Repositories.Interfaces.Courses.Videos.Videos;
@@ -10,6 +11,8 @@ namespace Teachio.DAL.Repositories.Interfaces.Base;
 public interface IRepositoryWrapper
 {
     ICoursesRepository CoursesRepository { get; }
+
+    IThumbnailFilesRepository ThumbnailFilesRepository { get; }
 
     ISectionsRepository SectionsRepository { get; }
 

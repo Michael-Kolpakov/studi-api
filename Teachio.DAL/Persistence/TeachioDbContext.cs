@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Sections;
+using Teachio.DAL.Entities.Courses.ThumbnailFiles;
 using Teachio.DAL.Entities.Courses.Videos.VideoFiles;
 using Teachio.DAL.Entities.Courses.Videos.VideoProgress;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
@@ -28,6 +29,8 @@ public class TeachioDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, G
     }
 
     public DbSet<Course> Courses { get; set; } = null!;
+
+    public DbSet<ThumbnailFile> ThumbnailFiles { get; set; } = null!;
 
     public DbSet<Section> Sections { get; set; } = null!;
 
@@ -62,6 +65,7 @@ public class TeachioDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, G
         base.OnModelCreating(builder);
 
         builder.ConfigureCourses();
+        builder.ConfigureThumbnailFiles();
         builder.ConfigureSections();
         builder.ConfigureVideos();
         builder.ConfigureVideoFiles();

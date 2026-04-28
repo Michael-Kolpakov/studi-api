@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Sections;
+using Teachio.DAL.Entities.Courses.ThumbnailFiles;
 using Teachio.DAL.Entities.Courses.Videos.VideoFiles;
 using Teachio.DAL.Entities.Courses.Videos.VideoProgress;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
@@ -36,6 +37,7 @@ public static class TeachioDbSeed
         await SeedEntityAsync(dbContext, dbContext.AppUsers, nameof(AppUser), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.Courses, nameof(Course), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.UserCourses, nameof(UserCourse), logger, cancellationToken);
+        await SeedEntityAsync(dbContext, dbContext.ThumbnailFiles, nameof(ThumbnailFile), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.Sections, nameof(Section), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.Videos, nameof(Video), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.VideoFiles, nameof(VideoFile), logger, cancellationToken);

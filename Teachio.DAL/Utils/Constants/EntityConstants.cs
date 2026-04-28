@@ -12,6 +12,18 @@ public static class EntityConstants
 
     public const int MaxVideoResolution = 1440;
 
+    public const int MinThumbnailWidth = 1280;
+
+    public const int MaxThumbnailWidth = 2560;
+
+    public const int MinThumbnailHeight = 720;
+
+    public const int MaxThumbnailHeight = 1440;
+
+    public const int ThumbnailAspectRatioWidth = 16;
+
+    public const int ThumbnailAspectRatioHeight = 9;
+
     public const int MaxVideoFileNameLength = 110;
 
     public const int MaxSectionsPerCourse = 35;
@@ -27,6 +39,12 @@ public static class EntityConstants
     public const string MediaNameRegexPattern = "^[A-Za-z0-9.,!?-]+$";
 
     public const string ProcessingErrorRegexPattern = "^[A-Za-z0-9 .,]+$";
+
+    public static readonly string[] AllowedThumbnailContentTypes =
+    [
+        "image/jpeg",
+        "image/png"
+    ];
 
     public static readonly string[] AllowedVideoContentTypes =
     [
