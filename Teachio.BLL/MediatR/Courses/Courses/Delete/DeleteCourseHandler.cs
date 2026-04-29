@@ -84,6 +84,14 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
         // TODO: address Google Drive API (or CDN in the future) to delete thumbnail image
         var ownerUserEmail = course.OwnerUser.Email;
 
+        var thumbnailDeletionResult = await DeleteCourseThumbnailAsync(course, ownerUserEmail!, request, cancellationToken);
+        if (thumbnailDeletionResult.IsFailed)
+        {
+            var errorMessage = thumbnailDeletionResult.Errors[0].Message;
+
+            return Result.Fail(errorMessage);
+        }
+
         var courseVideoFiles = course.Sections
             .SelectMany(section => section.Videos)
             .Where(video => video.VideoFile is not null)
@@ -132,5 +140,33 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
             .Include(c => c.Sections)
                 .ThenInclude(s => s.Videos)
                     .ThenInclude(v => v.VideoProgress);
+    }
+
+    private async Task<Result> DeleteCourseThumbnailAsync(
+        CourseEntity course,
+        string ownerUserEmail,
+        DeleteCourseCommand request,
+        CancellationToken cancellationToken)
+    {
+        var courseThumbnailFile = course.ThumbnailFile;
+        if (courseThumbnailFile is null)
+        {
+            return Result.Ok();
+        }
+
+        var deleteGoogleDriveFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
+            ThumbnailStoragePathHelper.BuildThumbnailFolderSegments(ownerUserEmail, course.CourseName),
+            courseThumbnailFile.ThumbnailName,
+            cancellationToken);
+
+        if (deleteGoogleDriveFileResult.IsFailed)
+        {
+            var errorMessage = deleteGoogleDriveFileResult.Errors[0].Message;
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
+        return Result.Ok();
     }
 }
