@@ -1,56 +1,397 @@
-﻿using FluentResults;
+﻿using System.Text;
+using FluentResults;
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Courses.Response;
+using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
+using Teachio.BLL.SharedResource;
+using Teachio.BLL.Utils.Helpers;
 using Teachio.BLL.Utils.MappingResolvers;
+using Teachio.DAL.Entities.Courses.ThumbnailFiles;
+using Teachio.DAL.Repositories.Interfaces.Base;
+using Teachio.DAL.Utils.Constants;
 
 namespace Teachio.BLL.MediatR.Courses.Courses.UploadThumbnail;
 
 public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Result<ThumbnailUploadResponseDto>>
 {
-    // TODO: move validation logic to the separate DTO model Attribute
-    private static readonly string[] _allowedContentTypes =
-    [
-        "jpg",
-        "jpeg",
-        "png"
-    ];
-
+    private readonly IRepositoryWrapper _repositoryWrapper;
+    private readonly IGoogleDriveStorageService _googleDriveStorageService;
+    private readonly IThumbnailMetadataService _thumbnailMetadataService;
     private readonly ILoggerService _logger;
+    private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
+    private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
+    private readonly IStringLocalizer<ThumbnailUploadSharedResource> _stringLocalizerThumbnailUpload;
 
-    public UploadThumbnailHandler(ILoggerService logger)
+    public UploadThumbnailHandler(
+        IRepositoryWrapper repositoryWrapper,
+        IGoogleDriveStorageService googleDriveStorageService,
+        IThumbnailMetadataService thumbnailMetadataService,
+        ILoggerService logger,
+        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
+        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
+        IStringLocalizer<ThumbnailUploadSharedResource> stringLocalizerThumbnailUpload)
     {
+        _repositoryWrapper = repositoryWrapper;
+        _googleDriveStorageService = googleDriveStorageService;
+        _thumbnailMetadataService = thumbnailMetadataService;
         _logger = logger;
+        _stringLocalizerCannotFind = stringLocalizerCannotFind;
+        _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
+        _stringLocalizerThumbnailUpload = stringLocalizerThumbnailUpload;
     }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public async Task<Result<ThumbnailUploadResponseDto>> Handle(UploadThumbnailCommand request, CancellationToken cancellationToken)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to upload a thumbnail of a course");
+        _logger.LogInformation($"Entered '{GetType().Name}' to upload a thumbnail for course with Id: {request.ThumbnailUploadRequestDto.CourseId}");
 
-        var fileName = NameFromTitleResolver.CreateNameFromTitle(request.ThumbnailUploadRequestDto.ThumbnailFile.FileName);
-        var fileContentType = request.ThumbnailUploadRequestDto.ThumbnailFile.ContentType;
-
-        if (!_allowedContentTypes.Contains(fileContentType))
+        if (request.ThumbnailUploadRequestDto.ThumbnailFile.Length == 0)
         {
-            var errorMessage = $"Unsupported thumbnail content type. Allowed types are: {string.Join(", ", _allowedContentTypes)}";
+            var errorMessage = _stringLocalizerThumbnailUpload[
+                nameof(ThumbnailUploadSharedResource_en.UploadedThumbnailFileIsEmpty)
+            ].Value;
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);
         }
 
-        var thumbnailName = string.Join(".", fileName, fileContentType);
-
-        // TODO: address Google Drive API (or CDN in the future) to upload thumbnail image
-
-        // TODO: save thumbnail metadata to the database
-
-        var thumbnailUploadResponseDto = new ThumbnailUploadResponseDto()
+        if (request.ThumbnailUploadRequestDto.ThumbnailFile.Length > EntityConstants.MaxThumbnailFileSizeBytes)
         {
-            ThumbnailName = thumbnailName
-        };
+            var maxThumbnailFileSizeMegabytes = EntityConstants.MaxThumbnailFileSizeBytes / (1024L * 1024L);
+            var errorMessage = _stringLocalizerThumbnailUpload[
+                nameof(ThumbnailUploadSharedResource_en.UploadedThumbnailFileSizeExceedsLimit),
+                maxThumbnailFileSizeMegabytes
+            ].Value;
 
-        return Result.Ok(thumbnailUploadResponseDto);
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
+        var uploadedFileTitle = Path.GetFileNameWithoutExtension(request.ThumbnailUploadRequestDto.ThumbnailFile.FileName);
+
+        if (string.IsNullOrWhiteSpace(uploadedFileTitle))
+        {
+            var errorMessage = _stringLocalizerThumbnailUpload[
+                nameof(ThumbnailUploadSharedResource_en.UploadedThumbnailFileNameIsEmpty)
+            ].Value;
+
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
+        var normalizedFileTitle = NormalizeThumbnailTitle(uploadedFileTitle);
+
+        if (string.IsNullOrWhiteSpace(normalizedFileTitle))
+        {
+            var errorMessage = _stringLocalizerThumbnailUpload[
+                nameof(ThumbnailUploadSharedResource_en.UploadedThumbnailFileTitleIsEmpty)
+            ].Value;
+
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
+        var uploadThumbnailContext = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultProjectedAsync(
+            x => new UploadThumbnailContext
+            {
+                CourseId = x.Id,
+                OwnerUserId = x.OwnerUserId,
+                OwnerUserEmail = x.OwnerUser!.Email,
+                CourseName = x.CourseName,
+                ExistingThumbnailName = x.ThumbnailFile == null
+                    ? null
+                    : x.ThumbnailFile.ThumbnailName
+            },
+            x => x.Id == request.ThumbnailUploadRequestDto.CourseId,
+            cancellationToken);
+
+        if (uploadThumbnailContext is null)
+        {
+            var errorMessage = _stringLocalizerCannotFind[
+                nameof(CannotFindSharedResource_en.CannotFindCourseById),
+                request.ThumbnailUploadRequestDto.CourseId
+            ].Value;
+
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
+        if (uploadThumbnailContext.OwnerUserId != request.RequestingUserId)
+        {
+            var logErrorMessage = _stringLocalizerNoPermissions[
+                nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateCourseForUserWithId),
+                request.ThumbnailUploadRequestDto.CourseId,
+                request.RequestingUserId
+            ].Value;
+
+            _logger.LogError(request, logErrorMessage);
+
+            var responseErrorMessage = _stringLocalizerNoPermissions[
+                nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateCourseForUser),
+                request.ThumbnailUploadRequestDto.CourseId
+            ].Value;
+
+            return Result.Fail(responseErrorMessage);
+        }
+
+        var temporaryFilePath = CreateTemporaryFilePath(request.ThumbnailUploadRequestDto.ThumbnailFile.FileName);
+        string? uploadedGoogleDriveFileId = null;
+
+        try
+        {
+            await SaveUploadedFileToTemporaryStorageAsync(
+                request.ThumbnailUploadRequestDto.ThumbnailFile,
+                temporaryFilePath,
+                cancellationToken);
+
+            var metadataResult = await _thumbnailMetadataService.GetMetadataAsync(temporaryFilePath, cancellationToken);
+
+            if (metadataResult.IsFailed)
+            {
+                var errorMessage = metadataResult.Errors[0].Message;
+                _logger.LogError(request, errorMessage);
+
+                return Result.Fail(errorMessage);
+            }
+
+            var thumbnailName = BuildThumbnailName(normalizedFileTitle, metadataResult.Value.FileExtension);
+
+            if (thumbnailName.Length > EntityConstants.MaxThumbnailFileNameLength)
+            {
+                var errorMessage = _stringLocalizerThumbnailUpload[
+                    nameof(ThumbnailUploadSharedResource_en.GeneratedThumbnailFileNameTooLong),
+                    EntityConstants.MaxThumbnailFileNameLength
+                ].Value;
+                _logger.LogError(request, errorMessage);
+
+                return Result.Fail(errorMessage);
+            }
+
+            if (!string.IsNullOrWhiteSpace(uploadThumbnailContext.ExistingThumbnailName))
+            {
+                var deleteExistingFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
+                    ThumbnailStoragePathHelper.BuildThumbnailFolderSegments(
+                        uploadThumbnailContext.OwnerUserEmail!,
+                        uploadThumbnailContext.CourseName),
+                    uploadThumbnailContext.ExistingThumbnailName,
+                    cancellationToken);
+
+                if (deleteExistingFileResult.IsFailed)
+                {
+                    var errorMessage = deleteExistingFileResult.Errors[0].Message;
+                    _logger.LogError(request, errorMessage);
+
+                    return Result.Fail(errorMessage);
+                }
+            }
+
+            await using var uploadStream = new FileStream(
+                temporaryFilePath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                bufferSize: 81920,
+                useAsync: true);
+
+            var uploadResult = await _googleDriveStorageService.UploadFileAsync(
+                ThumbnailStoragePathHelper.BuildThumbnailFolderSegments(
+                    uploadThumbnailContext.OwnerUserEmail!,
+                    uploadThumbnailContext.CourseName),
+                thumbnailName,
+                metadataResult.Value.ContentType,
+                uploadStream,
+                cancellationToken);
+
+            if (uploadResult.IsFailed)
+            {
+                var errorMessage = uploadResult.Errors[0].Message;
+                _logger.LogError(request, errorMessage);
+
+                return Result.Fail(errorMessage);
+            }
+
+            uploadedGoogleDriveFileId = uploadResult.Value.FileId;
+
+            var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
+                x => x.Id == request.ThumbnailUploadRequestDto.CourseId,
+                cancellationToken: cancellationToken);
+
+            if (course is null)
+            {
+                var errorMessage = _stringLocalizerCannotFind[
+                    nameof(CannotFindSharedResource_en.CannotFindCourseById),
+                    request.ThumbnailUploadRequestDto.CourseId
+                ].Value;
+
+                _logger.LogError(request, errorMessage);
+
+                return Result.Fail(errorMessage);
+            }
+
+            var existingThumbnailFileEntity = await _repositoryWrapper.ThumbnailFilesRepository.GetSingleOrDefaultAsync(
+                x => x.CourseId == request.ThumbnailUploadRequestDto.CourseId,
+                cancellationToken: cancellationToken);
+
+            if (existingThumbnailFileEntity is null)
+            {
+                var newThumbnailFileEntity = new ThumbnailFile
+                {
+                    CourseId = course.Id,
+                    ThumbnailName = thumbnailName,
+                    ContentType = metadataResult.Value.ContentType,
+                    Resolution = metadataResult.Value.Resolution
+                };
+
+                await _repositoryWrapper.ThumbnailFilesRepository.CreateAsync(newThumbnailFileEntity, cancellationToken);
+            }
+            else
+            {
+                existingThumbnailFileEntity.ThumbnailName = thumbnailName;
+                existingThumbnailFileEntity.ContentType = metadataResult.Value.ContentType;
+                existingThumbnailFileEntity.Resolution = metadataResult.Value.Resolution;
+
+                _repositoryWrapper.ThumbnailFilesRepository.Update(existingThumbnailFileEntity);
+            }
+
+            await _repositoryWrapper.SaveChangesAsync(cancellationToken);
+
+            var thumbnailUploadResponseDto = new ThumbnailUploadResponseDto
+            {
+                ThumbnailName = thumbnailName,
+                ContentType = metadataResult.Value.ContentType,
+                Resolution = metadataResult.Value.Resolution,
+                CourseId = course.Id
+            };
+
+            return Result.Ok(thumbnailUploadResponseDto);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            var errorMessage = _stringLocalizerThumbnailUpload[
+                nameof(ThumbnailUploadSharedResource_en.UploadThumbnailProcessingFailed)
+            ].Value;
+            _logger.LogError(request, errorMessage, ex.ToString());
+
+            if (!string.IsNullOrWhiteSpace(uploadedGoogleDriveFileId))
+            {
+                var rollbackResult = await _googleDriveStorageService.DeleteFileAsync(uploadedGoogleDriveFileId, cancellationToken);
+
+                if (rollbackResult.IsFailed)
+                {
+                    var rollbackErrorMessage = _stringLocalizerThumbnailUpload[
+                        nameof(ThumbnailUploadSharedResource_en.UploadThumbnailRollbackFailed),
+                        uploadedGoogleDriveFileId,
+                        rollbackResult.Errors[0].Message
+                    ].Value;
+
+                    _logger.LogError(request, rollbackErrorMessage);
+                }
+            }
+
+            return Result.Fail(errorMessage);
+        }
+        finally
+        {
+            DeleteTemporaryFileIfExists(temporaryFilePath);
+        }
+    }
+
+    private static string CreateTemporaryFilePath(string sourceFileName)
+    {
+        var extension = Path.GetExtension(sourceFileName);
+
+        return Path.Combine(Path.GetTempPath(), $"teachio-thumbnail-{Guid.NewGuid():N}{extension}");
+    }
+
+    private static string BuildThumbnailName(string thumbnailTitle, string fileExtension)
+    {
+        var normalizedName = NameFromTitleResolver.CreateNameFromTitle(thumbnailTitle);
+
+        return $"{normalizedName}.{fileExtension}";
+    }
+
+    private static string NormalizeThumbnailTitle(string rawTitle)
+    {
+        var builder = new StringBuilder(rawTitle.Length);
+
+        foreach (var character in rawTitle)
+        {
+            if (IsAsciiLetterOrDigit(character)
+                || character == ' '
+                || character == ','
+                || character == '!'
+                || character == '?'
+                || character == '-')
+            {
+                builder.Append(character);
+            }
+            else
+            {
+                builder.Append(' ');
+            }
+        }
+
+        return string.Join(" ", builder.ToString().Split(' ', StringSplitOptions.RemoveEmptyEntries));
+    }
+
+    private static bool IsAsciiLetterOrDigit(char character)
+    {
+        return character is (>= 'A' and <= 'Z')
+            or (>= 'a' and <= 'z')
+            or (>= '0' and <= '9');
+    }
+
+    private static async Task SaveUploadedFileToTemporaryStorageAsync(
+        IFormFile uploadedFile,
+        string temporaryFilePath,
+        CancellationToken cancellationToken)
+    {
+        await using var temporaryFileStream = new FileStream(
+            temporaryFilePath,
+            FileMode.CreateNew,
+            FileAccess.Write,
+            FileShare.None,
+            bufferSize: 81920,
+            useAsync: true);
+
+        await uploadedFile.CopyToAsync(temporaryFileStream, cancellationToken);
+    }
+
+    private static void DeleteTemporaryFileIfExists(string temporaryFilePath)
+    {
+        try
+        {
+            if (File.Exists(temporaryFilePath))
+            {
+                File.Delete(temporaryFilePath);
+            }
+        }
+        catch
+        {
+            // Ignore temporary cleanup errors intentionally
+        }
+    }
+
+    private sealed class UploadThumbnailContext
+    {
+        public Guid CourseId { get; set; }
+
+        public Guid OwnerUserId { get; set; }
+
+        public string? OwnerUserEmail { get; set; }
+
+        public string CourseName { get; set; } = null!;
+
+        public string? ExistingThumbnailName { get; set; }
     }
 }

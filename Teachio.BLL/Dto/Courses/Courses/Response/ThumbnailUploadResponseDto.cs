@@ -3,4 +3,10 @@
 public class ThumbnailUploadResponseDto
 {
     public string ThumbnailName { get; set; } = null!;
+
+    public string ContentType { get; set; } = null!;
+
+    public string Resolution { get; set; } = null!;
+
+    public Guid CourseId { get; set; }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.Dto.Courses.Courses.Request.Create;
 using Teachio.BLL.Dto.Courses.Courses.Request.Update;
+using Teachio.BLL.Dto.Courses.Courses.Request.Upload;
 using Teachio.BLL.Dto.Courses.Courses.Response;
 using Teachio.BLL.MediatR.Courses.Courses.Create;
 using Teachio.BLL.MediatR.Courses.Courses.Delete;
@@ -85,18 +86,24 @@ public class CoursesController : BaseApiController
     }
 
     /// <summary>
-    /// Uploads a thumbnail for a course.
+    /// Uploads a thumbnail for an existing course.
     /// </summary>
     /// <param name="thumbnailUploadRequestDto">The data for uploading course thumbnail.</param>
     /// <returns>Returns the newly uploaded thumbnail unique identifier.</returns>
     [HttpPost(CoursesRelativeRoutes.UploadThumbnail)]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ThumbnailUploadResponseDto))]
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ThumbnailUploadResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UploadThumbnail([FromForm] ThumbnailUploadRequestDto thumbnailUploadRequestDto)
     {
-        return HandleResult(await Mediator.Send(new UploadThumbnailCommand(thumbnailUploadRequestDto)));
+        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
+        // var userId = GetUserIdOrThrow();
+        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
+
+        return HandleResult(await Mediator.Send(new UploadThumbnailCommand(thumbnailUploadRequestDto, userId)));
     }
 
     /// <summary>
