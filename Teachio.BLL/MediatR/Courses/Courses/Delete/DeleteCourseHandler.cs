@@ -84,7 +84,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
         // TODO: address Google Drive API (or CDN in the future) to delete thumbnail image
         var ownerUserEmail = course.OwnerUser.Email;
 
-        var thumbnailDeletionResult = await DeleteCourseThumbnailAsync(course, ownerUserEmail!, request, cancellationToken);
+        var thumbnailDeletionResult = await DeleteCourseThumbnailFromCDNAsync(course, ownerUserEmail!, request, cancellationToken);
         if (thumbnailDeletionResult.IsFailed)
         {
             var errorMessage = thumbnailDeletionResult.Errors[0].Message;
@@ -92,33 +92,12 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
             return Result.Fail(errorMessage);
         }
 
-        var courseVideoFiles = course.Sections
-            .SelectMany(section => section.Videos)
-            .Where(video => video.VideoFile is not null)
-            .Select(video => new
-            {
-                video.Section!.SectionName,
-                VideoFileName = video.VideoFile!.VideoName
-            })
-            .ToList();
-
-        foreach (var courseVideoFile in courseVideoFiles)
+        var videosDeletionResult = await DeleteCourseVideosFromCDNAsync(course, ownerUserEmail!, request, cancellationToken);
+        if (videosDeletionResult.IsFailed)
         {
-            var deleteGoogleDriveFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
-                VideoStoragePathHelper.BuildVideoFolderSegments(
-                    ownerUserEmail!,
-                    course.CourseName,
-                    courseVideoFile.SectionName),
-                courseVideoFile.VideoFileName,
-                cancellationToken);
+            var errorMessage = videosDeletionResult.Errors[0].Message;
 
-            if (deleteGoogleDriveFileResult.IsFailed)
-            {
-                var errorMessage = deleteGoogleDriveFileResult.Errors[0].Message;
-                _logger.LogError(request, errorMessage);
-
-                return Result.Fail(errorMessage);
-            }
+            return Result.Fail(errorMessage);
         }
 
         _repositoryWrapper.CoursesRepository.Delete(course);
@@ -142,7 +121,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
                     .ThenInclude(v => v.VideoProgress);
     }
 
-    private async Task<Result> DeleteCourseThumbnailAsync(
+    private async Task<Result> DeleteCourseThumbnailFromCDNAsync(
         CourseEntity course,
         string ownerUserEmail,
         DeleteCourseCommand request,
@@ -165,6 +144,44 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);
+        }
+
+        return Result.Ok();
+    }
+
+    private async Task<Result> DeleteCourseVideosFromCDNAsync(
+        CourseEntity course,
+        string ownerUserEmail,
+        DeleteCourseCommand request,
+        CancellationToken cancellationToken)
+    {
+        var courseVideoFiles = course.Sections
+            .SelectMany(section => section.Videos)
+            .Where(video => video.VideoFile is not null)
+            .Select(video => new
+            {
+                video.Section!.SectionName,
+                VideoFileName = video.VideoFile!.VideoName
+            })
+            .ToList();
+
+        foreach (var courseVideoFile in courseVideoFiles)
+        {
+            var deleteGoogleDriveFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
+                VideoStoragePathHelper.BuildVideoFolderSegments(
+                    ownerUserEmail,
+                    course.CourseName,
+                    courseVideoFile.SectionName),
+                courseVideoFile.VideoFileName,
+                cancellationToken);
+
+            if (deleteGoogleDriveFileResult.IsFailed)
+            {
+                var errorMessage = deleteGoogleDriveFileResult.Errors[0].Message;
+                _logger.LogError(request, errorMessage);
+
+                return Result.Fail(errorMessage);
+            }
         }
 
         return Result.Ok();

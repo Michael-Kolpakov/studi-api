@@ -81,30 +81,14 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
             return Result.Fail(responseErrorMessage);
         }
 
-        var sectionVideoFiles = section.Videos
-            .Where(video => video.VideoFile is not null)
-            .Select(video => video.VideoFile!)
-            .ToList();
-
         var ownerUserEmail = section.Course.OwnerUser.Email;
 
-        foreach (var sectionVideoFile in sectionVideoFiles)
+        var videosDeletionResult = await DeleteSectionVideosFromCDNAsync(section, ownerUserEmail!, request, cancellationToken);
+        if (videosDeletionResult.IsFailed)
         {
-            var deleteGoogleDriveFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
-                VideoStoragePathHelper.BuildVideoFolderSegments(
-                    ownerUserEmail!,
-                    section.Course.CourseName,
-                    section.SectionName),
-                sectionVideoFile.VideoName,
-                cancellationToken);
+            var errorMessage = videosDeletionResult.Errors[0].Message;
 
-            if (deleteGoogleDriveFileResult.IsFailed)
-            {
-                var errorMessage = deleteGoogleDriveFileResult.Errors[0].Message;
-                _logger.LogError(request, errorMessage);
-
-                return Result.Fail(errorMessage);
-            }
+            return Result.Fail(errorMessage);
         }
 
         _repositoryWrapper.SectionsRepository.Delete(section);
@@ -125,5 +109,38 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
                 .ThenInclude(v => v.VideoFile)
             .Include(s => s.Videos)
                 .ThenInclude(v => v.VideoProgress);
+    }
+
+    private async Task<Result> DeleteSectionVideosFromCDNAsync(
+        SectionEntity section,
+        string ownerUserEmail,
+        DeleteSectionCommand request,
+        CancellationToken cancellationToken)
+    {
+        var sectionVideoFiles = section.Videos
+            .Where(video => video.VideoFile is not null)
+            .Select(video => video.VideoFile!)
+            .ToList();
+
+        foreach (var sectionVideoFile in sectionVideoFiles)
+        {
+            var deleteGoogleDriveFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
+                VideoStoragePathHelper.BuildVideoFolderSegments(
+                    ownerUserEmail,
+                    section.Course!.CourseName,
+                    section.SectionName),
+                sectionVideoFile.VideoName,
+                cancellationToken);
+
+            if (deleteGoogleDriveFileResult.IsFailed)
+            {
+                var errorMessage = deleteGoogleDriveFileResult.Errors[0].Message;
+                _logger.LogError(request, errorMessage);
+
+                return Result.Fail(errorMessage);
+            }
+        }
+
+        return Result.Ok();
     }
 }

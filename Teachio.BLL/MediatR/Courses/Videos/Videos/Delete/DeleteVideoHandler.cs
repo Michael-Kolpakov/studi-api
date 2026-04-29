@@ -79,25 +79,12 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
             return Result.Fail(responseErrorMessage);
         }
 
-        if (video.VideoFile is not null)
+        var videoDeletionResult = await DeleteVideoFromCDNAsync(video, request, cancellationToken);
+        if (videoDeletionResult.IsFailed)
         {
-            var ownerUserEmail = video.Section.Course.OwnerUser.Email;
+            var errorMessage = videoDeletionResult.Errors[0].Message;
 
-            var deleteGoogleDriveFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
-                VideoStoragePathHelper.BuildVideoFolderSegments(
-                    ownerUserEmail!,
-                    video.Section.Course.CourseName,
-                    video.Section.SectionName),
-                video.VideoFile.VideoName,
-                cancellationToken);
-
-            if (deleteGoogleDriveFileResult.IsFailed)
-            {
-                var errorMessage = deleteGoogleDriveFileResult.Errors[0].Message;
-                _logger.LogError(request, errorMessage);
-
-                return Result.Fail(errorMessage);
-            }
+            return Result.Fail(errorMessage);
         }
 
         _repositoryWrapper.VideosRepository.Delete(video);
@@ -117,5 +104,36 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
                     .ThenInclude(c => c!.OwnerUser)
             .Include(v => v.VideoFile)
             .Include(v => v.VideoProgress);
+    }
+
+    private async Task<Result> DeleteVideoFromCDNAsync(
+        VideoEntity video,
+        DeleteVideoCommand request,
+        CancellationToken cancellationToken)
+    {
+        if (video.VideoFile is null)
+        {
+            return Result.Ok();
+        }
+
+        var ownerUserEmail = video.Section!.Course!.OwnerUser.Email;
+
+        var deleteGoogleDriveFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
+            VideoStoragePathHelper.BuildVideoFolderSegments(
+                ownerUserEmail!,
+                video.Section.Course.CourseName,
+                video.Section.SectionName),
+            video.VideoFile.VideoName,
+            cancellationToken);
+
+        if (deleteGoogleDriveFileResult.IsFailed)
+        {
+            var errorMessage = deleteGoogleDriveFileResult.Errors[0].Message;
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
+        return Result.Ok();
     }
 }
