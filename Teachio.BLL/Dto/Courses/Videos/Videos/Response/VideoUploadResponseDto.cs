@@ -2,6 +2,8 @@ namespace Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 
 public class VideoUploadResponseDto
 {
+    public Guid Id { get; set; }
+
     public string VideoName { get; set; } = null!;
 
     public string ContentType { get; set; } = null!;

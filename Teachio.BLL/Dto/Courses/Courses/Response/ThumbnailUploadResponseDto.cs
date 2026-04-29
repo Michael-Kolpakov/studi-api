@@ -2,6 +2,8 @@
 
 public class ThumbnailUploadResponseDto
 {
+    public Guid Id { get; set; }
+
     public string ThumbnailName { get; set; } = null!;
 
     public string ContentType { get; set; } = null!;

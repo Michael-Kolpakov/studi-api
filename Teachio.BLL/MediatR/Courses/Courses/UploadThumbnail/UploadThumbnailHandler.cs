@@ -238,9 +238,10 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
                 x => x.CourseId == request.ThumbnailUploadRequestDto.CourseId,
                 cancellationToken: cancellationToken);
 
+            ThumbnailFile? newThumbnailFileEntity = null;
             if (existingThumbnailFileEntity is null)
             {
-                var newThumbnailFileEntity = new ThumbnailFile
+                newThumbnailFileEntity = new ThumbnailFile
                 {
                     CourseId = course.Id,
                     ThumbnailName = thumbnailName,
@@ -263,6 +264,7 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
 
             var thumbnailUploadResponseDto = new ThumbnailUploadResponseDto
             {
+                Id = existingThumbnailFileEntity is not null ? existingThumbnailFileEntity.Id : newThumbnailFileEntity!.Id,
                 ThumbnailName = thumbnailName,
                 ContentType = metadataResult.Value.ContentType,
                 Resolution = metadataResult.Value.Resolution,

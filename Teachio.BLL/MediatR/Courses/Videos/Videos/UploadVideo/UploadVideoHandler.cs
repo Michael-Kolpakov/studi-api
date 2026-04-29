@@ -242,9 +242,10 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
                 x => x.VideoId == request.VideoUploadRequestDto.VideoId,
                 cancellationToken: cancellationToken);
 
+            VideoFile? newVideoFileEntity = null;
             if (existingVideoFileEntity is null)
             {
-                var newVideoFileEntity = new VideoFile
+                newVideoFileEntity = new VideoFile
                 {
                     VideoId = video.Id,
                     VideoName = videoName,
@@ -273,6 +274,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
 
             var videoUploadResponseDto = new VideoUploadResponseDto
             {
+                Id = existingVideoFileEntity is not null ? existingVideoFileEntity.Id : newVideoFileEntity!.Id,
                 VideoName = videoName,
                 ContentType = metadataResult.Value.ContentType,
                 DurationSeconds = metadataResult.Value.DurationSeconds,
