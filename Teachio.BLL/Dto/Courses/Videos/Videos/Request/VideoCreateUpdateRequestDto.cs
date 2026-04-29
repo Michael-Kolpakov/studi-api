@@ -11,6 +11,6 @@ public abstract class VideoCreateUpdateRequestDto
     public string Title { get; set; } = null!;
 
     [Required(ErrorMessage = "Required")]
-    [Range(0, EntityConstants.MaxVideosPerSection - 1, ErrorMessage = "Range")]
+    [Range(EntityConstants.MinNonNegativeValue, EntityConstants.MaxVideosPerSection - 1, ErrorMessage = "Range")]
     public int OrderIndex { get; set; }
 }

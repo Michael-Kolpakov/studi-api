@@ -2,11 +2,23 @@
 
 public static class EntityConstants
 {
+    #region Limits
+
     public const int MaxVideoDurationSeconds = 3600;
 
     public const long MaxVideoFileSizeBytes = 2L * 1024 * 1024 * 1024; // 2 GB
 
     public const int MaxVideoTitleLength = 60;
+
+    public const int MaxCourseTitleLength = 60;
+
+    public const int MaxCourseDescriptionLength = 1000;
+
+    public const int MaxCourseNameLength = 60;
+
+    public const int MaxSectionTitleLength = 60;
+
+    public const int MaxSectionNameLength = 60;
 
     public const int MinVideoResolution = 480;
 
@@ -24,11 +36,35 @@ public static class EntityConstants
 
     public const int ThumbnailAspectRatioHeight = 9;
 
+    public const int MaxThumbnailFileNameLength = 110;
+
+    public const int MaxThumbnailResolutionLength = 9;
+
+    public const int MaxMediaContentTypeLength = 20;
+
     public const int MaxVideoFileNameLength = 110;
+
+    public const int MaxVideoProcessingErrorLength = 100;
 
     public const int MaxSectionsPerCourse = 35;
 
     public const int MaxVideosPerSection = 40;
+
+    public const int MaxUserNameLength = 20;
+
+    public const int MaxUserSurnameLength = 30;
+
+    #endregion
+
+    #region Defaults
+
+    public const int MinNonNegativeValue = 0;
+
+    public const bool DefaultVideoProgressIsCompleted = false;
+
+    #endregion
+
+    #region RegexPatterns
 
     public const string TitleRegexPattern = "^[A-Za-z0-9 ,!?-]+$";
 
@@ -39,6 +75,10 @@ public static class EntityConstants
     public const string MediaNameRegexPattern = "^[A-Za-z0-9.,!?-]+$";
 
     public const string ProcessingErrorRegexPattern = "^[A-Za-z0-9 .,]+$";
+
+    #endregion
+
+    #region AllowedValues
 
     public static readonly string[] AllowedThumbnailContentTypes =
     [
@@ -59,4 +99,6 @@ public static class EntityConstants
         1080,
         1440
     ];
+
+    #endregion
 }

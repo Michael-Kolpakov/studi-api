@@ -12,6 +12,6 @@ public class VideoProgressUpdateRequestDto
     public bool IsCompleted { get; set; }
 
     [Required(ErrorMessage = "Required")]
-    [Range(0, EntityConstants.MaxVideoDurationSeconds, ErrorMessage = "Range")]
+    [Range(EntityConstants.MinNonNegativeValue, EntityConstants.MaxVideoDurationSeconds, ErrorMessage = "Range")]
     public int PositionSeconds { get; set; }
 }

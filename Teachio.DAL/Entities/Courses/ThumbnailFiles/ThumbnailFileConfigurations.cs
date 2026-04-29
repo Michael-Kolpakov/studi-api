@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Utils.Constants;
 using Teachio.DAL.Utils.Helpers;
 
@@ -10,7 +9,7 @@ public static class ThumbnailFileConfigurations
     public static void ConfigureThumbnailFiles(this ModelBuilder builder)
     {
         builder.Entity<ThumbnailFile>()
-            .ToTable($"{nameof(ThumbnailFile)}s", $"{nameof(Course).ToLowerInvariant()}s")
+            .ToTable($"{nameof(ThumbnailFile)}s", DatabaseConstants.CoursesSchema)
             .HasKey(v => v.Id);
 
         builder.Entity<ThumbnailFile>(typeBuilder =>
@@ -20,7 +19,7 @@ public static class ThumbnailFileConfigurations
 
             typeBuilder.Property(v => v.ThumbnailName)
                 .IsRequired()
-                .HasMaxLength(110);
+                .HasMaxLength(EntityConstants.MaxThumbnailFileNameLength);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
@@ -29,7 +28,7 @@ public static class ThumbnailFileConfigurations
 
             typeBuilder.Property(v => v.ContentType)
                 .IsRequired()
-                .HasMaxLength(20);
+                .HasMaxLength(EntityConstants.MaxMediaContentTypeLength);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
@@ -38,7 +37,7 @@ public static class ThumbnailFileConfigurations
 
             typeBuilder.Property(v => v.Resolution)
                 .IsRequired()
-                .HasMaxLength(9);
+                .HasMaxLength(EntityConstants.MaxThumbnailResolutionLength);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
@@ -56,11 +55,11 @@ public static class ThumbnailFileConfigurations
                 .IsRequired();
 
             typeBuilder.Property(v => v.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
                 .IsRequired();
 
             typeBuilder.Property(v => v.UpdatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
                 .IsRequired();
         });
     }

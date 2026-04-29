@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Videos.VideoFiles;
 using Teachio.DAL.Utils.Constants;
 using Teachio.DAL.Utils.Helpers;
@@ -11,7 +10,7 @@ public static class VideoConfiguration
     public static void ConfigureVideos(this ModelBuilder builder)
     {
         builder.Entity<Video>()
-            .ToTable($"{nameof(Video)}s", $"{nameof(Course).ToLowerInvariant()}s")
+            .ToTable($"{nameof(Video)}s", DatabaseConstants.CoursesSchema)
             .HasKey(v => v.Id);
 
         builder.Entity<Video>(typeBuilder =>
@@ -37,14 +36,17 @@ public static class VideoConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Video)}_{nameof(Video.OrderIndex)}_{nameof(CheckConstraintType.Range)}",
-                    Constraint.CreateSqlRangeCheck(nameof(Video.OrderIndex), 0, EntityConstants.MaxVideosPerSection - 1)));
+                    Constraint.CreateSqlRangeCheck(
+                        nameof(Video.OrderIndex),
+                        EntityConstants.MinNonNegativeValue,
+                        EntityConstants.MaxVideosPerSection - 1)));
 
             typeBuilder.Property(v => v.Status)
                 .IsRequired()
                 .HasConversion<int>();
 
             typeBuilder.Property(v => v.ProcessingError)
-                .HasMaxLength(100);
+                .HasMaxLength(EntityConstants.MaxVideoProcessingErrorLength);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
@@ -52,11 +54,11 @@ public static class VideoConfiguration
                     Constraint.CreateSqlRegexCheck(nameof(Video.ProcessingError), ValidationRule.ProcessingError)));
 
             typeBuilder.Property(v => v.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
                 .IsRequired();
 
             typeBuilder.Property(v => v.UpdatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
                 .IsRequired();
         });
 

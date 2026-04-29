@@ -13,7 +13,7 @@ public static class CourseConfiguration
     public static void ConfigureCourses(this ModelBuilder builder)
     {
         builder.Entity<Course>()
-            .ToTable($"{nameof(Course)}s", $"{nameof(Course).ToLowerInvariant()}s")
+            .ToTable($"{nameof(Course)}s", DatabaseConstants.CoursesSchema)
             .HasKey(c => c.Id);
 
         builder.Entity<Course>(typeBuilder =>
@@ -23,7 +23,7 @@ public static class CourseConfiguration
 
             typeBuilder.Property(c => c.Title)
                 .IsRequired()
-                .HasMaxLength(60);
+                .HasMaxLength(EntityConstants.MaxCourseTitleLength);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
@@ -31,7 +31,7 @@ public static class CourseConfiguration
                     Constraint.CreateSqlRegexCheck(nameof(Course.Title), ValidationRule.Title)));
 
             typeBuilder.Property(c => c.Description)
-                .HasMaxLength(1000);
+                .HasMaxLength(EntityConstants.MaxCourseDescriptionLength);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
@@ -40,7 +40,7 @@ public static class CourseConfiguration
 
             typeBuilder.Property(c => c.CourseName)
                 .IsRequired()
-                .HasMaxLength(60);
+                .HasMaxLength(EntityConstants.MaxCourseNameLength);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
@@ -49,16 +49,19 @@ public static class CourseConfiguration
 
             typeBuilder.Property(s => s.SectionsCount)
                 .IsRequired()
-                .HasDefaultValue(0);
+                .HasDefaultValue(EntityConstants.MinNonNegativeValue);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Course)}_{nameof(Course.SectionsCount)}_{nameof(CheckConstraintType.Range)}",
-                    Constraint.CreateSqlRangeCheck(nameof(Course.SectionsCount), 0, EntityConstants.MaxSectionsPerCourse)));
+                    Constraint.CreateSqlRangeCheck(
+                        nameof(Course.SectionsCount),
+                        EntityConstants.MinNonNegativeValue,
+                        EntityConstants.MaxSectionsPerCourse)));
 
             typeBuilder.Property(s => s.WatchingUsersCount)
                 .IsRequired()
-                .HasDefaultValue(0);
+                .HasDefaultValue(EntityConstants.MinNonNegativeValue);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
@@ -69,11 +72,11 @@ public static class CourseConfiguration
                 .IsRequired();
 
             typeBuilder.Property(c => c.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
                 .IsRequired();
 
             typeBuilder.Property(c => c.UpdatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
                 .IsRequired();
         });
 
@@ -112,7 +115,7 @@ public static class CourseConfiguration
                 j =>
                 {
                     j.HasKey(userCourse => new { userCourse.AppUserId, userCourse.CourseId });
-                    j.ToTable("UserCourse", "courses");
+                    j.ToTable(DatabaseConstants.UserCourseTableName, DatabaseConstants.CoursesSchema);
                 });
     }
 }

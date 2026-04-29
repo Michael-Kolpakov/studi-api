@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Utils.Constants;
 using Teachio.DAL.Utils.Helpers;
 
@@ -10,7 +9,7 @@ public static class VideoProgressConfiguration
     public static void ConfigureVideoProgress(this ModelBuilder builder)
     {
         builder.Entity<VideoProgress>()
-            .ToTable(nameof(VideoProgress), $"{nameof(Course).ToLowerInvariant()}s")
+            .ToTable(nameof(VideoProgress), DatabaseConstants.CoursesSchema)
             .HasKey(vp => vp.Id);
 
         builder.Entity<VideoProgress>(typeBuilder =>
@@ -23,19 +22,22 @@ public static class VideoProgressConfiguration
 
             typeBuilder.Property(vp => vp.IsCompleted)
                 .IsRequired()
-                .HasDefaultValue(false);
+                .HasDefaultValue(EntityConstants.DefaultVideoProgressIsCompleted);
 
             typeBuilder.Property(vp => vp.PositionSeconds)
                 .IsRequired()
-                .HasDefaultValue(0);
+                .HasDefaultValue(EntityConstants.MinNonNegativeValue);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(VideoProgress)}_{nameof(VideoProgress.PositionSeconds)}_{nameof(CheckConstraintType.Range)}",
-                    Constraint.CreateSqlRangeCheck(nameof(VideoProgress.PositionSeconds), 0, EntityConstants.MaxVideoDurationSeconds)));
+                    Constraint.CreateSqlRangeCheck(
+                        nameof(VideoProgress.PositionSeconds),
+                        EntityConstants.MinNonNegativeValue,
+                        EntityConstants.MaxVideoDurationSeconds)));
 
             typeBuilder.Property(vp => vp.UpdatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
                 .IsRequired();
         });
     }

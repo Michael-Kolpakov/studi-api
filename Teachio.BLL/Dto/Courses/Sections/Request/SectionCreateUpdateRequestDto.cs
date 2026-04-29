@@ -7,10 +7,10 @@ public abstract class SectionCreateUpdateRequestDto
 {
     [Required(ErrorMessage = "Required")]
     [RegularExpression(EntityConstants.TitleRegexPattern, ErrorMessage = "RegexTitle")]
-    [StringLength(60, ErrorMessage = "Length")]
+    [StringLength(EntityConstants.MaxSectionTitleLength, ErrorMessage = "Length")]
     public string Title { get; set; } = null!;
 
     [Required(ErrorMessage = "Required")]
-    [Range(0, EntityConstants.MaxSectionsPerCourse - 1, ErrorMessage = "Range")]
+    [Range(EntityConstants.MinNonNegativeValue, EntityConstants.MaxSectionsPerCourse - 1, ErrorMessage = "Range")]
     public int OrderIndex { get; set; }
 }
