@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Localization;
 using Serilog;
 using Teachio.WebApi.Extensions;
 using Teachio.WebApi.Middlewares;
+using ILogger = Serilog.ILogger;
 
 namespace Teachio.WebApi;
 
@@ -23,6 +24,7 @@ public class Program
         var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
         var cancellationToken = lifetime.ApplicationStopping;
         var environment = app.Services.GetRequiredService<IHostEnvironment>();
+        var startupLogger = app.Services.GetRequiredService<ILogger>();
 
         app.UseRequestLocalization(new RequestLocalizationOptions()
         {
@@ -44,6 +46,8 @@ public class Program
         {
             await DatabaseExtensions.InitializeDatabase(app, cancellationToken);
         }
+
+        startupLogger.Information("Application started and ready to accept requests.");
 
         await app.RunAsync();
     }
