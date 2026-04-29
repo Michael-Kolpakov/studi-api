@@ -8,6 +8,8 @@ public static class EntityConstants
 
     public const long MaxVideoFileSizeBytes = 2L * 1024 * 1024 * 1024; // 2 GB
 
+    public const long MaxThumbnailFileSizeBytes = 10L * 1024 * 1024; // 10 MB
+
     public const int MaxVideoTitleLength = 60;
 
     public const int MaxCourseTitleLength = 60;
