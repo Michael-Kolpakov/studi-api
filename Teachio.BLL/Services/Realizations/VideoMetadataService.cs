@@ -13,7 +13,7 @@ using Teachio.DAL.Utils.Constants;
 
 namespace Teachio.BLL.Services.Realizations;
 
-public class FfprobeVideoMetadataService : IVideoMetadataService
+public class VideoMetadataService : IVideoMetadataService
 {
     private static readonly Dictionary<string, string> _contentTypeToExtension = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -25,7 +25,7 @@ public class FfprobeVideoMetadataService : IVideoMetadataService
     private readonly ILoggerService _logger;
     private readonly IStringLocalizer<VideoMetadataSharedResource> _stringLocalizerVideoMetadata;
 
-    public FfprobeVideoMetadataService(
+    public VideoMetadataService(
         IOptions<FfprobeOptions> options,
         ILoggerService logger,
         IStringLocalizer<VideoMetadataSharedResource> stringLocalizerVideoMetadata)

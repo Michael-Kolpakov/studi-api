@@ -68,7 +68,8 @@ public static class ApplicationServicesExtensions
         services.AddScoped<ILoggerService, LoggerService>();
         services.AddScoped<IEntityExistenceService, EntityExistenceService>();
         services.AddScoped<IGoogleDriveStorageService, GoogleDriveStorageService>();
-        services.AddScoped<IVideoMetadataService, FfprobeVideoMetadataService>();
+        services.AddScoped<IVideoMetadataService, VideoMetadataService>();
+        services.AddScoped<IThumbnailMetadataService, ThumbnailMetadataService>();
     }
 
     private static void AddOptions(this IServiceCollection services, IConfiguration configuration)
