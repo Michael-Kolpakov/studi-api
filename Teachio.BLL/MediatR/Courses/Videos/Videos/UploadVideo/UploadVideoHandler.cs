@@ -1,11 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using AutoMapper;
 using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 using Teachio.BLL.Resources.SharedResource;
@@ -17,13 +13,11 @@ using Teachio.DAL.Entities.Courses.Videos.VideoFiles;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using Teachio.DAL.Utils.Constants;
-using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Teachio.BLL.MediatR.Courses.Videos.Videos.UploadVideo;
 
-public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<VideoResponseDto>>
+public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<VideoUploadResponseDto>>
 {
-    private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IGoogleDriveStorageService _googleDriveStorageService;
     private readonly IVideoMetadataService _videoMetadataService;
@@ -33,7 +27,6 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
     private readonly IStringLocalizer<VideoUploadSharedResource> _stringLocalizerVideoUpload;
 
     public UploadVideoHandler(
-        IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         IGoogleDriveStorageService googleDriveStorageService,
         IVideoMetadataService videoMetadataService,
@@ -42,7 +35,6 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
         IStringLocalizer<VideoUploadSharedResource> stringLocalizerVideoUpload)
     {
-        _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _googleDriveStorageService = googleDriveStorageService;
         _videoMetadataService = videoMetadataService;
@@ -52,7 +44,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
         _stringLocalizerVideoUpload = stringLocalizerVideoUpload;
     }
 
-    public async Task<Result<VideoResponseDto>> Handle(UploadVideoCommand request, CancellationToken cancellationToken)
+    public async Task<Result<VideoUploadResponseDto>> Handle(UploadVideoCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Entered '{GetType().Name}' to upload a media file for video with Id: {request.VideoUploadRequestDto.VideoId}");
 
@@ -105,18 +97,6 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
             return Result.Fail(errorMessage);
         }
 
-        if (normalizedFileTitle.Length > EntityConstants.MaxVideoTitleLength)
-        {
-            var errorMessage = _stringLocalizerVideoUpload[
-                nameof(VideoUploadSharedResource_en.UploadedVideoFileTitleTooLong),
-                EntityConstants.MaxVideoTitleLength
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
         var uploadVideoContext = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultProjectedAsync(
             x => new UploadVideoContext
             {
@@ -125,7 +105,9 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
                 OwnerUserEmail = x.Section.Course.OwnerUser!.Email,
                 CourseName = x.Section.Course.CourseName,
                 SectionName = x.Section.SectionName,
-                ExistingVideoFileName = x.VideoFile!.VideoName
+                ExistingVideoFileName = x.VideoFile == null
+                    ? null
+                    : x.VideoFile.VideoName
             },
             x => x.Id == request.VideoUploadRequestDto.VideoId,
             cancellationToken);
@@ -289,26 +271,16 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
             _repositoryWrapper.VideosRepository.Update(video);
             await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
-            var updatedVideo = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(
-                x => x.Id == request.VideoUploadRequestDto.VideoId,
-                IncludeVideoResponseRelatedEntities,
-                cancellationToken);
-
-            if (updatedVideo is null)
+            var videoUploadResponseDto = new VideoUploadResponseDto
             {
-                var errorMessage = _stringLocalizerCannotFind[
-                    nameof(CannotFindSharedResource_en.CannotFindVideoById),
-                    request.VideoUploadRequestDto.VideoId
-                ].Value;
+                VideoName = videoName,
+                ContentType = metadataResult.Value.ContentType,
+                DurationSeconds = metadataResult.Value.DurationSeconds,
+                Resolution = metadataResult.Value.Resolution,
+                VideoId = video.Id
+            };
 
-                _logger.LogError(request, errorMessage);
-
-                return Result.Fail(errorMessage);
-            }
-
-            var responseDto = _mapper.Map<VideoResponseDto>(updatedVideo);
-
-            return Result.Ok(responseDto);
+            return Result.Ok(videoUploadResponseDto);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
@@ -343,17 +315,6 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
         {
             DeleteTemporaryFileIfExists(temporaryFilePath);
         }
-    }
-
-    [ExcludeFromCodeCoverage]
-    private static IIncludableQueryable<VideoEntity, object> IncludeVideoResponseRelatedEntities(IQueryable<VideoEntity> query)
-    {
-        return query
-            .Include(v => v.Section)
-                .ThenInclude(s => s!.Course)
-                    .ThenInclude(c => c!.OwnerUser)
-            .Include(v => v.VideoProgress)
-            .Include(v => v.VideoFile!);
     }
 
     private static string CreateTemporaryFilePath(string sourceFileName)
@@ -396,9 +357,9 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
 
     private static bool IsAsciiLetterOrDigit(char character)
     {
-         return character is (>= 'A' and <= 'Z')
-             or (>= 'a' and <= 'z')
-             or (>= '0' and <= '9');
+        return character is (>= 'A' and <= 'Z')
+            or (>= 'a' and <= 'z')
+            or (>= '0' and <= '9');
     }
 
     private static async Task SaveUploadedFileToTemporaryStorageAsync(

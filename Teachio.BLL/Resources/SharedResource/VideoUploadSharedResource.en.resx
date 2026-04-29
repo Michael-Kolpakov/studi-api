@@ -30,9 +30,6 @@
     <data name="UploadedVideoFileTitleIsEmpty" xml:space="preserve">
         <value>Uploaded video file title is empty.</value>
     </data>
-    <data name="UploadedVideoFileTitleTooLong" xml:space="preserve">
-        <value>Uploaded video file title exceeds the maximum allowed length of {0} characters.</value>
-    </data>
     <data name="GeneratedVideoFileNameTooLong" xml:space="preserve">
         <value>Generated video file name exceeds the maximum allowed length of {0} characters.</value>
     </data>

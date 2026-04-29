@@ -61,7 +61,7 @@ public class VideosController : BaseApiController
     [Consumes("multipart/form-data")]
     [RequestFormLimits(MultipartBodyLengthLimit = EntityConstants.MaxVideoFileSizeBytes)]
     [RequestSizeLimit(EntityConstants.MaxVideoFileSizeBytes)]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VideoResponseDto))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VideoUploadResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]

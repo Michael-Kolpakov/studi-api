@@ -6,4 +6,4 @@ using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
 namespace Teachio.BLL.MediatR.Courses.Videos.Videos.UploadVideo;
 
 public record UploadVideoCommand(VideoUploadRequestDto VideoUploadRequestDto, Guid RequestingUserId)
-    : IRequest<Result<VideoResponseDto>>;
+    : IRequest<Result<VideoUploadResponseDto>>;

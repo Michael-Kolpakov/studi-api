@@ -121,14 +121,5 @@ namespace Teachio.BLL.Resources.SharedResource {
                 return ResourceManager.GetString("UploadedVideoFileTitleIsEmpty", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Uploaded video file title exceeds the maximum allowed length of {0} characters.
-        /// </summary>
-        internal static string UploadedVideoFileTitleTooLong {
-            get {
-                return ResourceManager.GetString("UploadedVideoFileTitleTooLong", resourceCulture);
-            }
-        }
     }
 }
