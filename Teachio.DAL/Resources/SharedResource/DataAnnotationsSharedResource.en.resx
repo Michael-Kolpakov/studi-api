@@ -28,12 +28,12 @@
         <value>The '{0}' field must be between {1} and {2}</value>
     </data>
     <data name="RegexDescription" xml:space="preserve">
-        <value>The '{0}' field can contain only alphabetic characters, numbers, spaces and punctuation marks (except for very weird ones)</value>
+        <value>The '{0}' field can contain only latin alphabetic characters, numbers, spaces and punctuation marks (except for very weird ones)</value>
     </data>
     <data name="RegexTitle" xml:space="preserve">
-        <value>The '{0}' field can contain only alphabetic characters, numbers, spaces and punctuation marks (only commas, !, ?, -)</value>
+        <value>The '{0}' field can contain only latin alphabetic characters, numbers, spaces and punctuation marks (only commas, !, ?, -)</value>
     </data>
     <data name="RegexName" xml:space="preserve">
-        <value>The '{0}' field can contain only alphabetic characters, numbers, hyphens and punctuation marks (only dots, commas, !, ?)</value>
+        <value>The '{0}' field can contain only latin alphabetic characters, numbers, hyphens and punctuation marks (only dots, commas, !, ?)</value>
     </data>
 </root>

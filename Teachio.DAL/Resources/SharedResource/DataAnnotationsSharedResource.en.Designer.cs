@@ -78,7 +78,7 @@ namespace Teachio.DAL.Resources.SharedResource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;{0}&apos; field can contain only alphabetic characters, numbers, spaces and punctuation marks (except for very weird ones).
+        ///   Looks up a localized string similar to The &apos;{0}&apos; field can contain only latin alphabetic characters, numbers, spaces and punctuation marks (except for very weird ones).
         /// </summary>
         internal static string RegexDescription {
             get {
@@ -87,7 +87,7 @@ namespace Teachio.DAL.Resources.SharedResource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;{0}&apos; field can contain only alphabetic characters, numbers, hyphens and punctuation marks (only dots, commas, !, ?).
+        ///   Looks up a localized string similar to The &apos;{0}&apos; field can contain only latin alphabetic characters, numbers, hyphens and punctuation marks (only dots, commas, !, ?).
         /// </summary>
         internal static string RegexName {
             get {
@@ -96,7 +96,7 @@ namespace Teachio.DAL.Resources.SharedResource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;{0}&apos; field can contain only alphabetic characters, numbers, spaces and punctuation marks (only commas, !, ?, -).
+        ///   Looks up a localized string similar to The &apos;{0}&apos; field can contain only latin alphabetic characters, numbers, spaces and punctuation marks (only commas, !, ?, -).
         /// </summary>
         internal static string RegexTitle {
             get {
