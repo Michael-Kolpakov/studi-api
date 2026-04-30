@@ -17,6 +17,7 @@ public class DeleteCourseHandlerTests
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<IGoogleDriveStorageService> _mockGoogleDriveStorageService;
     private readonly Mock<ILoggerService> _mockLoggerService;
+    private readonly Mock<ICurrentUserService> _mockCurrentUserService;
     private readonly CannotFindLocalizerMock _cannotFindLocalizerMock;
     private readonly NoPermissionsLocalizerMock _noPermissionsLocalizerMock;
 
@@ -30,6 +31,7 @@ public class DeleteCourseHandlerTests
         _mockMapper = new Mock<IMapper>();
         _mockGoogleDriveStorageService = new Mock<IGoogleDriveStorageService>();
         _mockLoggerService = new Mock<ILoggerService>();
+        _mockCurrentUserService = new Mock<ICurrentUserService>();
         _cannotFindLocalizerMock = new CannotFindLocalizerMock();
         _noPermissionsLocalizerMock = new NoPermissionsLocalizerMock();
 
@@ -42,6 +44,7 @@ public class DeleteCourseHandlerTests
             _mockRepository.Object,
             _mockGoogleDriveStorageService.Object,
             _mockLoggerService.Object,
+            _mockCurrentUserService.Object,
             _cannotFindLocalizerMock,
             _noPermissionsLocalizerMock);
     }
@@ -50,9 +53,11 @@ public class DeleteCourseHandlerTests
     public async Task Handle_WhenCourseDoesNotExist_ShouldReturnFailResult()
     {
         // Arrange
+        var requestingUserId = Guid.NewGuid();
         var request = GetDeleteCourseCommand();
         var expectedError = _cannotFindLocalizerMock["CannotFindCourseById", request.CourseId].Value;
 
+        CurrentUserMocks.SetupGetUserIdMock(_mockCurrentUserService, requestingUserId);
         RepositoryMocks.SetupGetSingleOrDefaultAsyncMock(_mockRepository, wrapper => wrapper.CoursesRepository, null);
 
         // Act
@@ -68,11 +73,12 @@ public class DeleteCourseHandlerTests
     public async Task Handle_WhenCourseExists_ShouldDeleteCourse()
     {
         // Arrange
+        var requestingUserId = Guid.NewGuid();
         var request = GetDeleteCourseCommand();
 
         var course = CourseTestData.GetCourse(
             courseId: request.CourseId,
-            ownerId: request.RequestingUserId,
+            ownerId: requestingUserId,
             title: "Title of a Course",
             description: "Description of a Course",
             sectionsCount: 0,
@@ -80,6 +86,7 @@ public class DeleteCourseHandlerTests
 
         var courseResponseDto = CourseTestData.GetCourseResponseDto(course.Title, course.Description!);
 
+        CurrentUserMocks.SetupGetUserIdMock(_mockCurrentUserService, requestingUserId);
         RepositoryMocks.SetupGetSingleOrDefaultAsyncMock(_mockRepository, wrapper => wrapper.CoursesRepository, course);
         MapperMocks.MockMap(_mockMapper, course, courseResponseDto);
 
@@ -97,11 +104,9 @@ public class DeleteCourseHandlerTests
 
     #region Helper Methods
 
-    private static DeleteCourseCommand GetDeleteCourseCommand(Guid? courseId = null, Guid? requestingUserId = null)
+    private static DeleteCourseCommand GetDeleteCourseCommand(Guid? courseId = null)
     {
-        return new DeleteCourseCommand(
-            courseId ?? Guid.NewGuid(),
-            requestingUserId ?? Guid.NewGuid());
+        return new DeleteCourseCommand(courseId ?? Guid.NewGuid());
     }
 
     #endregion

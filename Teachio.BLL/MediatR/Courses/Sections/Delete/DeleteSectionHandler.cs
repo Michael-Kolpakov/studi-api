@@ -21,6 +21,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IGoogleDriveStorageService _googleDriveStorageService;
     private readonly ILoggerService _logger;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
 
@@ -29,6 +30,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
         IRepositoryWrapper repositoryWrapper,
         IGoogleDriveStorageService googleDriveStorageService,
         ILoggerService logger,
+        ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
     {
@@ -36,13 +38,15 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
         _repositoryWrapper = repositoryWrapper;
         _googleDriveStorageService = googleDriveStorageService;
         _logger = logger;
+        _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
     public async Task<Result<SectionResponseDto>> Handle(DeleteSectionCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to delete a section with Id: {request.SectionId}");
+        var userId = _currentUserService.GetUserId();
+        _logger.LogInformation($"Entered '{GetType().Name}' to delete a section with Id: {request.SectionId} by UserId: {userId}");
 
         var section = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.SectionId,
@@ -63,12 +67,12 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
 
         var courseOwnerUserId = section.Course!.OwnerUserId;
 
-        if (courseOwnerUserId != request.RequestingUserId)
+        if (courseOwnerUserId != userId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToDeleteSectionForUserWithId),
                 request.SectionId,
-                request.RequestingUserId
+                userId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);

@@ -17,6 +17,7 @@ public class UpdateCourseHandlerTests
     private readonly Mock<IRepositoryWrapper> _mockRepository;
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<ILoggerService> _mockLoggerService;
+    private readonly Mock<ICurrentUserService> _mockCurrentUserService;
     private readonly CannotFindLocalizerMock _cannotFindLocalizerMock;
     private readonly NoPermissionsLocalizerMock _noPermissionsLocalizerMock;
     private readonly AlreadyExistsLocalizerMock _alreadyExistsLocalizerMock;
@@ -30,6 +31,7 @@ public class UpdateCourseHandlerTests
         _mockRepository = new Mock<IRepositoryWrapper>();
         _mockMapper = new Mock<IMapper>();
         _mockLoggerService = new Mock<ILoggerService>();
+        _mockCurrentUserService = new Mock<ICurrentUserService>();
         _cannotFindLocalizerMock = new CannotFindLocalizerMock();
         _noPermissionsLocalizerMock = new NoPermissionsLocalizerMock();
         _alreadyExistsLocalizerMock = new AlreadyExistsLocalizerMock();
@@ -42,6 +44,7 @@ public class UpdateCourseHandlerTests
             _mockMapper.Object,
             _mockRepository.Object,
             _mockLoggerService.Object,
+            _mockCurrentUserService.Object,
             _cannotFindLocalizerMock,
             _noPermissionsLocalizerMock,
             _alreadyExistsLocalizerMock);
@@ -51,9 +54,11 @@ public class UpdateCourseHandlerTests
     public async Task Handle_WhenCourseDoesNotExist_ShouldReturnFailResult()
     {
         // Arrange
+        var requestingUserId = Guid.NewGuid();
         var request = GetUpdateCourseCommand();
         var expectedError = _cannotFindLocalizerMock["CannotFindCourseById", request.CourseUpdateRequestDto.Id].Value;
 
+        CurrentUserMocks.SetupGetUserIdMock(_mockCurrentUserService, requestingUserId);
         RepositoryMocks.SetupGetSingleOrDefaultAsyncMock(_mockRepository, wrapper => wrapper.CoursesRepository, null);
 
         // Act
@@ -69,11 +74,12 @@ public class UpdateCourseHandlerTests
     public async Task Handle_WhenCourseExists_ShouldUpdateCourse()
     {
         // Arrange
+        var requestingUserId = Guid.NewGuid();
         var request = GetUpdateCourseCommand();
         var courseUpdateRequestDto = request.CourseUpdateRequestDto;
 
         var existingCourse = CourseTestData.GetCourse(
-            ownerId: request.RequestingUserId,
+            ownerId: requestingUserId,
             title: "Old Title",
             description: "Old Description",
             sectionsCount: 0,
@@ -90,6 +96,7 @@ public class UpdateCourseHandlerTests
             courseUpdateRequestDto.Title,
             courseUpdateRequestDto.Description!);
 
+        CurrentUserMocks.SetupGetUserIdMock(_mockCurrentUserService, requestingUserId);
         RepositoryMocks.SetupGetSingleOrDefaultAsyncMock(_mockRepository, wrapper => wrapper.CoursesRepository, existingCourse);
         MapperMocks.MockMapToExisting(_mockMapper, courseUpdateRequestDto, existingCourse);
         RepositoryMocks.SetupUpdateMock(_mockRepository, wrapper => wrapper.CoursesRepository, updatedCourse);
@@ -124,9 +131,7 @@ public class UpdateCourseHandlerTests
             ThumbnailName = thumbnailName
         };
 
-        var requestingUserId = Guid.NewGuid();
-
-        return new UpdateCourseCommand(courseUpdateRequestDto, requestingUserId);
+        return new UpdateCourseCommand(courseUpdateRequestDto);
     }
 
     #endregion

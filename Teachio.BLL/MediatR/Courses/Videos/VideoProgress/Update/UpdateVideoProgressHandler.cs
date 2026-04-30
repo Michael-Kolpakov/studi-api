@@ -15,6 +15,7 @@ public class UpdateVideoProgressHandler : IRequestHandler<UpdateVideoProgressCom
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
 
@@ -22,19 +23,22 @@ public class UpdateVideoProgressHandler : IRequestHandler<UpdateVideoProgressCom
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
+        ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
+        _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
     public async Task<Result<VideoProgressResponseDto>> Handle(UpdateVideoProgressCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to update a video progress with Id: {request.VideoProgressUpdateRequestDto.Id}");
+        var userId = _currentUserService.GetUserId();
+        _logger.LogInformation($"Entered '{GetType().Name}' to update a video progress with Id: {request.VideoProgressUpdateRequestDto.Id} by UserId: {userId}");
 
         var existingVideoProgress = await _repositoryWrapper.VideoProgressRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.VideoProgressUpdateRequestDto.Id,
@@ -57,12 +61,12 @@ public class UpdateVideoProgressHandler : IRequestHandler<UpdateVideoProgressCom
             vp => vp.Id == request.VideoProgressUpdateRequestDto.Id,
             cancellationToken);
 
-        if (courseOwnerUserId != request.RequestingUserId)
+        if (courseOwnerUserId != userId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateVideoProgressForUserWithId),
                 request.VideoProgressUpdateRequestDto.Id,
-                request.RequestingUserId
+                userId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);

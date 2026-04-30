@@ -16,6 +16,7 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotMapSharedResource> _stringLocalizerFailedToMap;
     private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
 
@@ -23,25 +24,28 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
+        ICurrentUserService currentUserService,
         IStringLocalizer<CannotMapSharedResource> stringLocalizerFailedToMap,
         IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
+        _currentUserService = currentUserService;
         _stringLocalizerFailedToMap = stringLocalizerFailedToMap;
         _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
     }
 
     public async Task<Result<CourseResponseDto>> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to create a new course");
+        var userId = _currentUserService.GetUserId();
+        _logger.LogInformation($"Entered '{GetType().Name}' to create a new course by UserId: {userId}");
 
         // TODO: validate whether course thumbnail exists (database relationships and ownership)
 
         var newCourse = _mapper.Map<CourseEntity>(
             request.CourseCreateRequestDto,
-            opt => opt.Items["OwnerUserId"] = request.OwnerUserId);
+            opt => opt.Items["OwnerUserId"] = userId);
 
         if (newCourse is null)
         {

@@ -18,6 +18,7 @@ public class CreateCourseHandlerTests
     private readonly Mock<IRepositoryWrapper> _mockRepository;
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<ILoggerService> _mockLoggerService;
+    private readonly Mock<ICurrentUserService> _mockCurrentUserService;
     private readonly CannotMapLocalizerMock _cannotMapLocalizerMock;
     private readonly AlreadyExistsLocalizerMock _alreadyExistsLocalizerMock;
 
@@ -30,6 +31,7 @@ public class CreateCourseHandlerTests
         _mockRepository = new Mock<IRepositoryWrapper>();
         _mockMapper = new Mock<IMapper>();
         _mockLoggerService = new Mock<ILoggerService>();
+        _mockCurrentUserService = new Mock<ICurrentUserService>();
         _cannotMapLocalizerMock = new CannotMapLocalizerMock();
         _alreadyExistsLocalizerMock = new AlreadyExistsLocalizerMock();
 
@@ -41,6 +43,7 @@ public class CreateCourseHandlerTests
             _mockMapper.Object,
             _mockRepository.Object,
             _mockLoggerService.Object,
+            _mockCurrentUserService.Object,
             _cannotMapLocalizerMock,
             _alreadyExistsLocalizerMock);
     }
@@ -49,8 +52,11 @@ public class CreateCourseHandlerTests
     public async Task Handle_WhenCourseCreateRequestDtoIsNull_ShouldReturnFailResult()
     {
         // Arrange
+        var ownerUserId = Guid.NewGuid();
         var request = GetCreateCourseCommand(isDtoNull: true);
         var expectedError = _cannotMapLocalizerMock["CannotMapNullToCourse"].Value;
+
+        CurrentUserMocks.SetupGetUserIdMock(_mockCurrentUserService, ownerUserId);
 
         // Act
         var result = await _sut.Handle(request, CancellationToken.None);
@@ -65,12 +71,12 @@ public class CreateCourseHandlerTests
     public async Task Handle_WhenCourseAlreadyExists_ShouldReturnFailResult()
     {
         // Arrange
+        var ownerUserId = Guid.NewGuid();
         var request = GetCreateCourseCommand();
         var courseCreateRequestDto = request.CourseCreateRequestDto;
-        var ownerId = request.OwnerUserId;
 
         var course = CourseTestData.GetCourse(
-            ownerId: ownerId,
+            ownerId: ownerUserId,
             title: courseCreateRequestDto.Title,
             description: courseCreateRequestDto.Description!,
             sectionsCount: 0,
@@ -81,6 +87,7 @@ public class CreateCourseHandlerTests
             course.CourseName,
             course.OwnerUserId].Value;
 
+        CurrentUserMocks.SetupGetUserIdMock(_mockCurrentUserService, ownerUserId);
         MapperMocks.MockMap(_mockMapper, courseCreateRequestDto, course);
         RepositoryMocks.SetupGetFirstOrDefaultAsyncMock(_mockRepository, wrapper => wrapper.CoursesRepository, course);
 
@@ -98,6 +105,7 @@ public class CreateCourseHandlerTests
     public async Task Handle_WhenCourseIsValid_ShouldCreateCourse()
     {
         // Arrange
+        var ownerUserId = Guid.NewGuid();
         var request = GetCreateCourseCommand();
         var courseCreateRequestDto = request.CourseCreateRequestDto;
 
@@ -111,6 +119,7 @@ public class CreateCourseHandlerTests
             courseCreateRequestDto.Title,
             courseCreateRequestDto.Description!);
 
+        CurrentUserMocks.SetupGetUserIdMock(_mockCurrentUserService, ownerUserId);
         MapperMocks.MockMap(_mockMapper, courseCreateRequestDto, course);
         RepositoryMocks.SetupGetFirstOrDefaultAsyncMock(_mockRepository, wrapper => wrapper.CoursesRepository, null);
         MapperMocks.MockMap(_mockMapper, course, courseResponseDto);
@@ -145,9 +154,7 @@ public class CreateCourseHandlerTests
                 ThumbnailName = thumbnailName
             };
 
-        var ownerUserId = Guid.NewGuid();
-
-        return new CreateCourseCommand(courseCreateRequestDto!, ownerUserId);
+        return new CreateCourseCommand(courseCreateRequestDto!);
     }
 
     #endregion

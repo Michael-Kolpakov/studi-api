@@ -5,5 +5,5 @@ using Teachio.BLL.Dto.Courses.Sections.Response;
 
 namespace Teachio.BLL.MediatR.Courses.Sections.Update;
 
-public record UpdateSectionCommand(SectionUpdateRequestDto SectionUpdateRequestDto, Guid RequestingUserId)
+public record UpdateSectionCommand(SectionUpdateRequestDto SectionUpdateRequestDto)
     : IRequest<Result<SectionResponseDto>>;

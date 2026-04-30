@@ -20,23 +20,27 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
 
     public GetCourseByIdHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
+        ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
+        _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
     }
 
     public async Task<Result<CourseResponseDto>> Handle(GetCourseByIdQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to get course by Id: {request.CourseId}");
+        var userId = _currentUserService.GetUserId();
+        _logger.LogInformation($"Entered '{GetType().Name}' to get course by Id: {request.CourseId} by UserId: {userId}");
 
         // TODO: validate whether the user has access to the course
 

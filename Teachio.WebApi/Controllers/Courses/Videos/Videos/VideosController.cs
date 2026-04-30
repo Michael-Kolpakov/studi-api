@@ -26,11 +26,7 @@ public class VideosController : BaseApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
-        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
-        // var userId = GetUserIdOrThrow();
-        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
-
-        return HandleResult(await Mediator.Send(new GetVideoByIdQuery(id, userId)));
+        return HandleResult(await Mediator.Send(new GetVideoByIdQuery(id)));
     }
 
     /// <summary>
@@ -45,11 +41,7 @@ public class VideosController : BaseApiController
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Create([FromBody] VideoCreateRequestDto videoCreateRequestDto)
     {
-        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
-        // var userId = GetUserIdOrThrow();
-        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
-
-        return HandleResult(await Mediator.Send(new CreateVideoCommand(videoCreateRequestDto, userId)));
+        return HandleResult(await Mediator.Send(new CreateVideoCommand(videoCreateRequestDto)));
     }
 
     /// <summary>
@@ -68,11 +60,7 @@ public class VideosController : BaseApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Upload([FromForm] VideoUploadRequestDto videoUploadRequestDto)
     {
-        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
-        // var userId = GetUserIdOrThrow();
-        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
-
-        return HandleResult(await Mediator.Send(new UploadVideoCommand(videoUploadRequestDto, userId)));
+        return HandleResult(await Mediator.Send(new UploadVideoCommand(videoUploadRequestDto)));
     }
 
     /// <summary>
@@ -87,11 +75,7 @@ public class VideosController : BaseApiController
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Update([FromBody] VideoUpdateRequestDto videoUpdateRequestDto)
     {
-        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
-        // var userId = GetUserIdOrThrow();
-        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
-
-        return HandleResult(await Mediator.Send(new UpdateVideoCommand(videoUpdateRequestDto, userId)));
+        return HandleResult(await Mediator.Send(new UpdateVideoCommand(videoUpdateRequestDto)));
     }
 
     /// <summary>
@@ -107,10 +91,6 @@ public class VideosController : BaseApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
-        // var userId = GetUserIdOrThrow();
-        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
-
-        return HandleResult(await Mediator.Send(new DeleteVideoCommand(id, userId)));
+        return HandleResult(await Mediator.Send(new DeleteVideoCommand(id)));
     }
 }

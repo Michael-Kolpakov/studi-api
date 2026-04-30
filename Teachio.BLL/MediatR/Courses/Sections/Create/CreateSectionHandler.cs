@@ -17,6 +17,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IEntityExistenceService _entityExistenceService;
     private readonly ILoggerService _logger;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotMapSharedResource> _stringLocalizerFailedToMap;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
     private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
@@ -26,6 +27,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         IRepositoryWrapper repositoryWrapper,
         IEntityExistenceService entityExistenceService,
         ILoggerService logger,
+        ICurrentUserService currentUserService,
         IStringLocalizer<CannotMapSharedResource> stringLocalizerFailedToMap,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
         IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists)
@@ -34,6 +36,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         _repositoryWrapper = repositoryWrapper;
         _entityExistenceService = entityExistenceService;
         _logger = logger;
+        _currentUserService = currentUserService;
         _stringLocalizerFailedToMap = stringLocalizerFailedToMap;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
         _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
@@ -41,7 +44,8 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
 
     public async Task<Result<SectionResponseDto>> Handle(CreateSectionCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to create a new section");
+        var userId = _currentUserService.GetUserId();
+        _logger.LogInformation($"Entered '{GetType().Name}' to create a new section by UserId: {userId}");
 
         var newSection = _mapper.Map<SectionEntity>(request.SectionCreateRequestDto);
 
@@ -65,12 +69,12 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
             return Result.Fail(existenceErrorMessage);
         }
 
-        if (course.OwnerUserId != request.RequestingUserId)
+        if (course.OwnerUserId != userId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToCreateSectionForCourseOfAnotherUserWithId),
                 request.SectionCreateRequestDto.CourseId,
-                request.RequestingUserId,
+                userId,
                 course.OwnerUserId
             ].Value;
 

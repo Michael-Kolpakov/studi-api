@@ -19,6 +19,7 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
     private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
@@ -27,6 +28,7 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
+        ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
         IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists)
@@ -34,6 +36,7 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
+        _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
         _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
@@ -41,7 +44,8 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
 
     public async Task<Result<VideoResponseDto>> Handle(UpdateVideoCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to update a video with Id: {request.VideoUpdateRequestDto.Id}");
+        var userId = _currentUserService.GetUserId();
+        _logger.LogInformation($"Entered '{GetType().Name}' to update a video with Id: {request.VideoUpdateRequestDto.Id} by UserId: {userId}");
 
         var existingVideo = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.VideoUpdateRequestDto.Id,
@@ -65,12 +69,12 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
             v => v.Id == request.VideoUpdateRequestDto.Id,
             cancellationToken);
 
-        if (courseOwnerUserId != request.RequestingUserId)
+        if (courseOwnerUserId != userId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateVideoForUserWithId),
                 request.VideoUpdateRequestDto.Id,
-                request.RequestingUserId
+                userId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);

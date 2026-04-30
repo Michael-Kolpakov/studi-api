@@ -27,10 +27,7 @@ public class CoursesController : BaseApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetPaginated([FromQuery] ushort pageNumber, [FromQuery] ushort pageSize)
     {
-        // TODO: when authentication is implemented, remove ?? fallback value
-        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
-
-        return HandleResult(await Mediator.Send(new GetPaginatedCoursesQuery(pageNumber, pageSize, userId)));
+        return HandleResult(await Mediator.Send(new GetPaginatedCoursesQuery(pageNumber, pageSize)));
     }
 
     /// <summary>
@@ -59,11 +56,7 @@ public class CoursesController : BaseApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById([FromRoute] Guid id, [FromQuery] Guid? selectedVideoId = null)
     {
-        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
-        // var userId = GetUserIdOrThrow();
-        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
-
-        return HandleResult(await Mediator.Send(new GetCourseByIdQuery(id, userId, selectedVideoId)));
+        return HandleResult(await Mediator.Send(new GetCourseByIdQuery(id, selectedVideoId)));
     }
 
     /// <summary>
@@ -78,11 +71,7 @@ public class CoursesController : BaseApiController
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Create([FromBody] CourseCreateRequestDto courseCreateRequestDto)
     {
-        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
-        // var userId = GetUserIdOrThrow();
-        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
-
-        return HandleResult(await Mediator.Send(new CreateCourseCommand(courseCreateRequestDto, userId)));
+        return HandleResult(await Mediator.Send(new CreateCourseCommand(courseCreateRequestDto)));
     }
 
     /// <summary>
@@ -99,11 +88,7 @@ public class CoursesController : BaseApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UploadThumbnail([FromForm] ThumbnailUploadRequestDto thumbnailUploadRequestDto)
     {
-        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
-        // var userId = GetUserIdOrThrow();
-        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
-
-        return HandleResult(await Mediator.Send(new UploadThumbnailCommand(thumbnailUploadRequestDto, userId)));
+        return HandleResult(await Mediator.Send(new UploadThumbnailCommand(thumbnailUploadRequestDto)));
     }
 
     /// <summary>
@@ -118,11 +103,7 @@ public class CoursesController : BaseApiController
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Update([FromBody] CourseUpdateRequestDto courseUpdateRequestDto)
     {
-        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
-        // var userId = GetUserIdOrThrow();
-        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
-
-        return HandleResult(await Mediator.Send(new UpdateCourseCommand(courseUpdateRequestDto, userId)));
+        return HandleResult(await Mediator.Send(new UpdateCourseCommand(courseUpdateRequestDto)));
     }
 
     /// <summary>
@@ -138,10 +119,6 @@ public class CoursesController : BaseApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        // TODO: when authentication is implemented, use GetUserIdOrThrow() instead
-        // var userId = GetUserIdOrThrow();
-        var userId = GetUserId() ?? Guid.Parse("76bb9fd8-084c-4012-8c94-a2a04f45156f");
-
-        return HandleResult(await Mediator.Send(new DeleteCourseCommand(id, userId)));
+        return HandleResult(await Mediator.Send(new DeleteCourseCommand(id)));
     }
 }

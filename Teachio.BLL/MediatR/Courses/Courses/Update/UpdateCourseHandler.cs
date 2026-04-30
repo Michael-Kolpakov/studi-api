@@ -16,6 +16,7 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
     private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
@@ -24,6 +25,7 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
+        ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
         IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists)
@@ -31,6 +33,7 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
+        _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
         _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
@@ -38,7 +41,8 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
     public async Task<Result<CourseResponseDto>> Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.CourseUpdateRequestDto.Id}");
+        var userId = _currentUserService.GetUserId();
+        _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.CourseUpdateRequestDto.Id} by UserId: {userId}");
 
         // TODO: validate whether course thumbnail exists (database relationships and ownership)
 
@@ -58,12 +62,12 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
             return Result.Fail(errorMessage);
         }
 
-        if (existingCourse.OwnerUserId != request.RequestingUserId)
+        if (existingCourse.OwnerUserId != userId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateCourseForUserWithId),
                 request.CourseUpdateRequestDto.Id,
-                request.RequestingUserId
+                userId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);

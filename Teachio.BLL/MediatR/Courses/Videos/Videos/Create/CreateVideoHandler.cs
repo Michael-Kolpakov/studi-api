@@ -18,6 +18,7 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IEntityExistenceService _entityExistenceService;
     private readonly ILoggerService _logger;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotMapSharedResource> _stringLocalizerFailedToMap;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
     private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
@@ -27,6 +28,7 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         IRepositoryWrapper repositoryWrapper,
         IEntityExistenceService entityExistenceService,
         ILoggerService logger,
+        ICurrentUserService currentUserService,
         IStringLocalizer<CannotMapSharedResource> stringLocalizerFailedToMap,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
         IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists)
@@ -35,6 +37,7 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         _repositoryWrapper = repositoryWrapper;
         _entityExistenceService = entityExistenceService;
         _logger = logger;
+        _currentUserService = currentUserService;
         _stringLocalizerFailedToMap = stringLocalizerFailedToMap;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
         _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
@@ -42,7 +45,8 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
 
     public async Task<Result<VideoResponseDto>> Handle(CreateVideoCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to create a new video");
+        var userId = _currentUserService.GetUserId();
+        _logger.LogInformation($"Entered '{GetType().Name}' to create a new video by UserId: {userId}");
 
         // TODO: validate whether OwnerUserId really belongs to the user making the request
 
@@ -70,13 +74,13 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
             return Result.Fail(existenceErrorMessage);
         }
 
-        if (section.Course!.OwnerUserId != request.RequestingUserId)
+        if (section.Course!.OwnerUserId != userId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToCreateVideoForSectionOfCourseOfAnotherUserWithId),
                 request.VideoCreateRequestDto.SectionId,
                 section.CourseId,
-                request.RequestingUserId,
+                userId,
                 section.Course.OwnerUserId
             ].Value;
 

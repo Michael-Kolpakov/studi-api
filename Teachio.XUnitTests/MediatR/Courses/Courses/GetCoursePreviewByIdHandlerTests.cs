@@ -16,6 +16,7 @@ public class GetCoursePreviewByIdHandlerTests
     private readonly Mock<IRepositoryWrapper> _mockRepository;
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<ILoggerService> _mockLoggerService;
+    private readonly Mock<ICurrentUserService> _mockCurrentUserService;
     private readonly CannotFindLocalizerMock _cannotFindLocalizerMock;
 
     private readonly GetCoursePreviewByIdHandler _sut;
@@ -27,6 +28,7 @@ public class GetCoursePreviewByIdHandlerTests
         _mockRepository = new Mock<IRepositoryWrapper>();
         _mockMapper = new Mock<IMapper>();
         _mockLoggerService = new Mock<ILoggerService>();
+        _mockCurrentUserService = new Mock<ICurrentUserService>();
         _cannotFindLocalizerMock = new CannotFindLocalizerMock();
 
         _mockRepository
@@ -37,6 +39,7 @@ public class GetCoursePreviewByIdHandlerTests
             _mockMapper.Object,
             _mockRepository.Object,
             _mockLoggerService.Object,
+            _mockCurrentUserService.Object,
             _cannotFindLocalizerMock);
     }
 

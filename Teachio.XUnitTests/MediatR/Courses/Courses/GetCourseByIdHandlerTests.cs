@@ -16,6 +16,7 @@ public class GetCourseByIdHandlerTests
     private readonly Mock<IRepositoryWrapper> _mockRepository;
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<ILoggerService> _mockLoggerService;
+    private readonly Mock<ICurrentUserService> _mockCurrentUserService;
     private readonly CannotFindLocalizerMock _cannotFindLocalizerMock;
 
     private readonly GetCourseByIdHandler _sut;
@@ -27,6 +28,7 @@ public class GetCourseByIdHandlerTests
         _mockRepository = new Mock<IRepositoryWrapper>();
         _mockMapper = new Mock<IMapper>();
         _mockLoggerService = new Mock<ILoggerService>();
+        _mockCurrentUserService = new Mock<ICurrentUserService>();
         _cannotFindLocalizerMock = new CannotFindLocalizerMock();
 
         _mockRepository
@@ -37,6 +39,7 @@ public class GetCourseByIdHandlerTests
             _mockMapper.Object,
             _mockRepository.Object,
             _mockLoggerService.Object,
+            _mockCurrentUserService.Object,
             _cannotFindLocalizerMock);
     }
 
@@ -157,12 +160,10 @@ public class GetCourseByIdHandlerTests
 
     private static GetCourseByIdQuery GetGetCourseByIdQuery(
         Guid? courseId = null,
-        Guid? requestingUserId = null,
         Guid? selectedVideoId = null)
     {
         return new GetCourseByIdQuery(
             courseId ?? Guid.NewGuid(),
-            requestingUserId ?? Guid.NewGuid(),
             selectedVideoId);
     }
 

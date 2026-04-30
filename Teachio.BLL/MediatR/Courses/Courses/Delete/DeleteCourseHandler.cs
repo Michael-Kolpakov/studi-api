@@ -21,6 +21,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IGoogleDriveStorageService _googleDriveStorageService;
     private readonly ILoggerService _logger;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
 
@@ -29,6 +30,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
         IRepositoryWrapper repositoryWrapper,
         IGoogleDriveStorageService googleDriveStorageService,
         ILoggerService logger,
+        ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
     {
@@ -36,13 +38,15 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
         _repositoryWrapper = repositoryWrapper;
         _googleDriveStorageService = googleDriveStorageService;
         _logger = logger;
+        _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
     public async Task<Result<CourseResponseDto>> Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to delete a course with Id: {request.CourseId}");
+        var userId = _currentUserService.GetUserId();
+        _logger.LogInformation($"Entered '{GetType().Name}' to delete a course with Id: {request.CourseId} by UserId: {userId}");
 
         var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.CourseId,
@@ -61,12 +65,12 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
             return Result.Fail(errorMessage);
         }
 
-        if (course.OwnerUserId != request.RequestingUserId)
+        if (course.OwnerUserId != userId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToDeleteCourseForUserWithId),
                 request.CourseId,
-                request.RequestingUserId
+                userId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);

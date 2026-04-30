@@ -18,6 +18,7 @@ public class GetPaginatedCoursesHandlerTests
     private readonly Mock<IRepositoryWrapper> _mockRepository;
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<ILoggerService> _mockLoggerService;
+    private readonly Mock<ICurrentUserService> _mockCurrentUserService;
 
     private readonly GetPaginatedCoursesHandler _sut;
 
@@ -28,6 +29,7 @@ public class GetPaginatedCoursesHandlerTests
         _mockRepository = new Mock<IRepositoryWrapper>();
         _mockMapper = new Mock<IMapper>();
         _mockLoggerService = new Mock<ILoggerService>();
+        _mockCurrentUserService = new Mock<ICurrentUserService>();
 
         _mockRepository
             .Setup(x => x.CoursesRepository)
@@ -36,7 +38,8 @@ public class GetPaginatedCoursesHandlerTests
         _sut = new GetPaginatedCoursesHandler(
             _mockMapper.Object,
             _mockRepository.Object,
-            _mockLoggerService.Object);
+            _mockLoggerService.Object,
+            _mockCurrentUserService.Object);
     }
 
     [Theory]
@@ -75,10 +78,9 @@ public class GetPaginatedCoursesHandlerTests
 
     private static GetPaginatedCoursesQuery GetGetPaginatedCoursesQuery(
         ushort pageNumber = 1,
-        ushort pageSize = 10,
-        Guid? requestingUserId = null)
+        ushort pageSize = 10)
     {
-        return new GetPaginatedCoursesQuery(pageNumber, pageSize, requestingUserId ?? Guid.NewGuid());
+        return new GetPaginatedCoursesQuery(pageNumber, pageSize);
     }
 
     #endregion

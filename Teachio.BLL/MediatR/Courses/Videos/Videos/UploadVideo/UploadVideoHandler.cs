@@ -22,6 +22,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
     private readonly IGoogleDriveStorageService _googleDriveStorageService;
     private readonly IVideoMetadataService _videoMetadataService;
     private readonly ILoggerService _logger;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
     private readonly IStringLocalizer<VideoUploadSharedResource> _stringLocalizerVideoUpload;
@@ -31,6 +32,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
         IGoogleDriveStorageService googleDriveStorageService,
         IVideoMetadataService videoMetadataService,
         ILoggerService logger,
+        ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
         IStringLocalizer<VideoUploadSharedResource> stringLocalizerVideoUpload)
@@ -39,6 +41,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
         _googleDriveStorageService = googleDriveStorageService;
         _videoMetadataService = videoMetadataService;
         _logger = logger;
+        _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
         _stringLocalizerVideoUpload = stringLocalizerVideoUpload;
@@ -46,7 +49,8 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
 
     public async Task<Result<VideoUploadResponseDto>> Handle(UploadVideoCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to upload a media file for video with Id: {request.VideoUploadRequestDto.VideoId}");
+        var userId = _currentUserService.GetUserId();
+        _logger.LogInformation($"Entered '{GetType().Name}' to upload a media file for video with Id: {request.VideoUploadRequestDto.VideoId} by UserId: {userId}");
 
         if (request.VideoUploadRequestDto.VideoFile.Length == 0)
         {
@@ -124,12 +128,12 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
             return Result.Fail(errorMessage);
         }
 
-        if (uploadVideoContext.OwnerUserId != request.RequestingUserId)
+        if (uploadVideoContext.OwnerUserId != userId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateVideoForUserWithId),
                 request.VideoUploadRequestDto.VideoId,
-                request.RequestingUserId
+                userId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);

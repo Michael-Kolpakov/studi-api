@@ -15,6 +15,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
     private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
@@ -23,6 +24,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
+        ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
         IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists)
@@ -30,6 +32,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
+        _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
         _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
@@ -37,7 +40,8 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
 
     public async Task<Result<SectionResponseDto>> Handle(UpdateSectionCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to update a section with Id: {request.SectionUpdateRequestDto.Id}");
+        var userId = _currentUserService.GetUserId();
+        _logger.LogInformation($"Entered '{GetType().Name}' to update a section with Id: {request.SectionUpdateRequestDto.Id} by UserId: {userId}");
 
         var existingSection = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.SectionUpdateRequestDto.Id,
@@ -60,12 +64,12 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
             s => s.Id == request.SectionUpdateRequestDto.Id,
             cancellationToken);
 
-        if (courseOwnerUserId != request.RequestingUserId)
+        if (courseOwnerUserId != userId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateSectionForUserWithId),
                 request.SectionUpdateRequestDto.Id,
-                request.RequestingUserId
+                userId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);

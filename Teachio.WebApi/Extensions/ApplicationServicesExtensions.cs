@@ -7,6 +7,7 @@ using Teachio.BLL.Services.Realizations;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using Teachio.DAL.Repositories.Realizations.Base;
 using Teachio.DAL.SharedResource;
+using Teachio.WebApi.Services;
 
 namespace Teachio.WebApi.Extensions;
 
@@ -44,6 +45,7 @@ public static class ApplicationServicesExtensions
         services.AddAutoMapper(_ => { }, currentAssemblies);
         services.AddMediatR(config => config.RegisterServicesFromAssemblies(bllAssembly));
         services.AddCors();
+        services.AddHttpContextAccessor();
 
         return services;
     }
@@ -66,6 +68,7 @@ public static class ApplicationServicesExtensions
     private static void AddCustomServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<ILoggerService, LoggerService>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IEntityExistenceService, EntityExistenceService>();
         services.AddScoped<IGoogleDriveStorageService, GoogleDriveStorageService>();
         services.AddScoped<IVideoMetadataService, VideoMetadataService>();

@@ -21,6 +21,7 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
     private readonly IGoogleDriveStorageService _googleDriveStorageService;
     private readonly IThumbnailMetadataService _thumbnailMetadataService;
     private readonly ILoggerService _logger;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
     private readonly IStringLocalizer<ThumbnailUploadSharedResource> _stringLocalizerThumbnailUpload;
@@ -30,6 +31,7 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
         IGoogleDriveStorageService googleDriveStorageService,
         IThumbnailMetadataService thumbnailMetadataService,
         ILoggerService logger,
+        ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
         IStringLocalizer<ThumbnailUploadSharedResource> stringLocalizerThumbnailUpload)
@@ -38,6 +40,7 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
         _googleDriveStorageService = googleDriveStorageService;
         _thumbnailMetadataService = thumbnailMetadataService;
         _logger = logger;
+        _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
         _stringLocalizerThumbnailUpload = stringLocalizerThumbnailUpload;
@@ -45,7 +48,8 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
 
     public async Task<Result<ThumbnailUploadResponseDto>> Handle(UploadThumbnailCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Entered '{GetType().Name}' to upload a thumbnail for course with Id: {request.ThumbnailUploadRequestDto.CourseId}");
+        var userId = _currentUserService.GetUserId();
+        _logger.LogInformation($"Entered '{GetType().Name}' to upload a thumbnail for course with Id: {request.ThumbnailUploadRequestDto.CourseId} by UserId: {userId}");
 
         if (request.ThumbnailUploadRequestDto.ThumbnailFile.Length == 0)
         {
@@ -122,12 +126,12 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
             return Result.Fail(errorMessage);
         }
 
-        if (uploadThumbnailContext.OwnerUserId != request.RequestingUserId)
+        if (uploadThumbnailContext.OwnerUserId != userId)
         {
             var logErrorMessage = _stringLocalizerNoPermissions[
                 nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateCourseForUserWithId),
                 request.ThumbnailUploadRequestDto.CourseId,
-                request.RequestingUserId
+                userId
             ].Value;
 
             _logger.LogError(request, logErrorMessage);
