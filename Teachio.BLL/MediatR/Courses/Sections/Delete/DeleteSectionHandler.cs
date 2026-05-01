@@ -96,6 +96,10 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
         }
 
         _repositoryWrapper.SectionsRepository.Delete(section);
+
+        section.Course.SectionsCount--;
+
+        _repositoryWrapper.CoursesRepository.Update(section.Course);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
         var sectionResponseDto = _mapper.Map<SectionResponseDto>(section);

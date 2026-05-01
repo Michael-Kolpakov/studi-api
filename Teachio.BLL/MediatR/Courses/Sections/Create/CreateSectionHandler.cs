@@ -106,6 +106,10 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         }
 
         await _repositoryWrapper.SectionsRepository.CreateAsync(newSection, cancellationToken);
+
+        course.SectionsCount++;
+
+        _repositoryWrapper.CoursesRepository.Update(course);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
         var sectionResponseDto = _mapper.Map<SectionResponseDto>(newSection);
