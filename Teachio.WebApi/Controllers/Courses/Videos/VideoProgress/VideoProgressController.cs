@@ -6,14 +6,14 @@ using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Videos.VideoProgress;
 
-public class VideosProgressController : BaseApiController
+public class VideoProgressController : BaseApiController
 {
     /// <summary>
     /// Updates an existing course video with the provided data.
     /// </summary>
     /// <param name="videoProgressUpdateRequestDto">The updated data for the course video.</param>
     /// <returns>Returns the newly updated course video.</returns>
-    [HttpPut(VideosProgressRelativeRoutes.Update)]
+    [HttpPut(VideoProgressRelativeRoutes.Update)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VideoProgressResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
