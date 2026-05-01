@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="MediatR\Courses\Videos\Videos\UploadVideo\" />
       <Folder Include="MediatR\Users\" />
       <Folder Include="Utils\Attributes\" />
     </ItemGroup>
