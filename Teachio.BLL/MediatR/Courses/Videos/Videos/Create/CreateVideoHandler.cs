@@ -120,6 +120,10 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
 
         await _repositoryWrapper.VideosRepository.CreateAsync(newVideo, cancellationToken);
         await _repositoryWrapper.VideoProgressRepository.CreateAsync(newVideoProgress, cancellationToken);
+
+        section.VideosCount++;
+
+        _repositoryWrapper.SectionsRepository.Update(section);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
         var videoResponseDto = _mapper.Map<VideoResponseDto>(newVideo);

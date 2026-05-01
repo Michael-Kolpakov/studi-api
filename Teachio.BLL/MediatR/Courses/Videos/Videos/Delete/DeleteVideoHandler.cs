@@ -92,6 +92,10 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
         }
 
         _repositoryWrapper.VideosRepository.Delete(video);
+
+        video.Section.VideosCount--;
+
+        _repositoryWrapper.SectionsRepository.Update(video.Section);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
         var videoResponseDto = _mapper.Map<VideoResponseDto>(video);
