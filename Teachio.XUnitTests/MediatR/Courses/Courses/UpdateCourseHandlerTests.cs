@@ -127,8 +127,7 @@ public class UpdateCourseHandlerTests
         {
             Id = courseId ?? Guid.NewGuid(),
             Title = title,
-            Description = description,
-            ThumbnailName = thumbnailName
+            Description = description
         };
 
         return new UpdateCourseCommand(courseUpdateRequestDto);

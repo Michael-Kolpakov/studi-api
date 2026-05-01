@@ -13,8 +13,4 @@ public abstract class CourseCreateUpdateRequestDto
     [StringLength(EntityConstants.MaxCourseDescriptionLength, ErrorMessage = "Length")]
     [RegularExpression(EntityConstants.DescriptionRegexPattern, ErrorMessage = "RegexDescription")]
     public string? Description { get; set; }
-
-    [Required(ErrorMessage = "Required")]
-    [RegularExpression(EntityConstants.MediaNameRegexPattern, ErrorMessage = "RegexName")]
-    public string ThumbnailName { get; set; } = null!;
 }

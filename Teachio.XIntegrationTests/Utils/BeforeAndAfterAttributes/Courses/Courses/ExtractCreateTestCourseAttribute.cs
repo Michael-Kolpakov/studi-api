@@ -16,8 +16,7 @@ public class ExtractCreateTestCourseAttribute : BeforeAfterTestAttribute
         CourseCreateRequestDto = new CourseCreateRequestDto()
         {
             Title = "CourseCreateRequestDto for Create Test",
-            Description = "Description of CourseCreateRequestDto for Create Test",
-            ThumbnailName = "coursecreaterequestdto-for-create-test.png"
+            Description = "Description of CourseCreateRequestDto for Create Test"
         };
     }
 

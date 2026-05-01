@@ -150,8 +150,7 @@ public class CreateCourseHandlerTests
             : new CourseCreateRequestDto()
             {
                 Title = title,
-                Description = description,
-                ThumbnailName = thumbnailName
+                Description = description
             };
 
         return new CreateCourseCommand(courseCreateRequestDto!);

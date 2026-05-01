@@ -24,8 +24,7 @@ public class ExtractUpdateTestCourseAttribute : BeforeAfterTestAttribute
         {
             Id = PersistedCourse.Id,
             Title = "CourseUpdateRequestDto for Update Test",
-            Description = "Description of CourseUpdateRequestDto for Update Test",
-            ThumbnailName = "courseupdaterequestdto-for-update-test.png"
+            Description = "Description of CourseUpdateRequestDto for Update Test"
         };
     }
 
