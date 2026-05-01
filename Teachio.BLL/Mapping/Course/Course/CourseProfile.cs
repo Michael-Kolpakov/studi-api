@@ -16,6 +16,9 @@ public class CourseProfile : Profile
                 dest => dest.Title,
                 opt => opt.MapFrom<TrimmedTitleResolver>())
             .ForMember(
+                dest => dest.Description,
+                opt => opt.MapFrom<TrimmedDescriptionResolver>())
+            .ForMember(
                 dest => dest.CourseName,
                 opt => opt.MapFrom<NameFromTitleResolver>())
             .ForMember(
@@ -26,6 +29,9 @@ public class CourseProfile : Profile
             .ForMember(
                 dest => dest.Title,
                 opt => opt.MapFrom<TrimmedTitleResolver>())
+            .ForMember(
+                dest => dest.Description,
+                opt => opt.MapFrom<TrimmedDescriptionResolver>())
             .ForMember(
                 dest => dest.CourseName,
                 opt => opt.MapFrom<NameFromTitleResolver>());

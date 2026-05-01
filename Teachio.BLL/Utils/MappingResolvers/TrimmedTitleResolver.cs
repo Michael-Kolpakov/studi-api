@@ -2,6 +2,7 @@
 using Teachio.BLL.Dto.Courses.Courses.Request;
 using Teachio.BLL.Dto.Courses.Sections.Request;
 using Teachio.BLL.Dto.Courses.Videos.Videos.Request;
+using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
@@ -26,5 +27,5 @@ public class TrimmedTitleResolver : IValueResolver<object, object, string>
     }
 
     private static string TrimTitle(string title) =>
-        title.Trim();
+        TextNormalizationHelper.TrimAndCapitalizeFirstLatinLetter(title);
 }
