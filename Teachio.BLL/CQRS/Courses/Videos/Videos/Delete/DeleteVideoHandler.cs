@@ -93,7 +93,20 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
 
         _repositoryWrapper.VideosRepository.Delete(video);
 
-        video.Section.VideosCount--;
+        var sectionVideos = (await _repositoryWrapper.VideosRepository.GetAllAsync(
+                v => v.SectionId == video.SectionId && v.Id != video.Id,
+                cancellationToken: cancellationToken))
+            .OrderBy(v => v.OrderIndex)
+            .ToList();
+
+        PrepareOrderIndexesForDelete(sectionVideos);
+
+        if (sectionVideos.Count > 0)
+        {
+            _repositoryWrapper.VideosRepository.UpdateRange(sectionVideos);
+        }
+
+        video.Section.VideosCount = sectionVideos.Count;
 
         _repositoryWrapper.SectionsRepository.Update(video.Section);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
@@ -112,6 +125,11 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
                     .ThenInclude(c => c!.OwnerUser)
             .Include(v => v.VideoFile)
             .Include(v => v.VideoProgress);
+    }
+
+    private static void PrepareOrderIndexesForDelete(List<VideoEntity> sectionVideos)
+    {
+        VideoOrderIndexHelper.NormalizeOrderIndexes(sectionVideos);
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]

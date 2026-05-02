@@ -6,6 +6,7 @@ using Teachio.BLL.DTOs.Courses.Videos.Videos.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResources;
+using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 using VideoProgressEntity = Teachio.DAL.Entities.Courses.Videos.VideoProgress.VideoProgress;
@@ -21,7 +22,6 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
     private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotMapSharedResource> _stringLocalizerFailedToMap;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
-    private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
 
     public CreateVideoHandler(
         IMapper mapper,
@@ -30,8 +30,7 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         ILoggerService logger,
         ICurrentUserService currentUserService,
         IStringLocalizer<CannotMapSharedResource> stringLocalizerFailedToMap,
-        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
-        IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists)
+        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
@@ -40,7 +39,6 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         _currentUserService = currentUserService;
         _stringLocalizerFailedToMap = stringLocalizerFailedToMap;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
-        _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
     }
 
     public async Task<Result<VideoResponseDto>> Handle(CreateVideoCommand request, CancellationToken cancellationToken)
@@ -93,23 +91,14 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
             return Result.Fail(responseErrorMessage);
         }
 
-        var videoWithSameOrderIndexExists = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(
-            v => v.SectionId == newVideo.SectionId && v.OrderIndex == newVideo.OrderIndex,
-            cancellationToken: cancellationToken);
+        var sectionVideos = (await _repositoryWrapper.VideosRepository.GetAllAsync(
+                v => v.SectionId == newVideo.SectionId,
+                cancellationToken: cancellationToken))
+            .OrderBy(v => v.OrderIndex)
+            .ToList();
 
-        if (videoWithSameOrderIndexExists is not null)
-        {
-            var errorMessage = _stringLocalizerAlreadyExists[
-                nameof(AlreadyExistsSharedResource_en.VideoAlreadyExistsForSection),
-                videoWithSameOrderIndexExists.Id,
-                videoWithSameOrderIndexExists.SectionId,
-                videoWithSameOrderIndexExists.OrderIndex
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
+        var targetOrderIndex = PrepareOrderIndexForCreate(sectionVideos, request.VideoCreateRequestDto.OrderIndex);
+        newVideo.OrderIndex = targetOrderIndex;
 
         var newVideoProgress = new VideoProgressEntity()
         {
@@ -121,7 +110,12 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         await _repositoryWrapper.VideosRepository.CreateAsync(newVideo, cancellationToken);
         await _repositoryWrapper.VideoProgressRepository.CreateAsync(newVideoProgress, cancellationToken);
 
-        section.VideosCount++;
+        if (sectionVideos.Count > 0)
+        {
+            _repositoryWrapper.VideosRepository.UpdateRange(sectionVideos);
+        }
+
+        section.VideosCount = sectionVideos.Count + 1;
 
         _repositoryWrapper.SectionsRepository.Update(section);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
@@ -129,5 +123,19 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         var videoResponseDto = _mapper.Map<VideoResponseDto>(newVideo);
 
         return Result.Ok(videoResponseDto);
+    }
+
+    private static int PrepareOrderIndexForCreate(List<VideoEntity> sectionVideos, int requestedOrderIndex)
+    {
+        VideoOrderIndexHelper.NormalizeOrderIndexes(sectionVideos);
+
+        var targetOrderIndex = Math.Min(requestedOrderIndex, sectionVideos.Count);
+
+        foreach (var video in sectionVideos.Where(v => v.OrderIndex >= targetOrderIndex))
+        {
+            video.OrderIndex++;
+        }
+
+        return targetOrderIndex;
     }
 }

@@ -92,7 +92,6 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
             .ToList();
 
         var targetOrderIndex = PrepareOrderIndexForCreate(courseSections, request.SectionCreateRequestDto.OrderIndex);
-
         newSection.OrderIndex = targetOrderIndex;
 
         await _repositoryWrapper.SectionsRepository.CreateAsync(newSection, cancellationToken);

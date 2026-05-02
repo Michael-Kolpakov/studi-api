@@ -13,6 +13,10 @@ public static class VideoConfiguration
             .ToTable($"{nameof(Video)}s", DatabaseConstants.CoursesSchema)
             .HasKey(v => v.Id);
 
+        builder.Entity<Video>()
+            .HasIndex(v => new { v.SectionId, v.OrderIndex })
+            .IsUnique();
+
         builder.Entity<Video>(typeBuilder =>
         {
             typeBuilder.Property(s => s.Id)
