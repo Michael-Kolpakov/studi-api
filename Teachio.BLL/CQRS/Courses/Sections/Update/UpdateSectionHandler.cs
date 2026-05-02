@@ -110,7 +110,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
         SectionEntity existingSection,
         int requestedOrderIndex)
     {
-        SectionOrderIndexHelper.NormalizeOrderIndexes(courseSections);
+        OrderIndexHelper.NormalizeOrderIndexes(courseSections);
 
         var currentOrderIndex = existingSection.OrderIndex;
         var targetOrderIndex = Math.Min(requestedOrderIndex, courseSections.Count - 1);

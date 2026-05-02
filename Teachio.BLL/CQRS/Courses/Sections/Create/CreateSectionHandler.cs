@@ -113,7 +113,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
 
     private static int PrepareOrderIndexForCreate(List<SectionEntity> courseSections, int requestedOrderIndex)
     {
-        SectionOrderIndexHelper.NormalizeOrderIndexes(courseSections);
+        OrderIndexHelper.NormalizeOrderIndexes(courseSections);
 
         var targetOrderIndex = Math.Min(requestedOrderIndex, courseSections.Count);
 

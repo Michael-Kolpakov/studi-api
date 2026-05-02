@@ -127,7 +127,7 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
 
     private static int PrepareOrderIndexForCreate(List<VideoEntity> sectionVideos, int requestedOrderIndex)
     {
-        VideoOrderIndexHelper.NormalizeOrderIndexes(sectionVideos);
+        OrderIndexHelper.NormalizeOrderIndexes(sectionVideos);
 
         var targetOrderIndex = Math.Min(requestedOrderIndex, sectionVideos.Count);
 

@@ -134,7 +134,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
 
     private static void PrepareOrderIndexesForDelete(List<SectionEntity> courseSections)
     {
-        SectionOrderIndexHelper.NormalizeOrderIndexes(courseSections);
+        OrderIndexHelper.NormalizeOrderIndexes(courseSections);
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]

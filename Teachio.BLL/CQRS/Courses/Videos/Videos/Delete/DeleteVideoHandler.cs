@@ -129,7 +129,7 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
 
     private static void PrepareOrderIndexesForDelete(List<VideoEntity> sectionVideos)
     {
-        VideoOrderIndexHelper.NormalizeOrderIndexes(sectionVideos);
+        OrderIndexHelper.NormalizeOrderIndexes(sectionVideos);
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]

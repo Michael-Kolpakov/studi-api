@@ -124,7 +124,7 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
         VideoEntity existingVideo,
         int requestedOrderIndex)
     {
-        VideoOrderIndexHelper.NormalizeOrderIndexes(sectionVideos);
+        OrderIndexHelper.NormalizeOrderIndexes(sectionVideos);
 
         var currentOrderIndex = existingVideo.OrderIndex;
         var targetOrderIndex = Math.Min(requestedOrderIndex, sectionVideos.Count - 1);
