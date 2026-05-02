@@ -6,7 +6,9 @@ using Teachio.BLL.DTOs.Courses.Sections.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResources;
+using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Repositories.Interfaces.Base;
+using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.CQRS.Courses.Sections.Update;
 
@@ -18,7 +20,6 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
     private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
-    private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
 
     public UpdateSectionHandler(
         IMapper mapper,
@@ -26,8 +27,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
         ILoggerService logger,
         ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
-        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
-        IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists)
+        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
@@ -35,7 +35,6 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
         _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
-        _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
     }
 
     public async Task<Result<SectionResponseDto>> Handle(UpdateSectionCommand request, CancellationToken cancellationToken)
@@ -82,35 +81,61 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
             return Result.Fail(responseErrorMessage);
         }
 
-        var sectionWithSameOrderIndexExists = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
-            s => s.CourseId == existingSection.CourseId
-                 && s.OrderIndex == request.SectionUpdateRequestDto.OrderIndex
-                 && s.Id != request.SectionUpdateRequestDto.Id,
-            cancellationToken: cancellationToken);
+        var courseSections = (await _repositoryWrapper.SectionsRepository.GetAllAsync(
+                s => s.CourseId == existingSection.CourseId,
+                cancellationToken: cancellationToken))
+            .OrderBy(s => s.OrderIndex)
+            .ToList();
 
-        if (sectionWithSameOrderIndexExists is not null)
-        {
-            var errorMessage = _stringLocalizerAlreadyExists[
-                nameof(AlreadyExistsSharedResource_en.SectionAlreadyExistsForCourse),
-                sectionWithSameOrderIndexExists.Id,
-                sectionWithSameOrderIndexExists.CourseId,
-                sectionWithSameOrderIndexExists.OrderIndex
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
+        var targetOrderIndex = PrepareOrderIndexForUpdate(
+            courseSections,
+            existingSection,
+            request.SectionUpdateRequestDto.OrderIndex);
 
         _mapper.Map(request.SectionUpdateRequestDto, existingSection);
+        existingSection.OrderIndex = targetOrderIndex;
 
         // TODO: if user updated title of a section update a section folder name on Google Drive (or CDN in the future)
 
-        _repositoryWrapper.SectionsRepository.Update(existingSection);
+        _repositoryWrapper.SectionsRepository.UpdateRange(courseSections);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
         var sectionResponseDto = _mapper.Map<SectionResponseDto>(existingSection);
 
         return Result.Ok(sectionResponseDto);
+    }
+
+    private static int PrepareOrderIndexForUpdate(
+        List<SectionEntity> courseSections,
+        SectionEntity existingSection,
+        int requestedOrderIndex)
+    {
+        SectionOrderIndexHelper.NormalizeOrderIndexes(courseSections);
+
+        var currentOrderIndex = existingSection.OrderIndex;
+        var targetOrderIndex = Math.Min(requestedOrderIndex, courseSections.Count - 1);
+
+        if (targetOrderIndex < currentOrderIndex)
+        {
+            foreach (var section in courseSections.Where(s =>
+                         s.Id != existingSection.Id
+                         && s.OrderIndex >= targetOrderIndex
+                         && s.OrderIndex < currentOrderIndex))
+            {
+                section.OrderIndex++;
+            }
+        }
+        else if (targetOrderIndex > currentOrderIndex)
+        {
+            foreach (var section in courseSections.Where(s =>
+                         s.Id != existingSection.Id
+                         && s.OrderIndex <= targetOrderIndex
+                         && s.OrderIndex > currentOrderIndex))
+            {
+                section.OrderIndex--;
+            }
+        }
+
+        return targetOrderIndex;
     }
 }

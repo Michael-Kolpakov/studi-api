@@ -97,7 +97,20 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
 
         _repositoryWrapper.SectionsRepository.Delete(section);
 
-        section.Course.SectionsCount--;
+        var courseSections = (await _repositoryWrapper.SectionsRepository.GetAllAsync(
+                s => s.CourseId == section.CourseId && s.Id != section.Id,
+                cancellationToken: cancellationToken))
+            .OrderBy(s => s.OrderIndex)
+            .ToList();
+
+        PrepareOrderIndexesForDelete(courseSections);
+
+        if (courseSections.Count > 0)
+        {
+            _repositoryWrapper.SectionsRepository.UpdateRange(courseSections);
+        }
+
+        section.Course.SectionsCount = courseSections.Count;
 
         _repositoryWrapper.CoursesRepository.Update(section.Course);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
@@ -117,6 +130,11 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
                 .ThenInclude(v => v.VideoFile)
             .Include(s => s.Videos)
                 .ThenInclude(v => v.VideoProgress);
+    }
+
+    private static void PrepareOrderIndexesForDelete(List<SectionEntity> courseSections)
+    {
+        SectionOrderIndexHelper.NormalizeOrderIndexes(courseSections);
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]

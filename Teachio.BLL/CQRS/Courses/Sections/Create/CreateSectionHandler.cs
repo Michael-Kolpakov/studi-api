@@ -6,6 +6,7 @@ using Teachio.BLL.DTOs.Courses.Sections.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResources;
+using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
@@ -20,7 +21,6 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
     private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotMapSharedResource> _stringLocalizerFailedToMap;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
-    private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
 
     public CreateSectionHandler(
         IMapper mapper,
@@ -29,8 +29,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         ILoggerService logger,
         ICurrentUserService currentUserService,
         IStringLocalizer<CannotMapSharedResource> stringLocalizerFailedToMap,
-        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
-        IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists)
+        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
@@ -39,7 +38,6 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         _currentUserService = currentUserService;
         _stringLocalizerFailedToMap = stringLocalizerFailedToMap;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
-        _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
     }
 
     public async Task<Result<SectionResponseDto>> Handle(CreateSectionCommand request, CancellationToken cancellationToken)
@@ -87,27 +85,24 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
             return Result.Fail(responseErrorMessage);
         }
 
-        var sectionWithSameOrderIndexExists = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
-            s => s.CourseId == newSection.CourseId && s.OrderIndex == newSection.OrderIndex,
-            cancellationToken: cancellationToken);
+        var courseSections = (await _repositoryWrapper.SectionsRepository.GetAllAsync(
+                s => s.CourseId == newSection.CourseId,
+                cancellationToken: cancellationToken))
+            .OrderBy(s => s.OrderIndex)
+            .ToList();
 
-        if (sectionWithSameOrderIndexExists is not null)
-        {
-            var errorMessage = _stringLocalizerAlreadyExists[
-                nameof(AlreadyExistsSharedResource_en.SectionAlreadyExistsForCourse),
-                sectionWithSameOrderIndexExists.Id,
-                sectionWithSameOrderIndexExists.CourseId,
-                sectionWithSameOrderIndexExists.OrderIndex
-            ].Value;
+        var targetOrderIndex = PrepareOrderIndexForCreate(courseSections, request.SectionCreateRequestDto.OrderIndex);
 
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
+        newSection.OrderIndex = targetOrderIndex;
 
         await _repositoryWrapper.SectionsRepository.CreateAsync(newSection, cancellationToken);
 
-        course.SectionsCount++;
+        if (courseSections.Count > 0)
+        {
+            _repositoryWrapper.SectionsRepository.UpdateRange(courseSections);
+        }
+
+        course.SectionsCount = courseSections.Count + 1;
 
         _repositoryWrapper.CoursesRepository.Update(course);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
@@ -115,5 +110,19 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         var sectionResponseDto = _mapper.Map<SectionResponseDto>(newSection);
 
         return Result.Ok(sectionResponseDto);
+    }
+
+    private static int PrepareOrderIndexForCreate(List<SectionEntity> courseSections, int requestedOrderIndex)
+    {
+        SectionOrderIndexHelper.NormalizeOrderIndexes(courseSections);
+
+        var targetOrderIndex = Math.Min(requestedOrderIndex, courseSections.Count);
+
+        foreach (var section in courseSections.Where(s => s.OrderIndex >= targetOrderIndex))
+        {
+            section.OrderIndex++;
+        }
+
+        return targetOrderIndex;
     }
 }

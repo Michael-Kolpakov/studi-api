@@ -13,6 +13,10 @@ public static class SectionConfiguration
             .ToTable($"{nameof(Section)}s", DatabaseConstants.CoursesSchema)
             .HasKey(s => s.Id);
 
+        builder.Entity<Section>()
+            .HasIndex(s => new { s.CourseId, s.OrderIndex })
+            .IsUnique();
+
         builder.Entity<Section>(typeBuilder =>
         {
             typeBuilder.Property(s => s.Id)
