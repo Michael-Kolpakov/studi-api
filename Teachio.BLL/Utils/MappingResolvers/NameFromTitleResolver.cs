@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Teachio.BLL.Dto.Courses.Courses.Request;
-using Teachio.BLL.Dto.Courses.Sections.Request;
+using Teachio.BLL.DTOs.Courses.Courses.Request;
+using Teachio.BLL.DTOs.Courses.Sections.Request;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Sections;
 

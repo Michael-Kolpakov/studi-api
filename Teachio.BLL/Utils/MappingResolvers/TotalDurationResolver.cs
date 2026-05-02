@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Teachio.BLL.Dto.Courses.Courses.Response;
+using Teachio.BLL.DTOs.Courses.Courses.Response;
 using Teachio.DAL.Entities.Courses.Courses;
 
 namespace Teachio.BLL.Utils.MappingResolvers;

@@ -1,5 +1,5 @@
 using System.Reflection;
-using Teachio.BLL.Dto.Courses.Courses.Request.Create;
+using Teachio.BLL.DTOs.Courses.Courses.Request.Create;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.XIntegrationTests.ControllerTests;
 using Xunit.Sdk;

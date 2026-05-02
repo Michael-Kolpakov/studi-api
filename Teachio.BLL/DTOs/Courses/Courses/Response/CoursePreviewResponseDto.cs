@@ -1,0 +1,22 @@
+﻿using Teachio.BLL.DTOs.Courses.Sections.Response;
+
+namespace Teachio.BLL.DTOs.Courses.Courses.Response;
+
+public class CoursePreviewResponseDto
+{
+    public Guid Id { get; set; }
+
+    public string Title { get; set; } = null!;
+
+    public string? Description { get; set; }
+
+    public int SectionsCount { get; set; }
+
+    public float TotalDuration { get; set; }
+
+    public string? ThumbnailRelativePath { get; set; }
+
+    public int WatchingUsersCount { get; set; }
+
+    public List<SectionPreviewResponseDto> Sections { get; set; } = new List<SectionPreviewResponseDto>();
+}

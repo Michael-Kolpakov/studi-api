@@ -1,4 +1,4 @@
-﻿using Teachio.BLL.SharedResource;
+﻿using Teachio.BLL.SharedResources;
 
 namespace Teachio.XUnitTests.Mocks.Localizers;
 

@@ -1,5 +1,5 @@
 using AutoMapper;
-using Teachio.BLL.Dto.Courses.Courses.Request;
+using Teachio.BLL.DTOs.Courses.Courses.Request;
 using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Entities.Courses.Courses;
 

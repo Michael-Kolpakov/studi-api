@@ -1,4 +1,4 @@
-﻿using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
+﻿using Teachio.BLL.DTOs.Courses.Videos.Videos.Response;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 
 namespace Teachio.XUnitTests.TestData;

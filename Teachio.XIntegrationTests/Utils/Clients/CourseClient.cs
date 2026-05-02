@@ -1,7 +1,7 @@
 using RestSharp;
-using Teachio.BLL.Dto.Courses.Courses.Request.Create;
-using Teachio.BLL.Dto.Courses.Courses.Request.Update;
-using Teachio.BLL.Dto.Courses.Courses.Response;
+using Teachio.BLL.DTOs.Courses.Courses.Request.Create;
+using Teachio.BLL.DTOs.Courses.Courses.Request.Update;
+using Teachio.BLL.DTOs.Courses.Courses.Response;
 
 namespace Teachio.XIntegrationTests.Utils.Clients;
 

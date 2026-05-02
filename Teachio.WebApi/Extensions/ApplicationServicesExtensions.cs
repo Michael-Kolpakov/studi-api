@@ -6,7 +6,7 @@ using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.Services.Realizations;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using Teachio.DAL.Repositories.Realizations.Base;
-using Teachio.DAL.SharedResource;
+using Teachio.DAL.SharedResources;
 using Teachio.WebApi.Services;
 
 namespace Teachio.WebApi.Extensions;
@@ -40,7 +40,7 @@ public static class ApplicationServicesExtensions
         services.AddSwagger();
         services.AddSerilogLogging();
         services.AddOptions(configuration);
-        services.AddCustomServices(configuration);
+        services.AddCustomServices();
         services.AddRepositoryServices();
         services.AddAutoMapper(_ => { }, currentAssemblies);
         services.AddMediatR(config => config.RegisterServicesFromAssemblies(bllAssembly));
@@ -65,7 +65,7 @@ public static class ApplicationServicesExtensions
         });
     }
 
-    private static void AddCustomServices(this IServiceCollection services, IConfiguration configuration)
+    private static void AddCustomServices(this IServiceCollection services)
     {
         services.AddScoped<ILoggerService, LoggerService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();

@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Teachio.BLL.Dto.Courses.Courses.Request.Create;
-using Teachio.BLL.Dto.Courses.Courses.Request.Update;
-using Teachio.BLL.Dto.Courses.Courses.Request.Upload;
-using Teachio.BLL.Dto.Courses.Courses.Response;
-using Teachio.BLL.MediatR.Courses.Courses.Create;
-using Teachio.BLL.MediatR.Courses.Courses.Delete;
-using Teachio.BLL.MediatR.Courses.Courses.GetById;
-using Teachio.BLL.MediatR.Courses.Courses.GetByIdPreview;
-using Teachio.BLL.MediatR.Courses.Courses.GetPaginated;
-using Teachio.BLL.MediatR.Courses.Courses.Update;
-using Teachio.BLL.MediatR.Courses.Courses.UploadThumbnail;
+using Teachio.BLL.CQRS.Courses.Courses.Create;
+using Teachio.BLL.CQRS.Courses.Courses.Delete;
+using Teachio.BLL.CQRS.Courses.Courses.GetById;
+using Teachio.BLL.CQRS.Courses.Courses.GetByIdPreview;
+using Teachio.BLL.CQRS.Courses.Courses.GetPaginated;
+using Teachio.BLL.CQRS.Courses.Courses.Update;
+using Teachio.BLL.CQRS.Courses.Courses.UploadThumbnail;
+using Teachio.BLL.DTOs.Courses.Courses.Request.Create;
+using Teachio.BLL.DTOs.Courses.Courses.Request.Update;
+using Teachio.BLL.DTOs.Courses.Courses.Request.Upload;
+using Teachio.BLL.DTOs.Courses.Courses.Response;
 using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Courses;

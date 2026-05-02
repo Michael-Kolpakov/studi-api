@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Teachio.BLL.Dto.Courses.Courses.Response;
-using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
+using Teachio.BLL.DTOs.Courses.Courses.Response;
+using Teachio.BLL.DTOs.Courses.Videos.Videos.Response;
 using Teachio.BLL.Utils.Constants;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Videos.Videos;

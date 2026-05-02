@@ -1,5 +1,5 @@
 using System.Reflection;
-using Teachio.BLL.Dto.Courses.Courses.Request.Update;
+using Teachio.BLL.DTOs.Courses.Courses.Request.Update;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.XIntegrationTests.Utils.Extractors;
 using Xunit.Sdk;

@@ -23,10 +23,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="MediatR\Courses\Sections\" />
-      <Folder Include="MediatR\Courses\Videos\VideoProgress\" />
-      <Folder Include="MediatR\Courses\Videos\Videos\" />
-      <Folder Include="MediatR\Users\" />
+      <Folder Include="CQRS\Courses\Sections\" />
+      <Folder Include="CQRS\Courses\Videos\VideoProgress\" />
+      <Folder Include="CQRS\Courses\Videos\Videos\" />
+      <Folder Include="CQRS\Users\" />
     </ItemGroup>
 
     <ItemGroup>

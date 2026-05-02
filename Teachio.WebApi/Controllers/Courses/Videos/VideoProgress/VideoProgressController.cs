@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Teachio.BLL.Dto.Courses.Videos.VideoProgress.Request.Update;
-using Teachio.BLL.Dto.Courses.Videos.VideoProgress.Response;
-using Teachio.BLL.MediatR.Courses.Videos.VideoProgress.Update;
+using Teachio.BLL.CQRS.Courses.Videos.VideoProgress.Update;
+using Teachio.BLL.DTOs.Courses.Videos.VideoProgress.Request.Update;
+using Teachio.BLL.DTOs.Courses.Videos.VideoProgress.Response;
 using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Videos.VideoProgress;

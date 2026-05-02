@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using Teachio.BLL.Dto.Courses.Videos.Videos.Request.Create;
-using Teachio.BLL.Dto.Courses.Videos.Videos.Request.Update;
-using Teachio.BLL.Dto.Courses.Videos.Videos.Request.Upload;
-using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
-using Teachio.BLL.MediatR.Courses.Videos.Videos.Create;
-using Teachio.BLL.MediatR.Courses.Videos.Videos.Delete;
-using Teachio.BLL.MediatR.Courses.Videos.Videos.GetById;
-using Teachio.BLL.MediatR.Courses.Videos.Videos.Update;
-using Teachio.BLL.MediatR.Courses.Videos.Videos.UploadVideo;
+using Teachio.BLL.CQRS.Courses.Videos.Videos.Create;
+using Teachio.BLL.CQRS.Courses.Videos.Videos.Delete;
+using Teachio.BLL.CQRS.Courses.Videos.Videos.GetById;
+using Teachio.BLL.CQRS.Courses.Videos.Videos.Update;
+using Teachio.BLL.CQRS.Courses.Videos.Videos.UploadVideo;
+using Teachio.BLL.DTOs.Courses.Videos.Videos.Request.Create;
+using Teachio.BLL.DTOs.Courses.Videos.Videos.Request.Update;
+using Teachio.BLL.DTOs.Courses.Videos.Videos.Request.Upload;
+using Teachio.BLL.DTOs.Courses.Videos.Videos.Response;
 using Teachio.DAL.Utils.Constants;
 using Teachio.WebApi.Utils.RelativeRoutes;
 

@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 using Teachio.BLL.Models.Storage;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.BLL.SharedResource;
+using Teachio.BLL.SharedResources;
 using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace Teachio.BLL.Services.Realizations;

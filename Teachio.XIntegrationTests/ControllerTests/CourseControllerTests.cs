@@ -1,5 +1,5 @@
 using System.Net;
-using Teachio.BLL.Dto.Courses.Courses.Response;
+using Teachio.BLL.DTOs.Courses.Courses.Response;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.WebApi;
 using Teachio.XIntegrationTests.Utils;
