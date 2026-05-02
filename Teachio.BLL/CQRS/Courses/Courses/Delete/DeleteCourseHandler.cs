@@ -125,6 +125,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
                     .ThenInclude(v => v.VideoProgress);
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]
     private async Task<Result> DeleteCourseThumbnailFromCDNAsync(
         CourseEntity course,
         string ownerUserEmail,
@@ -153,6 +154,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
         return Result.Ok();
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]
     private async Task<Result> DeleteCourseVideosFromCDNAsync(
         CourseEntity course,
         string ownerUserEmail,

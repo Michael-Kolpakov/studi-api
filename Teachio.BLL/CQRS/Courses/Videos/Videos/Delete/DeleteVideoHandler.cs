@@ -114,6 +114,7 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
             .Include(v => v.VideoProgress);
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]
     private async Task<Result> DeleteVideoFromCDNAsync(
         VideoEntity video,
         DeleteVideoCommand request,

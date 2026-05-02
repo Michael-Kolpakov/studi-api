@@ -119,6 +119,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
                 .ThenInclude(v => v.VideoProgress);
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]
     private async Task<Result> DeleteSectionVideosFromCDNAsync(
         SectionEntity section,
         string ownerUserEmail,
