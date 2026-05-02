@@ -139,7 +139,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
         }
 
         var deleteGoogleDriveFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
-            ThumbnailStoragePathHelper.BuildThumbnailFolderSegments(ownerUserEmail, course.CourseName),
+            StoragePathHelper.BuildThumbnailFolderSegments(ownerUserEmail, course.CourseName),
             courseThumbnailFile.ThumbnailName,
             cancellationToken);
 
@@ -174,7 +174,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
         foreach (var courseVideoFile in courseVideoFiles)
         {
             var deleteGoogleDriveFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
-                VideoStoragePathHelper.BuildVideoFolderSegments(
+                StoragePathHelper.BuildVideoFolderSegments(
                     ownerUserEmail,
                     course.CourseName,
                     courseVideoFile.SectionName),

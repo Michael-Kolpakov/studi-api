@@ -152,7 +152,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
         foreach (var sectionVideoFile in sectionVideoFiles)
         {
             var deleteGoogleDriveFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
-                VideoStoragePathHelper.BuildVideoFolderSegments(
+                StoragePathHelper.BuildVideoFolderSegments(
                     ownerUserEmail,
                     section.Course!.CourseName,
                     section.SectionName),

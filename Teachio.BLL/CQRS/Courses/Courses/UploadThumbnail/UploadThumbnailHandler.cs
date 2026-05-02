@@ -180,7 +180,7 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
             if (!string.IsNullOrWhiteSpace(uploadThumbnailContext.ExistingThumbnailName))
             {
                 var deleteExistingFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
-                    ThumbnailStoragePathHelper.BuildThumbnailFolderSegments(
+                    StoragePathHelper.BuildThumbnailFolderSegments(
                         uploadThumbnailContext.OwnerUserEmail!,
                         uploadThumbnailContext.CourseName),
                     uploadThumbnailContext.ExistingThumbnailName,
@@ -204,7 +204,7 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
                 useAsync: true);
 
             var uploadResult = await _googleDriveStorageService.UploadFileAsync(
-                ThumbnailStoragePathHelper.BuildThumbnailFolderSegments(
+                StoragePathHelper.BuildThumbnailFolderSegments(
                     uploadThumbnailContext.OwnerUserEmail!,
                     uploadThumbnailContext.CourseName),
                 thumbnailName,

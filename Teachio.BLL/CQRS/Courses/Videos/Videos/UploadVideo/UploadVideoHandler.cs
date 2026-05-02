@@ -182,7 +182,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
             if (!string.IsNullOrWhiteSpace(uploadVideoContext.ExistingVideoFileName))
             {
                 var deleteExistingFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
-                    VideoStoragePathHelper.BuildVideoFolderSegments(
+                    StoragePathHelper.BuildVideoFolderSegments(
                         uploadVideoContext.OwnerUserEmail!,
                         uploadVideoContext.CourseName,
                         uploadVideoContext.SectionName),
@@ -207,7 +207,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
                 useAsync: true);
 
             var uploadResult = await _googleDriveStorageService.UploadFileAsync(
-                VideoStoragePathHelper.BuildVideoFolderSegments(
+                StoragePathHelper.BuildVideoFolderSegments(
                     uploadVideoContext.OwnerUserEmail!,
                     uploadVideoContext.CourseName,
                     uploadVideoContext.SectionName),
