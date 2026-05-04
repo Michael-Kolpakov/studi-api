@@ -39,10 +39,19 @@ public class RelativePathResolver : IValueResolver<object, object, string?>
             return null;
         }
 
+        var section = source.Section;
+        var course = section?.Course;
+        var owner = course?.OwnerUser;
+
+        if (section is null || course is null || owner is null)
+        {
+            return null;
+        }
+
         return HandlerConstants.VideoRelativePathTemplate
-            .Replace("{AppUser}", source.Section!.Course!.OwnerUser.Email)
-            .Replace("{CourseName}", source.Section.Course.CourseName)
-            .Replace("{SectionName}", source.Section.SectionName)
+            .Replace("{AppUser}", owner.Email)
+            .Replace("{CourseName}", course.CourseName)
+            .Replace("{SectionName}", section.SectionName)
             .Replace("{VideoName}", source.VideoFile.VideoName);
     }
 }
