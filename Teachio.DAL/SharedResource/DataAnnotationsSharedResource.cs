@@ -1,3 +1,3 @@
-﻿namespace Teachio.DAL.SharedResources;
+namespace Teachio.DAL.SharedResource;
 
 public class DataAnnotationsSharedResource;

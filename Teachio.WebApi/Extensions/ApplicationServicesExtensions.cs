@@ -4,22 +4,22 @@ using Teachio.BLL.Models.Media;
 using Teachio.BLL.Models.Storage;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.Services.Realizations;
+using Teachio.BLL.SharedResource;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using Teachio.DAL.Repositories.Realizations.Base;
-using Teachio.DAL.SharedResources;
+using Teachio.DAL.SharedResource;
 using Teachio.WebApi.Services;
 
 namespace Teachio.WebApi.Extensions;
 
 public static class ApplicationServicesExtensions
 {
-    private const string BllAssemblyName = "Teachio.BLL";
-
     public static IServiceCollection AddApplicationServices(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var bllAssembly = Assembly.Load(BllAssemblyName);
+        var bllAssemblyName = typeof(BllSharedResource).Assembly.GetName().Name!;
+        var bllAssembly = Assembly.Load(bllAssemblyName);
         var currentAssemblies = AppDomain.CurrentDomain
             .GetAssemblies()
             .Concat([bllAssembly])

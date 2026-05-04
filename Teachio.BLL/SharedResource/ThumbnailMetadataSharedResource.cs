@@ -1,3 +1,3 @@
-namespace Teachio.BLL.SharedResources;
+namespace Teachio.BLL.SharedResource;
 
 public class ThumbnailMetadataSharedResource;
