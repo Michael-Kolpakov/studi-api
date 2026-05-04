@@ -46,8 +46,6 @@ public static class EntityConstants
 
     public const int MaxVideoFileNameLength = 110;
 
-    public const int MaxVideoProcessingErrorLength = 100;
-
     public const int MaxSectionsPerCourse = 35;
 
     public const int MaxVideosPerSection = 40;
@@ -75,8 +73,6 @@ public static class EntityConstants
     public const string NameRegexPattern = "^[A-Za-z0-9,!?-]+$";
 
     public const string MediaNameRegexPattern = "^[A-Za-z0-9.,!?-]+$";
-
-    public const string ProcessingErrorRegexPattern = "^[A-Za-z0-9 .,]+$";
 
     #endregion
 

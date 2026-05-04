@@ -20,7 +20,6 @@ public static class VideoTestData
             Title = actualTitle,
             SectionId = sectionId,
             OrderIndex = videoNumber,
-            Status = VideoStatus.Ready,
             VideoProgress = VideoProgressTestData.GetVideoProgress()
         };
     }

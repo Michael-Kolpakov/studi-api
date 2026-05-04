@@ -14,7 +14,6 @@ public static class Constraint
             ValidationRule.Description => ConvertRegexToSqlLike(EntityConstants.DescriptionRegexPattern),
             ValidationRule.Name => ConvertRegexToSqlLike(EntityConstants.NameRegexPattern),
             ValidationRule.MediaName => ConvertRegexToSqlLike(EntityConstants.MediaNameRegexPattern),
-            ValidationRule.ProcessingError => ConvertRegexToSqlLike(EntityConstants.ProcessingErrorRegexPattern),
             _ => throw new ArgumentOutOfRangeException(nameof(rule), rule, null)
         };
 
@@ -190,8 +189,7 @@ public enum ValidationRule
     Title,
     Description,
     Name,
-    MediaName,
-    ProcessingError
+    MediaName
 }
 
 public enum CheckConstraintType

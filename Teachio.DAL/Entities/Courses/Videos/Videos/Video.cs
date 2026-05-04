@@ -15,10 +15,6 @@ public class Video
 
     public int OrderIndex { get; set; }
 
-    public VideoStatus Status { get; set; }
-
-    public string? ProcessingError { get; set; }
-
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
@@ -26,13 +22,4 @@ public class Video
     public VideoFile? VideoFile { get; set; }
 
     public VideoProgress.VideoProgress VideoProgress { get; set; } = null!;
-}
-
-public enum VideoStatus
-{
-    Uploaded,
-    Processing,
-    Ready,
-    Failed,
-    Deleted
 }

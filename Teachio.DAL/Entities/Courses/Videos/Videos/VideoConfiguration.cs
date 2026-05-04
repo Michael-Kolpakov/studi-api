@@ -45,18 +45,6 @@ public static class VideoConfiguration
                         EntityConstants.MinNonNegativeValue,
                         EntityConstants.MaxVideosPerSection - 1)));
 
-            typeBuilder.Property(v => v.Status)
-                .IsRequired()
-                .HasConversion<int>();
-
-            typeBuilder.Property(v => v.ProcessingError)
-                .HasMaxLength(EntityConstants.MaxVideoProcessingErrorLength);
-
-            typeBuilder.ToTable(t =>
-                t.HasCheckConstraint(
-                    $"CK_{nameof(Video)}_{nameof(Video.ProcessingError)}_{nameof(CheckConstraintType.Regex)}",
-                    Constraint.CreateSqlRegexCheck(nameof(Video.ProcessingError), ValidationRule.ProcessingError)));
-
             typeBuilder.Property(v => v.CreatedAt)
                 .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
                 .IsRequired();

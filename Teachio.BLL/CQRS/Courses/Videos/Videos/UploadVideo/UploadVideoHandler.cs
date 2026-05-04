@@ -10,7 +10,6 @@ using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.Helpers;
 using Teachio.BLL.Utils.MappingResolvers;
 using Teachio.DAL.Entities.Courses.Videos.VideoFiles;
-using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using Teachio.DAL.Utils.Constants;
 
@@ -269,9 +268,6 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
 
                 _repositoryWrapper.VideoFilesRepository.Update(existingVideoFileEntity);
             }
-
-            video.Status = VideoStatus.Ready;
-            video.ProcessingError = null;
 
             _repositoryWrapper.VideosRepository.Update(video);
             await _repositoryWrapper.SaveChangesAsync(cancellationToken);
