@@ -10,8 +10,6 @@ public class VideoResponseDto
 
     public string? VideoRelativePath { get; set; }
 
-    public string? ContentType { get; set; }
-
     public Guid SectionId { get; set; }
 
     public int OrderIndex { get; set; }
