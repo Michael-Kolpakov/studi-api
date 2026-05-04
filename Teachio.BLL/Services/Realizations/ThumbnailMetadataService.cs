@@ -5,7 +5,7 @@ using Microsoft.Extensions.Localization;
 using Teachio.BLL.Models.Media;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.BLL.SharedResources;
+using Teachio.BLL.SharedResource;
 using Teachio.DAL.Utils.Constants;
 
 namespace Teachio.BLL.Services.Realizations;

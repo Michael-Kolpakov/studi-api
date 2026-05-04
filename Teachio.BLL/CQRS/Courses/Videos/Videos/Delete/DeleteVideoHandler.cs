@@ -8,9 +8,11 @@ using Microsoft.Extensions.Localization;
 using Teachio.BLL.DTOs.Courses.Videos.Videos.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.BLL.SharedResources;
+using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.Helpers;
+using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Repositories.Interfaces.Base;
+using Teachio.DAL.Utils.Constants;
 using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Teachio.BLL.CQRS.Courses.Videos.Videos.Delete;
@@ -92,21 +94,16 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
         }
 
         _repositoryWrapper.VideosRepository.Delete(video);
+        await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
-        var sectionVideos = (await _repositoryWrapper.VideosRepository.GetAllAsync(
-                v => v.SectionId == video.SectionId && v.Id != video.Id,
-                cancellationToken: cancellationToken))
-            .OrderBy(v => v.OrderIndex)
-            .ToList();
+        await ShiftOrderIndexesForDeleteAsync(
+            video.SectionId,
+            video.OrderIndex,
+            cancellationToken);
 
-        PrepareOrderIndexesForDelete(sectionVideos);
-
-        if (sectionVideos.Count > 0)
-        {
-            _repositoryWrapper.VideosRepository.UpdateRange(sectionVideos);
-        }
-
-        video.Section.VideosCount = sectionVideos.Count;
+        video.Section.VideosCount = await _repositoryWrapper.VideosRepository.GetSelfCountAsync(
+            v => v.SectionId == video.SectionId,
+            cancellationToken: cancellationToken);
 
         _repositoryWrapper.SectionsRepository.Update(video.Section);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
@@ -127,9 +124,21 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
             .Include(v => v.VideoProgress);
     }
 
-    private static void PrepareOrderIndexesForDelete(List<VideoEntity> sectionVideos)
+    private async Task ShiftOrderIndexesForDeleteAsync(
+        Guid sectionId,
+        int deletedOrderIndex,
+        CancellationToken cancellationToken)
     {
-        OrderIndexHelper.NormalizeOrderIndexes(sectionVideos);
+        var table = $"[{DatabaseConstants.CoursesSchema}].[{nameof(Video)}s]";
+
+        var sql = $"""
+            UPDATE {table}
+            SET {nameof(VideoEntity.OrderIndex)} = {nameof(VideoEntity.OrderIndex)} - 1
+            WHERE {nameof(VideoEntity.SectionId)} = '{sectionId}'
+                AND {nameof(VideoEntity.OrderIndex)} > {deletedOrderIndex}
+        """;
+
+        await _repositoryWrapper.VideosRepository.ExecuteSqlRaw(sql, cancellationToken);
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]

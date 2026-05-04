@@ -9,7 +9,7 @@ using Teachio.BLL.DTOs.Courses.Courses.Response;
 using Teachio.BLL.DTOs.Courses.Videos.Videos.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.BLL.SharedResources;
+using Teachio.BLL.SharedResource;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 
@@ -87,6 +87,7 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
     private static IIncludableQueryable<CourseEntity, object> IncludeCourseRelatedEntities(IQueryable<CourseEntity> query)
     {
         return query
+            .Include(c => c.OwnerUser)
             .Include(c => c.Sections)
                 .ThenInclude(s => s.Videos)
                     .ThenInclude(v => v.VideoFile)

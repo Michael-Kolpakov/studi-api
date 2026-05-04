@@ -5,9 +5,11 @@ using Microsoft.Extensions.Localization;
 using Teachio.BLL.DTOs.Courses.Sections.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.BLL.SharedResources;
+using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.Helpers;
+using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Repositories.Interfaces.Base;
+using Teachio.DAL.Utils.Constants;
 using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.CQRS.Courses.Sections.Create;
@@ -94,12 +96,15 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         var targetOrderIndex = PrepareOrderIndexForCreate(courseSections, request.SectionCreateRequestDto.OrderIndex);
         newSection.OrderIndex = targetOrderIndex;
 
-        await _repositoryWrapper.SectionsRepository.CreateAsync(newSection, cancellationToken);
-
         if (courseSections.Count > 0)
         {
-            _repositoryWrapper.SectionsRepository.UpdateRange(courseSections);
+            await ShiftOrderIndexesForCreateAsync(
+                request.SectionCreateRequestDto.CourseId,
+                targetOrderIndex,
+                cancellationToken);
         }
+
+        await _repositoryWrapper.SectionsRepository.CreateAsync(newSection, cancellationToken);
 
         course.SectionsCount = courseSections.Count + 1;
 
@@ -109,6 +114,23 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         var sectionResponseDto = _mapper.Map<SectionResponseDto>(newSection);
 
         return Result.Ok(sectionResponseDto);
+    }
+
+    private async Task ShiftOrderIndexesForCreateAsync(
+        Guid courseId,
+        int targetOrderIndex,
+        CancellationToken cancellationToken)
+    {
+        var table = $"[{DatabaseConstants.CoursesSchema}].[{nameof(Section)}s]";
+
+        var sql = $"""
+            UPDATE {table}
+            SET {nameof(SectionEntity.OrderIndex)} = {nameof(SectionEntity.OrderIndex)} + 1
+            WHERE {nameof(SectionEntity.CourseId)} = '{courseId}'
+                AND {nameof(SectionEntity.OrderIndex)} >= {targetOrderIndex}
+        """;
+
+        await _repositoryWrapper.SectionsRepository.ExecuteSqlRaw(sql, cancellationToken);
     }
 
     private static int PrepareOrderIndexForCreate(List<SectionEntity> courseSections, int requestedOrderIndex)

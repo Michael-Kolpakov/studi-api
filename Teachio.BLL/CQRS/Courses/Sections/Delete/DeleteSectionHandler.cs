@@ -8,9 +8,11 @@ using Microsoft.Extensions.Localization;
 using Teachio.BLL.DTOs.Courses.Sections.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.BLL.SharedResources;
+using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.Helpers;
+using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Repositories.Interfaces.Base;
+using Teachio.DAL.Utils.Constants;
 using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.CQRS.Courses.Sections.Delete;
@@ -87,30 +89,25 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
 
         var ownerUserEmail = section.Course.OwnerUser.Email;
 
-        var videosDeletionResult = await DeleteSectionVideosFromCDNAsync(section, ownerUserEmail!, request, cancellationToken);
-        if (videosDeletionResult.IsFailed)
+        var sectionFolderDeletionResult = await DeleteSectionFolderFromDriveAsync(section, ownerUserEmail!, request, cancellationToken);
+        if (sectionFolderDeletionResult.IsFailed)
         {
-            var errorMessage = videosDeletionResult.Errors[0].Message;
+            var errorMessage = sectionFolderDeletionResult.Errors[0].Message;
 
             return Result.Fail(errorMessage);
         }
 
         _repositoryWrapper.SectionsRepository.Delete(section);
+        await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
-        var courseSections = (await _repositoryWrapper.SectionsRepository.GetAllAsync(
-                s => s.CourseId == section.CourseId && s.Id != section.Id,
-                cancellationToken: cancellationToken))
-            .OrderBy(s => s.OrderIndex)
-            .ToList();
+        await ShiftOrderIndexesForDeleteAsync(
+            section.CourseId,
+            section.OrderIndex,
+            cancellationToken);
 
-        PrepareOrderIndexesForDelete(courseSections);
-
-        if (courseSections.Count > 0)
-        {
-            _repositoryWrapper.SectionsRepository.UpdateRange(courseSections);
-        }
-
-        section.Course.SectionsCount = courseSections.Count;
+        section.Course.SectionsCount = await _repositoryWrapper.SectionsRepository.GetSelfCountAsync(
+            s => s.CourseId == section.CourseId,
+            cancellationToken: cancellationToken);
 
         _repositoryWrapper.CoursesRepository.Update(section.Course);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
@@ -132,40 +129,43 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
                 .ThenInclude(v => v.VideoProgress);
     }
 
-    private static void PrepareOrderIndexesForDelete(List<SectionEntity> courseSections)
+    private async Task ShiftOrderIndexesForDeleteAsync(
+        Guid courseId,
+        int deletedOrderIndex,
+        CancellationToken cancellationToken)
     {
-        OrderIndexHelper.NormalizeOrderIndexes(courseSections);
+        var table = $"[{DatabaseConstants.CoursesSchema}].[{nameof(Section)}s]";
+
+        var sql = $"""
+            UPDATE {table}
+            SET {nameof(SectionEntity.OrderIndex)} = {nameof(SectionEntity.OrderIndex)} - 1
+            WHERE {nameof(SectionEntity.CourseId)} = '{courseId}'
+                AND {nameof(SectionEntity.OrderIndex)} > {deletedOrderIndex}
+        """;
+
+        await _repositoryWrapper.SectionsRepository.ExecuteSqlRaw(sql, cancellationToken);
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]
-    private async Task<Result> DeleteSectionVideosFromCDNAsync(
+    private async Task<Result> DeleteSectionFolderFromDriveAsync(
         SectionEntity section,
         string ownerUserEmail,
         DeleteSectionCommand request,
         CancellationToken cancellationToken)
     {
-        var sectionVideoFiles = section.Videos
-            .Where(video => video.VideoFile is not null)
-            .Select(video => video.VideoFile!)
-            .ToList();
+        var sectionFolderDeletionResult = await _googleDriveStorageService.DeleteFolderByPathAsync(
+            StoragePathHelper.BuildVideoFolderSegments(
+                ownerUserEmail,
+                section.Course!.CourseName,
+                section.SectionName),
+            cancellationToken);
 
-        foreach (var sectionVideoFile in sectionVideoFiles)
+        if (sectionFolderDeletionResult.IsFailed)
         {
-            var deleteGoogleDriveFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
-                StoragePathHelper.BuildVideoFolderSegments(
-                    ownerUserEmail,
-                    section.Course!.CourseName,
-                    section.SectionName),
-                sectionVideoFile.VideoName,
-                cancellationToken);
+            var errorMessage = sectionFolderDeletionResult.Errors[0].Message;
+            _logger.LogError(request, errorMessage);
 
-            if (deleteGoogleDriveFileResult.IsFailed)
-            {
-                var errorMessage = deleteGoogleDriveFileResult.Errors[0].Message;
-                _logger.LogError(request, errorMessage);
-
-                return Result.Fail(errorMessage);
-            }
+            return Result.Fail(errorMessage);
         }
 
         return Result.Ok();

@@ -5,9 +5,10 @@ using Microsoft.Extensions.Localization;
 using Teachio.BLL.DTOs.Courses.Sections.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.BLL.SharedResources;
-using Teachio.BLL.Utils.Helpers;
+using Teachio.BLL.SharedResource;
+using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Repositories.Interfaces.Base;
+using Teachio.DAL.Utils.Constants;
 using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.CQRS.Courses.Sections.Update;
@@ -81,23 +82,31 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
             return Result.Fail(responseErrorMessage);
         }
 
-        var courseSections = (await _repositoryWrapper.SectionsRepository.GetAllAsync(
-                s => s.CourseId == existingSection.CourseId,
-                cancellationToken: cancellationToken))
-            .OrderBy(s => s.OrderIndex)
-            .ToList();
+        var sectionsCount = await _repositoryWrapper.SectionsRepository.GetSelfCountAsync(
+            s => s.CourseId == existingSection.CourseId,
+            cancellationToken: cancellationToken);
 
         var targetOrderIndex = PrepareOrderIndexForUpdate(
-            courseSections,
-            existingSection,
+            existingSection.OrderIndex,
+            sectionsCount,
             request.SectionUpdateRequestDto.OrderIndex);
+
+        if (targetOrderIndex != existingSection.OrderIndex)
+        {
+            await ShiftOrderIndexesForUpdateAsync(
+                existingSection.CourseId,
+                existingSection.Id,
+                existingSection.OrderIndex,
+                targetOrderIndex,
+                cancellationToken);
+        }
 
         _mapper.Map(request.SectionUpdateRequestDto, existingSection);
         existingSection.OrderIndex = targetOrderIndex;
 
         // TODO: if user updated title of a section update a section folder name on Google Drive (or CDN in the future)
 
-        _repositoryWrapper.SectionsRepository.UpdateRange(courseSections);
+        _repositoryWrapper.SectionsRepository.Update(existingSection);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
         var sectionResponseDto = _mapper.Map<SectionResponseDto>(existingSection);
@@ -105,37 +114,60 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
         return Result.Ok(sectionResponseDto);
     }
 
+    private async Task ShiftOrderIndexesForUpdateAsync(
+        Guid courseId,
+        Guid sectionId,
+        int currentOrderIndex,
+        int targetOrderIndex,
+        CancellationToken cancellationToken)
+    {
+        var table = $"[{DatabaseConstants.CoursesSchema}].[{nameof(Section)}s]";
+
+        var sql = $"""
+            UPDATE {table}
+            SET {nameof(SectionEntity.OrderIndex)} =
+                CASE
+                    WHEN {nameof(SectionEntity.Id)} = '{sectionId}'
+                        THEN {targetOrderIndex}
+                    WHEN {targetOrderIndex} < {currentOrderIndex}
+                        AND {nameof(SectionEntity.OrderIndex)} >= {targetOrderIndex}
+                        AND {nameof(SectionEntity.OrderIndex)} < {currentOrderIndex}
+                        THEN {nameof(SectionEntity.OrderIndex)} + 1
+                    WHEN {targetOrderIndex} > {currentOrderIndex}
+                        AND {nameof(SectionEntity.OrderIndex)} <= {targetOrderIndex}
+                        AND {nameof(SectionEntity.OrderIndex)} > {currentOrderIndex}
+                        THEN {nameof(SectionEntity.OrderIndex)} - 1
+                    ELSE {nameof(SectionEntity.OrderIndex)}
+                END
+            WHERE {nameof(SectionEntity.CourseId)} = '{courseId}'
+                AND (
+                    {nameof(SectionEntity.Id)} = '{sectionId}'
+                    OR (
+                        {targetOrderIndex} < {currentOrderIndex}
+                        AND {nameof(SectionEntity.OrderIndex)} >= {targetOrderIndex}
+                        AND {nameof(SectionEntity.OrderIndex)} < {currentOrderIndex}
+                    )
+                    OR (
+                        {targetOrderIndex} > {currentOrderIndex}
+                        AND {nameof(SectionEntity.OrderIndex)} <= {targetOrderIndex}
+                        AND {nameof(SectionEntity.OrderIndex)} > {currentOrderIndex}
+                    )
+                )
+        """;
+
+        await _repositoryWrapper.SectionsRepository.ExecuteSqlRaw(sql, cancellationToken);
+    }
+
     private static int PrepareOrderIndexForUpdate(
-        List<SectionEntity> courseSections,
-        SectionEntity existingSection,
+        int currentOrderIndex,
+        int sectionsCount,
         int requestedOrderIndex)
     {
-        OrderIndexHelper.NormalizeOrderIndexes(courseSections);
-
-        var currentOrderIndex = existingSection.OrderIndex;
-        var targetOrderIndex = Math.Min(requestedOrderIndex, courseSections.Count - 1);
-
-        if (targetOrderIndex < currentOrderIndex)
+        if (sectionsCount <= 0)
         {
-            foreach (var section in courseSections.Where(s =>
-                         s.Id != existingSection.Id
-                         && s.OrderIndex >= targetOrderIndex
-                         && s.OrderIndex < currentOrderIndex))
-            {
-                section.OrderIndex++;
-            }
-        }
-        else if (targetOrderIndex > currentOrderIndex)
-        {
-            foreach (var section in courseSections.Where(s =>
-                         s.Id != existingSection.Id
-                         && s.OrderIndex <= targetOrderIndex
-                         && s.OrderIndex > currentOrderIndex))
-            {
-                section.OrderIndex--;
-            }
+            return currentOrderIndex;
         }
 
-        return targetOrderIndex;
+        return Math.Min(requestedOrderIndex, sectionsCount - 1);
     }
 }

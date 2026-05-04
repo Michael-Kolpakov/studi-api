@@ -8,7 +8,7 @@ using Microsoft.Extensions.Localization;
 using Teachio.BLL.DTOs.Courses.Videos.Videos.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.BLL.SharedResources;
+using Teachio.BLL.SharedResource;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 

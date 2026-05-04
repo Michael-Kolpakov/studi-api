@@ -6,7 +6,7 @@ using Microsoft.Extensions.Localization;
 using Teachio.BLL.DTOs.Courses.Courses.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.BLL.SharedResources;
+using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.Helpers;
 using Teachio.BLL.Utils.MappingResolvers;
 using Teachio.DAL.Entities.Courses.ThumbnailFiles;

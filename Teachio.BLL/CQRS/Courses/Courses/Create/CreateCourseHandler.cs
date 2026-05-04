@@ -5,7 +5,7 @@ using Microsoft.Extensions.Localization;
 using Teachio.BLL.DTOs.Courses.Courses.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.BLL.SharedResources;
+using Teachio.BLL.SharedResource;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 

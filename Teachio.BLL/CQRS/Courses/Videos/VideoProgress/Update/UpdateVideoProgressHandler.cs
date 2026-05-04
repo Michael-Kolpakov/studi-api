@@ -5,7 +5,7 @@ using Microsoft.Extensions.Localization;
 using Teachio.BLL.DTOs.Courses.Videos.VideoProgress.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.BLL.SharedResources;
+using Teachio.BLL.SharedResource;
 using Teachio.DAL.Repositories.Interfaces.Base;
 
 namespace Teachio.BLL.CQRS.Courses.Videos.VideoProgress.Update;

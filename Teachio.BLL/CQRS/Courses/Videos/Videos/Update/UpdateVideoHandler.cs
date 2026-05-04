@@ -8,9 +8,10 @@ using Microsoft.Extensions.Localization;
 using Teachio.BLL.DTOs.Courses.Videos.Videos.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.BLL.SharedResources;
-using Teachio.BLL.Utils.Helpers;
+using Teachio.BLL.SharedResource;
+using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Repositories.Interfaces.Base;
+using Teachio.DAL.Utils.Constants;
 using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Teachio.BLL.CQRS.Courses.Videos.Videos.Update;
@@ -85,16 +86,24 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
             return Result.Fail(responseErrorMessage);
         }
 
-        var sectionVideos = (await _repositoryWrapper.VideosRepository.GetAllAsync(
-                v => v.SectionId == existingVideo.SectionId,
-                cancellationToken: cancellationToken))
-            .OrderBy(v => v.OrderIndex)
-            .ToList();
+        var sectionVideosCount = await _repositoryWrapper.VideosRepository.GetSelfCountAsync(
+            v => v.SectionId == existingVideo.SectionId,
+            cancellationToken: cancellationToken);
 
         var targetOrderIndex = PrepareOrderIndexForUpdate(
-            sectionVideos,
-            existingVideo,
+            existingVideo.OrderIndex,
+            sectionVideosCount,
             request.VideoUpdateRequestDto.OrderIndex);
+
+        if (targetOrderIndex != existingVideo.OrderIndex)
+        {
+            await ShiftOrderIndexesForUpdateAsync(
+                existingVideo.SectionId,
+                existingVideo.Id,
+                existingVideo.OrderIndex,
+                targetOrderIndex,
+                cancellationToken);
+        }
 
         // TODO: validate whether course was updated successfully, if YES - address Google Drive API (or CDN in the future) to delete old video file and set new one
 
@@ -103,7 +112,7 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
         _mapper.Map(request.VideoUpdateRequestDto, existingVideo);
         existingVideo.OrderIndex = targetOrderIndex;
 
-        _repositoryWrapper.VideosRepository.UpdateRange(sectionVideos);
+        _repositoryWrapper.VideosRepository.Update(existingVideo);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
         var videoResponseDto = _mapper.Map<VideoResponseDto>(existingVideo);
@@ -119,37 +128,60 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
             .Include(v => v.VideoProgress);
     }
 
+    private async Task ShiftOrderIndexesForUpdateAsync(
+        Guid sectionId,
+        Guid videoId,
+        int currentOrderIndex,
+        int targetOrderIndex,
+        CancellationToken cancellationToken)
+    {
+        var table = $"[{DatabaseConstants.CoursesSchema}].[{nameof(Video)}s]";
+
+        var sql = $"""
+            UPDATE {table}
+            SET {nameof(VideoEntity.OrderIndex)} =
+                CASE
+                    WHEN {nameof(VideoEntity.Id)} = '{videoId}'
+                        THEN {targetOrderIndex}
+                    WHEN {targetOrderIndex} < {currentOrderIndex}
+                        AND {nameof(VideoEntity.OrderIndex)} >= {targetOrderIndex}
+                        AND {nameof(VideoEntity.OrderIndex)} < {currentOrderIndex}
+                        THEN {nameof(VideoEntity.OrderIndex)} + 1
+                    WHEN {targetOrderIndex} > {currentOrderIndex}
+                        AND {nameof(VideoEntity.OrderIndex)} <= {targetOrderIndex}
+                        AND {nameof(VideoEntity.OrderIndex)} > {currentOrderIndex}
+                        THEN {nameof(VideoEntity.OrderIndex)} - 1
+                    ELSE {nameof(VideoEntity.OrderIndex)}
+                END
+            WHERE {nameof(VideoEntity.SectionId)} = '{sectionId}'
+                AND (
+                    {nameof(VideoEntity.Id)} = '{videoId}'
+                    OR (
+                        {targetOrderIndex} < {currentOrderIndex}
+                        AND {nameof(VideoEntity.OrderIndex)} >= {targetOrderIndex}
+                        AND {nameof(VideoEntity.OrderIndex)} < {currentOrderIndex}
+                    )
+                    OR (
+                        {targetOrderIndex} > {currentOrderIndex}
+                        AND {nameof(VideoEntity.OrderIndex)} <= {targetOrderIndex}
+                        AND {nameof(VideoEntity.OrderIndex)} > {currentOrderIndex}
+                    )
+                )
+        """;
+
+        await _repositoryWrapper.VideosRepository.ExecuteSqlRaw(sql, cancellationToken);
+    }
+
     private static int PrepareOrderIndexForUpdate(
-        List<VideoEntity> sectionVideos,
-        VideoEntity existingVideo,
+        int currentOrderIndex,
+        int sectionVideosCount,
         int requestedOrderIndex)
     {
-        OrderIndexHelper.NormalizeOrderIndexes(sectionVideos);
-
-        var currentOrderIndex = existingVideo.OrderIndex;
-        var targetOrderIndex = Math.Min(requestedOrderIndex, sectionVideos.Count - 1);
-
-        if (targetOrderIndex < currentOrderIndex)
+        if (sectionVideosCount <= 0)
         {
-            foreach (var video in sectionVideos.Where(v =>
-                         v.Id != existingVideo.Id
-                         && v.OrderIndex >= targetOrderIndex
-                         && v.OrderIndex < currentOrderIndex))
-            {
-                video.OrderIndex++;
-            }
-        }
-        else if (targetOrderIndex > currentOrderIndex)
-        {
-            foreach (var video in sectionVideos.Where(v =>
-                         v.Id != existingVideo.Id
-                         && v.OrderIndex <= targetOrderIndex
-                         && v.OrderIndex > currentOrderIndex))
-            {
-                video.OrderIndex--;
-            }
+            return currentOrderIndex;
         }
 
-        return targetOrderIndex;
+        return Math.Min(requestedOrderIndex, sectionVideosCount - 1);
     }
 }
