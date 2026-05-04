@@ -1,9 +1,10 @@
 ﻿using System.Linq.Expressions;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.BLL.SharedResources;
+using Teachio.BLL.SharedResource;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
@@ -95,11 +96,9 @@ public class EntityExistenceService : IEntityExistenceService
 
             return entity is null ? (null, errorMessage) : (entity, null);
         }
-        catch (ArgumentException)
+        catch (ArgumentException ex)
         {
-            var propertyNotFoundErrorMessage = $"Property '{keyName}' not found on type '{entityName}'.";
-
-            return (null, propertyNotFoundErrorMessage);
+            return (null, ex.Message);
         }
     }
 
@@ -133,7 +132,25 @@ public class EntityExistenceService : IEntityExistenceService
         ArgumentException.ThrowIfNullOrWhiteSpace(keyName);
 
         var parameter = Expression.Parameter(typeof(TEntity), "x");
-        var property = Expression.PropertyOrField(parameter, keyName);
+
+        var propertyInfo = typeof(TEntity).GetProperty(
+            keyName,
+            BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+        if (propertyInfo is null && keyName.EndsWith("Id", StringComparison.OrdinalIgnoreCase))
+        {
+            propertyInfo = typeof(TEntity).GetProperty(
+                "Id",
+                BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+        }
+
+        if (propertyInfo is null)
+        {
+            throw new ArgumentException(
+                $"Property '{keyName}' not found on type '{typeof(TEntity).Name}'.");
+        }
+
+        var property = Expression.Property(parameter, propertyInfo);
         var right = Expression.Constant(key, typeof(TKey));
 
         var body = Expression.Equal(property, right);
