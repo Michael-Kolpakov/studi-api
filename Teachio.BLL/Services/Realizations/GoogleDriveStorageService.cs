@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 using Teachio.BLL.Models.Storage;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.BLL.SharedResources;
+using Teachio.BLL.SharedResource;
 using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace Teachio.BLL.Services.Realizations;
@@ -290,6 +290,67 @@ public class GoogleDriveStorageService : IGoogleDriveStorageService
         }
     }
 
+    public async Task<Result> DeleteFolderByPathAsync(
+        IEnumerable<string> folderSegments,
+        CancellationToken cancellationToken = default)
+    {
+        var folderSegmentsList = folderSegments
+            .Where(segment => !string.IsNullOrWhiteSpace(segment))
+            .Select(segment => segment.Trim())
+            .ToList();
+
+        var driveServiceResult = TryCreateDriveService();
+
+        if (driveServiceResult.IsFailed)
+        {
+            return Result.Fail(driveServiceResult.Errors[0].Message);
+        }
+
+        try
+        {
+            using var driveService = driveServiceResult.Value;
+
+            var rootFolderId = await GetRootFolderIdAsync(driveService, createIfMissing: false, cancellationToken);
+
+            if (string.IsNullOrWhiteSpace(rootFolderId))
+            {
+                return Result.Ok();
+            }
+
+            string? currentFolderId = rootFolderId;
+
+            foreach (var folderName in folderSegmentsList)
+            {
+                currentFolderId = await FindFolderIdAsync(
+                    driveService,
+                    currentFolderId,
+                    folderName,
+                    cancellationToken);
+
+                if (string.IsNullOrWhiteSpace(currentFolderId))
+                {
+                    return Result.Ok();
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(currentFolderId))
+            {
+                return Result.Ok();
+            }
+
+            return await DeleteFolderTreeAsync(driveService, currentFolderId, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            var errorMessage = _stringLocalizerGoogleDriveStorage[
+                nameof(GoogleDriveStorageSharedResource_en.DeleteFileByPathFailed)
+            ].Value;
+            _logger.LogError(null, errorMessage, ex.ToString());
+
+            return Result.Fail(errorMessage);
+        }
+    }
+
     private async Task<Result<string?>> FindFileIdByNameAsync(
         DriveService driveService,
         string parentFolderId,
@@ -325,6 +386,46 @@ public class GoogleDriveStorageService : IGoogleDriveStorageService
         }
 
         return Result.Ok<string?>(files.Files[0].Id);
+    }
+
+    private static async Task<Result> DeleteFolderTreeAsync(
+        DriveService driveService,
+        string folderId,
+        CancellationToken cancellationToken)
+    {
+        var escapedFolderId = EscapeForDriveQuery(folderId);
+
+        var listRequest = driveService.Files.List();
+        listRequest.Q = $"'{escapedFolderId}' in parents and trashed = false";
+        listRequest.Fields = "files(id,name,mimeType)";
+        listRequest.PageSize = 1000;
+        listRequest.Spaces = "drive";
+        listRequest.SupportsAllDrives = true;
+        listRequest.IncludeItemsFromAllDrives = true;
+
+        var files = await listRequest.ExecuteAsync(cancellationToken);
+
+        foreach (var child in files.Files ?? [])
+        {
+            if (string.Equals(child.MimeType, FolderMimeType, StringComparison.Ordinal))
+            {
+                var deleteChildFolderResult = await DeleteFolderTreeAsync(driveService, child.Id, cancellationToken);
+                if (deleteChildFolderResult.IsFailed)
+                {
+                    return Result.Fail(deleteChildFolderResult.Errors[0].Message);
+                }
+
+                continue;
+            }
+
+            var deleteChildFileResult = await DeleteFileByIdInternalAsync(driveService, child.Id, cancellationToken);
+            if (deleteChildFileResult.IsFailed)
+            {
+                return Result.Fail(deleteChildFileResult.Errors[0].Message);
+            }
+        }
+
+        return await DeleteFileByIdInternalAsync(driveService, folderId, cancellationToken);
     }
 
     private static async Task<Result> DeleteFileByIdInternalAsync(
