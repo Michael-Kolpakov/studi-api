@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.Create;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.Delete;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.GetById;
+using Teachio.BLL.CQRS.Courses.Videos.Videos.Stream;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.Update;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.UploadVideo;
 using Teachio.BLL.DTOs.Courses.Videos.Videos.Request.Create;
@@ -27,6 +29,47 @@ public class VideosController : BaseApiController
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         return HandleResult(await Mediator.Send(new GetVideoByIdQuery(id)));
+    }
+
+    /// <summary>
+    /// Streams a course video by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the course video to stream.</param>
+    /// <returns>Returns the requested video stream.</returns>
+    [HttpGet(VideosRelativeRoutes.Stream)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status206PartialContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Stream([FromRoute] Guid id)
+    {
+        var rangeHeader = Request.Headers.Range.ToString();
+        var result = await Mediator.Send(new StreamVideoQuery(id, rangeHeader));
+
+        if (result.IsFailed)
+        {
+            return HandleResult(result);
+        }
+
+        var streamResult = result.Value;
+
+        Response.Headers[HeaderNames.AcceptRanges] = "bytes";
+
+        if (!string.IsNullOrWhiteSpace(streamResult.ContentRange))
+        {
+            Response.Headers[HeaderNames.ContentRange] = streamResult.ContentRange;
+        }
+
+        if (streamResult.ContentLength.HasValue)
+        {
+            Response.ContentLength = streamResult.ContentLength.Value;
+        }
+
+        Response.StatusCode = streamResult.IsPartialContent
+            ? StatusCodes.Status206PartialContent
+            : StatusCodes.Status200OK;
+
+        return new FileStreamResult(streamResult.ContentStream, streamResult.ContentType);
     }
 
     /// <summary>
