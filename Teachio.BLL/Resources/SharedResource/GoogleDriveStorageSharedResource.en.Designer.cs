@@ -177,6 +177,33 @@ namespace Teachio.BLL.Resources.SharedResource {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Google Drive file '{0}' was not found by path.
+        /// </summary>
+        internal static string FileNotFoundByPath {
+            get {
+                return ResourceManager.GetString("FileNotFoundByPath", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Google Drive download failed with status '{0}'.
+        /// </summary>
+        internal static string DownloadFailedWithStatus {
+            get {
+                return ResourceManager.GetString("DownloadFailedWithStatus", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to download file from Google Drive.
+        /// </summary>
+        internal static string DownloadFailed {
+            get {
+                return ResourceManager.GetString("DownloadFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Google Drive OAuth credentials are incomplete. Set OAuthClientId, OAuthClientSecret and OAuthRefreshToken.
         /// </summary>
         internal static string OAuthCredentialsIncomplete {
