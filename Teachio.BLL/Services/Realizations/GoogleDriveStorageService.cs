@@ -1,3 +1,4 @@
+using System.Net;
 using FluentResults;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
@@ -12,6 +13,7 @@ using Teachio.BLL.Models.Storage;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
+using Teachio.BLL.Utils.Helpers;
 using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace Teachio.BLL.Services.Realizations;
@@ -167,6 +169,157 @@ public class GoogleDriveStorageService : IGoogleDriveStorageService
             _logger.LogError(null, errorMessage, ex.ToString());
 
             return Result.Fail(errorMessage);
+        }
+    }
+
+    public async Task<Result<GoogleDriveStreamResult>> OpenReadFileByPathAsync(
+        IEnumerable<string> folderSegments,
+        string fileName,
+        string? rangeHeader,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(fileName))
+        {
+            var errorMessage = _stringLocalizerGoogleDriveStorage[
+                nameof(GoogleDriveStorageSharedResource_en.FileNameIsEmpty)
+            ].Value;
+
+            return Result.Fail(errorMessage);
+        }
+
+        var folderSegmentsList = folderSegments
+            .Where(segment => !string.IsNullOrWhiteSpace(segment))
+            .Select(segment => segment.Trim())
+            .ToList();
+
+        var driveServiceResult = TryCreateDriveService();
+
+        if (driveServiceResult.IsFailed)
+        {
+            return Result.Fail(driveServiceResult.Errors[0].Message);
+        }
+
+        var driveService = driveServiceResult.Value;
+        var shouldDisposeDriveService = true;
+        HttpResponseMessage? response = null;
+
+        try
+        {
+            var currentFolderId = await GetRootFolderIdAsync(driveService, createIfMissing: false, cancellationToken);
+
+            if (string.IsNullOrWhiteSpace(currentFolderId))
+            {
+                var errorMessage = _stringLocalizerGoogleDriveStorage[
+                    nameof(GoogleDriveStorageSharedResource_en.RootFolderIsNotAvailable)
+                ].Value;
+
+                return Result.Fail(errorMessage);
+            }
+
+            foreach (var folderName in folderSegmentsList)
+            {
+                currentFolderId = await FindFolderIdAsync(
+                    driveService,
+                    currentFolderId,
+                    folderName,
+                    cancellationToken);
+
+                if (string.IsNullOrWhiteSpace(currentFolderId))
+                {
+                    var errorMessage = _stringLocalizerGoogleDriveStorage[
+                        nameof(GoogleDriveStorageSharedResource_en.FileNotFoundByPath),
+                        fileName
+                    ].Value;
+
+                    return Result.Fail(errorMessage);
+                }
+            }
+
+            var fileIdResult = await FindFileIdByNameAsync(
+                driveService,
+                currentFolderId,
+                fileName,
+                cancellationToken);
+
+            if (fileIdResult.IsFailed)
+            {
+                return Result.Fail(fileIdResult.Errors[0].Message);
+            }
+
+            if (string.IsNullOrWhiteSpace(fileIdResult.Value))
+            {
+                var errorMessage = _stringLocalizerGoogleDriveStorage[
+                    nameof(GoogleDriveStorageSharedResource_en.FileNotFoundByPath),
+                    fileName
+                ].Value;
+
+                return Result.Fail(errorMessage);
+            }
+
+            var requestUri = new Uri(
+                $"https://www.googleapis.com/drive/v3/files/{fileIdResult.Value}?alt=media&supportsAllDrives=true",
+                UriKind.Absolute);
+
+            using var httpRequest = new HttpRequestMessage(HttpMethod.Get, requestUri);
+
+            if (!string.IsNullOrWhiteSpace(rangeHeader))
+            {
+                httpRequest.Headers.TryAddWithoutValidation("Range", rangeHeader);
+            }
+
+            response = await driveService.HttpClient.SendAsync(
+                httpRequest,
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = _stringLocalizerGoogleDriveStorage[
+                    nameof(GoogleDriveStorageSharedResource_en.DownloadFailedWithStatus),
+                    response.StatusCode
+                ].Value;
+
+                _logger.LogError(null, errorMessage, response.ReasonPhrase);
+                response.Dispose();
+                response = null;
+
+                return Result.Fail(errorMessage);
+            }
+
+            var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+            var contentType = response.Content.Headers.ContentType?.ToString();
+
+            var streamResult = new GoogleDriveStreamResult
+            {
+                ContentStream = new DriveStreamResponse(responseStream, response, driveService),
+                ContentType = string.IsNullOrWhiteSpace(contentType) ? "application/octet-stream" : contentType,
+                ContentLength = response.Content.Headers.ContentLength,
+                ContentRange = response.Content.Headers.ContentRange?.ToString(),
+                IsPartialContent = response.StatusCode == HttpStatusCode.PartialContent
+            };
+
+            shouldDisposeDriveService = false;
+            response = null;
+
+            return Result.Ok(streamResult);
+        }
+        catch (Exception ex)
+        {
+            var errorMessage = _stringLocalizerGoogleDriveStorage[
+                nameof(GoogleDriveStorageSharedResource_en.DownloadFailed)
+            ].Value;
+            _logger.LogError(null, errorMessage, ex.ToString());
+
+            return Result.Fail(errorMessage);
+        }
+        finally
+        {
+            response?.Dispose();
+
+            if (shouldDisposeDriveService)
+            {
+                driveService.Dispose();
+            }
         }
     }
 

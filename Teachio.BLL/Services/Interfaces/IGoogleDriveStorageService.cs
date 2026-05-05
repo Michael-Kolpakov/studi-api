@@ -12,6 +12,12 @@ public interface IGoogleDriveStorageService
         Stream fileStream,
         CancellationToken cancellationToken = default);
 
+    Task<Result<GoogleDriveStreamResult>> OpenReadFileByPathAsync(
+        IEnumerable<string> folderSegments,
+        string fileName,
+        string? rangeHeader,
+        CancellationToken cancellationToken = default);
+
     Task<Result> DeleteFileAsync(string fileId, CancellationToken cancellationToken = default);
 
     Task<Result> DeleteFileByPathAsync(
