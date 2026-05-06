@@ -19,6 +19,7 @@ public static class StoragePathHelper
     {
         return new List<string>
         {
+            "users",
             ownerUserEmail,
             "courses",
             courseName
@@ -36,6 +37,7 @@ public static class StoragePathHelper
     {
         return new List<string>
         {
+            "users",
             ownerUserEmail,
             "courses",
             courseName,
