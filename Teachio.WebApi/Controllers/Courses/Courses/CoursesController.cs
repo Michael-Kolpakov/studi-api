@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using Teachio.BLL.CQRS.Courses.Courses.Create;
 using Teachio.BLL.CQRS.Courses.Courses.Delete;
 using Teachio.BLL.CQRS.Courses.Courses.GetById;
 using Teachio.BLL.CQRS.Courses.Courses.GetByIdPreview;
 using Teachio.BLL.CQRS.Courses.Courses.GetPaginated;
+using Teachio.BLL.CQRS.Courses.Courses.StreamThumbnail;
 using Teachio.BLL.CQRS.Courses.Courses.Update;
 using Teachio.BLL.CQRS.Courses.Courses.UploadThumbnail;
 using Teachio.BLL.DTOs.Courses.Courses.Request.Create;
@@ -57,6 +59,47 @@ public class CoursesController : BaseApiController
     public async Task<IActionResult> GetById([FromRoute] Guid id, [FromQuery] Guid? selectedVideoId = null)
     {
         return HandleResult(await Mediator.Send(new GetCourseByIdQuery(id, selectedVideoId)));
+    }
+
+    /// <summary>
+    /// Streams a course thumbnail by course unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the course to get thumbnail for.</param>
+    /// <returns>Returns the requested thumbnail stream.</returns>
+    [HttpGet(CoursesRelativeRoutes.StreamThumbnail)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status206PartialContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> StreamThumbnail([FromRoute] Guid id)
+    {
+        var rangeHeader = Request.Headers.Range.ToString();
+        var result = await Mediator.Send(new StreamCourseThumbnailQuery(id, rangeHeader));
+
+        if (result.IsFailed)
+        {
+            return HandleResult(result);
+        }
+
+        var streamResult = result.Value;
+
+        Response.Headers[HeaderNames.AcceptRanges] = "bytes";
+
+        if (!string.IsNullOrWhiteSpace(streamResult.ContentRange))
+        {
+            Response.Headers[HeaderNames.ContentRange] = streamResult.ContentRange;
+        }
+
+        if (streamResult.ContentLength.HasValue)
+        {
+            Response.ContentLength = streamResult.ContentLength.Value;
+        }
+
+        Response.StatusCode = streamResult.IsPartialContent
+            ? StatusCodes.Status206PartialContent
+            : StatusCodes.Status200OK;
+
+        return new FileStreamResult(streamResult.ContentStream, streamResult.ContentType);
     }
 
     /// <summary>
