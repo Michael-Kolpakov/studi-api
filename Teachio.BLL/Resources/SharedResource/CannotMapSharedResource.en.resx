@@ -24,4 +24,7 @@
     <data name="CannotMapNullToSection" xml:space="preserve">
         <value>Cannot map 'null' value to section model</value>
     </data>
+    <data name="CannotMapNullToVideo" xml:space="preserve">
+        <value>Cannot map 'null' value to video model</value>
+    </data>
 </root>

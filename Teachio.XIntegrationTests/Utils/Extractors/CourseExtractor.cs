@@ -5,12 +5,10 @@ namespace Teachio.XIntegrationTests.Utils.Extractors;
 
 public static class CourseExtractor
 {
-    public static Course Extract(Guid courseId, string? title = null)
+    public static Course Extract(Guid courseId, Guid userId, string? title = null)
     {
-        var appUserId = Guid.NewGuid();
-
         var testCourse = TestDataProvider.GetTestData<Course>();
-        var testAppUser = AppUserExtractor.Extract(appUserId);
+        var testAppUser = AppUserExtractor.Extract(userId);
 
         testCourse.Id = courseId;
         testCourse.OwnerUserId = testAppUser.Id;

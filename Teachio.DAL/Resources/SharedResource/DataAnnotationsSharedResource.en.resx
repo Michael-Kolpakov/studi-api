@@ -19,12 +19,21 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="Required" xml:space="preserve">
-        <value>'{0}' field is required</value>
+        <value>The '{0}' field is required</value>
     </data>
     <data name="Length" xml:space="preserve">
-        <value>Length of '{0}' must be no longer than {1} characters</value>
+        <value>The '{0}' field must be no longer than {1} characters</value>
     </data>
     <data name="Range" xml:space="preserve">
-        <value>Range of '{0}' must be between {1} and {2}</value>
+        <value>The '{0}' field must be between {1} and {2}</value>
+    </data>
+    <data name="RegexDescription" xml:space="preserve">
+        <value>The '{0}' field can contain only latin alphabetic characters, numbers, spaces and punctuation marks (except for very weird ones)</value>
+    </data>
+    <data name="RegexTitle" xml:space="preserve">
+        <value>The '{0}' field can contain only latin alphabetic characters, numbers, spaces and punctuation marks (only commas, !, ?, -)</value>
+    </data>
+    <data name="RegexName" xml:space="preserve">
+        <value>The '{0}' field can contain only latin alphabetic characters, numbers, hyphens and punctuation marks (only dots, commas, !, ?)</value>
     </data>
 </root>

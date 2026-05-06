@@ -7,20 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="MediatR\Courses\Videos\VideoProgress\" />
-      <Folder Include="MediatR\Courses\Videos\Videos\" />
-      <Folder Include="MediatR\Users\" />
+      <Folder Include="CQRS\Users\" />
       <Folder Include="Utils\Attributes\" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="AutoMapper" Version="15.0.1" />
+      <PackageReference Include="AutoMapper" Version="16.1.1" />
       <PackageReference Include="FluentResults" Version="4.0.0" />
       <PackageReference Include="Google.Apis.Auth" Version="1.73.0" />
+      <PackageReference Include="Google.Apis.Drive.v3" Version="1.73.0.3987" />
       <PackageReference Include="MediatR" Version="13.0.0" />
       <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
       <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.10" />
-      <PackageReference Include="MimeKit" Version="4.14.0" />
+      <PackageReference Include="MimeKit" Version="4.15.1" />
       <PackageReference Include="Serilog" Version="4.3.0" />
     </ItemGroup>
 
@@ -41,6 +40,10 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>AlreadyExistsSharedResource.en.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\NoPermissionsSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>NoPermissionsSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -58,6 +61,11 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>AlreadyExistsSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\NoPermissionsSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>NoPermissionsSharedResource.en.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 

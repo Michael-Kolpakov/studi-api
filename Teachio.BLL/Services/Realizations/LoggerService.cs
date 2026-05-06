@@ -36,7 +36,7 @@ public class LoggerService : ILoggerService
         if (request is not null)
         {
             var requestType = request.GetType().ToString();
-            var requestClass = requestType.Substring(requestType.LastIndexOf('.') + 1);
+            var requestClass = requestType[(requestType.LastIndexOf('.') + 1)..];
 
             _logger.Error(
                 "Request '{Request}' handled with the error: {ErrorMessage}{StackTraceInfo}",

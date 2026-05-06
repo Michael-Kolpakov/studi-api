@@ -1,4 +1,4 @@
-﻿using Teachio.BLL.Dto.Courses.Videos.Videos.Response;
+﻿using Teachio.BLL.DTOs.Courses.Videos.Videos.Response;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 
 namespace Teachio.XUnitTests.TestData;
@@ -10,8 +10,7 @@ public static class VideoTestData
     public static Video GetVideo(
         int videoNumber,
         Guid sectionId,
-        string title = "Title of a Video",
-        int durationSeconds = 1260)
+        string title = "Title of a Video")
     {
         var actualTitle = string.Join(" ", title, videoNumber);
 
@@ -19,12 +18,8 @@ public static class VideoTestData
         {
             Id = Guid.NewGuid(),
             Title = actualTitle,
-            VideoName = string.Join("-", actualTitle.Trim().ToLowerInvariant().Split(" ", StringSplitOptions.RemoveEmptyEntries), ".mp4"),
-            ContentType = "video/mp4",
             SectionId = sectionId,
             OrderIndex = videoNumber,
-            DurationSeconds = durationSeconds,
-            Status = VideoStatus.Ready,
             VideoProgress = VideoProgressTestData.GetVideoProgress()
         };
     }
@@ -39,11 +34,8 @@ public static class VideoTestData
         {
             Id = video.Id,
             Title = video.Title,
-            ContentType = video.ContentType,
-            VideoRelativePath = video.VideoName,
             SectionId = video.SectionId,
             OrderIndex = video.OrderIndex,
-            DurationSeconds = video.DurationSeconds
         };
     }
 

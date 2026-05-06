@@ -5,17 +5,24 @@ using Teachio.DAL.Persistence;
 
 namespace Teachio.XIntegrationTests.Utils.Helpers;
 
-public class SqlDbHelper
+public class SqlDbHelper : IDisposable
 {
     private const string IdPropertyName = "Id";
 
     private static readonly ConcurrentDictionary<Type, object> _entityLocks = new ConcurrentDictionary<Type, object>();
     private readonly TeachioDbContext _dbContext;
     private readonly Lock _lock = new Lock();
+    private bool _disposed;
 
     public SqlDbHelper(DbContextOptions<TeachioDbContext> options)
     {
         _dbContext = new TeachioDbContext(options);
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 
     public string GetIdentityInsertString<TEntity>(bool isEnabled)
@@ -66,14 +73,6 @@ public class SqlDbHelper
         return predicate != null
             ? _dbContext.Set<TEntity>().AsNoTracking().AsEnumerable().Where(predicate)
             : _dbContext.Set<TEntity>().AsNoTracking();
-    }
-
-    private string GetItemTableName<TEntity>()
-    {
-        var entityType = _dbContext.Model.FindEntityType(typeof(TEntity));
-        var tableName = string.Join(".", entityType?.GetSchema(), entityType?.GetTableName());
-
-        return tableName;
     }
 
     public bool Any<TEntity>(Func<TEntity, bool>? predicate = null)
@@ -182,6 +181,29 @@ public class SqlDbHelper
         {
             _dbContext.SaveChanges();
         }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            _dbContext.Dispose();
+        }
+
+        _disposed = true;
+    }
+
+    private string GetItemTableName<TEntity>()
+    {
+        var entityType = _dbContext.Model.FindEntityType(typeof(TEntity));
+        var tableName = string.Join(".", entityType?.GetSchema(), entityType?.GetTableName());
+
+        return tableName;
     }
 
     private bool TableHasIdentityColumn(Type entityType)

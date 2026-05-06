@@ -42,7 +42,7 @@ public abstract class BaseControllerTests<TClient> : IntegrationTestBase, IClass
             return;
         }
 
-        if (disposing && this.Client is IDisposable disposableClient)
+        if (disposing && Client is IDisposable disposableClient)
         {
             disposableClient.Dispose();
         }

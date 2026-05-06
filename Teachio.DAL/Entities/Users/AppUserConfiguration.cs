@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Teachio.DAL.Utils.Constants;
 
 namespace Teachio.DAL.Entities.Users;
 
@@ -7,25 +8,25 @@ public static class AppUserConfiguration
     public static void ConfigureAppUsers(this ModelBuilder builder)
     {
         builder.Entity<AppUser>()
-            .ToTable("AppUsers", "users")
+            .ToTable($"{nameof(AppUser)}s", DatabaseConstants.UsersSchema)
             .HasKey(au => au.Id);
 
         builder.Entity<AppUser>(typeBuilder =>
         {
             typeBuilder.Property(au => au.Name)
                 .IsRequired()
-                .HasMaxLength(20);
+                .HasMaxLength(EntityConstants.MaxUserNameLength);
 
             typeBuilder.Property(au => au.Surname)
                 .IsRequired()
-                .HasMaxLength(30);
+                .HasMaxLength(EntityConstants.MaxUserSurnameLength);
 
             typeBuilder.Property(au => au.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
-                .ValueGeneratedOnAdd();
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
+                .IsRequired();
 
             typeBuilder.Property(au => au.UpdatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
                 .IsRequired();
         });
     }

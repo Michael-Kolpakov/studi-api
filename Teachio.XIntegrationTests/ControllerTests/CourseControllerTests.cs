@@ -1,5 +1,5 @@
 using System.Net;
-using Teachio.BLL.Dto.Courses.Courses.Response;
+using Teachio.BLL.DTOs.Courses.Courses.Response;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.WebApi;
 using Teachio.XIntegrationTests.Utils;
@@ -12,12 +12,14 @@ namespace Teachio.XIntegrationTests.ControllerTests;
 public class CourseControllerTests : BaseControllerTests<CourseClient>
 {
     private readonly Course _testCourse;
-    
+
     public CourseControllerTests(CustomWebApplicationFactory<Program> factory)
         : base(factory, "/api/courses")
     {
         var courseId = Guid.NewGuid();
-        _testCourse = CourseExtractor.Extract(courseId);
+        var appUserId = Guid.NewGuid();
+
+        _testCourse = CourseExtractor.Extract(courseId, appUserId);
     }
 
     #region GetPaginated Tests
@@ -28,7 +30,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
         // Arrange
         const int pageNumber = 1;
         const int pageSize = 10;
-        
+
         // Act
         var response = await Client.GetPaginatedAsync(pageNumber, pageSize);
         var returnedValue = CaseInsensitiveJsonDeserializer.Deserialize<PaginatedCoursesResponseDto>(response.Content);
@@ -67,7 +69,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
         // Act
         var response = await Client.GetByIdAsync(courseId);
         var returnedValue = CaseInsensitiveJsonDeserializer.Deserialize<CourseResponseDto>(response.Content);
-        
+
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotNull(returnedValue);
@@ -77,8 +79,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
             () => Assert.Equal(_testCourse.Title, returnedValue.Title),
             () => Assert.Equal(_testCourse.Description, returnedValue.Description),
             () => Assert.Equal(_testCourse.SectionsCount, returnedValue.SectionsCount),
-            () => Assert.Equal(_testCourse.WatchingUsersCount, returnedValue.WatchingUsersCount),
-            () => Assert.Equal(_testCourse.OwnerUserId, returnedValue.OwnerUserId));
+            () => Assert.Equal(_testCourse.WatchingUsersCount, returnedValue.WatchingUsersCount));
     }
 
     [Fact]
@@ -119,8 +120,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
             () => Assert.Equal(_testCourse.Title, returnedValue.Title),
             () => Assert.Equal(_testCourse.Description, returnedValue.Description),
             () => Assert.Equal(_testCourse.SectionsCount, returnedValue.SectionsCount),
-            () => Assert.Equal(_testCourse.WatchingUsersCount, returnedValue.WatchingUsersCount),
-            () => Assert.Equal(_testCourse.OwnerUserId, returnedValue.OwnerUserId));
+            () => Assert.Equal(_testCourse.WatchingUsersCount, returnedValue.WatchingUsersCount));
     }
 
     [Fact]
@@ -148,7 +148,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
     {
         // Arrange
         var courseCreateRequestDto = ExtractCreateTestCourseAttribute.CourseCreateRequestDto;
-        
+
         // Act
         var response = await Client.CreateAsync(courseCreateRequestDto);
         var returnedValue = CaseInsensitiveJsonDeserializer.Deserialize<CourseResponseDto>(response.Content);
@@ -160,8 +160,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
         Assert.Multiple(
             () => Assert.NotEqual(Guid.Empty, returnedValue.Id),
             () => Assert.Equal(courseCreateRequestDto.Title, returnedValue.Title),
-            () => Assert.Equal(courseCreateRequestDto.Description, returnedValue.Description),
-            () => Assert.Equal(courseCreateRequestDto.OwnerUserId, returnedValue.OwnerUserId));
+            () => Assert.Equal(courseCreateRequestDto.Description, returnedValue.Description));
     }
 
     [Fact]
@@ -185,7 +184,6 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
     {
         // Arrange
         var courseCreateRequestDto = ExtractCreateTestCourseAttribute.CourseCreateRequestDto;
-        courseCreateRequestDto.OwnerUserId = _testCourse.OwnerUserId;
         courseCreateRequestDto.Title = _testCourse.Title;
 
         // Act
@@ -205,7 +203,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
     {
         // Arrange
         var courseUpdateRequestDto = ExtractUpdateTestCourseAttribute.CourseUpdateRequestDto;
-        
+
         // Act
         var response = await Client.UpdateAsync(courseUpdateRequestDto);
         var returnedValue = CaseInsensitiveJsonDeserializer.Deserialize<CourseResponseDto>(response.Content);
@@ -217,8 +215,7 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
         Assert.Multiple(
             () => Assert.Equal(courseUpdateRequestDto.Id, returnedValue.Id),
             () => Assert.Equal(courseUpdateRequestDto.Title, returnedValue.Title),
-            () => Assert.Equal(courseUpdateRequestDto.Description, returnedValue.Description),
-            () => Assert.Equal(courseUpdateRequestDto.OwnerUserId, returnedValue.OwnerUserId));
+            () => Assert.Equal(courseUpdateRequestDto.Description, returnedValue.Description));
     }
 
     [Fact]
@@ -263,21 +260,20 @@ public class CourseControllerTests : BaseControllerTests<CourseClient>
         var expectedCourse = ExtractDeleteTestCourseAttribute.Course;
         var courseId = expectedCourse.Id;
 
-         // Act
-         var response = await Client.DeleteAsync(courseId);
-         var returnedValue = CaseInsensitiveJsonDeserializer.Deserialize<CourseResponseDto>(response.Content);
+        // Act
+        var response = await Client.DeleteAsync(courseId);
+        var returnedValue = CaseInsensitiveJsonDeserializer.Deserialize<CourseResponseDto>(response.Content);
 
-         // Assert
-         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-         Assert.NotNull(returnedValue);
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.NotNull(returnedValue);
 
-         Assert.Multiple(
+        Assert.Multiple(
             () => Assert.Equal(expectedCourse.Id, returnedValue.Id),
             () => Assert.Equal(expectedCourse.Title, returnedValue.Title),
             () => Assert.Equal(expectedCourse.Description, returnedValue.Description),
             () => Assert.Equal(expectedCourse.SectionsCount, returnedValue.SectionsCount),
-            () => Assert.Equal(expectedCourse.WatchingUsersCount, returnedValue.WatchingUsersCount),
-            () => Assert.Equal(expectedCourse.OwnerUserId, returnedValue.OwnerUserId));
+            () => Assert.Equal(expectedCourse.WatchingUsersCount, returnedValue.WatchingUsersCount));
     }
 
     [Fact]

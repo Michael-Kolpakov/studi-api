@@ -1,5 +1,7 @@
 ﻿using Teachio.DAL.Repositories.Interfaces.Courses.Courses;
 using Teachio.DAL.Repositories.Interfaces.Courses.Sections;
+using Teachio.DAL.Repositories.Interfaces.Courses.ThumbnailFiles;
+using Teachio.DAL.Repositories.Interfaces.Courses.Videos.VideoFiles;
 using Teachio.DAL.Repositories.Interfaces.Courses.Videos.VideoProgress;
 using Teachio.DAL.Repositories.Interfaces.Courses.Videos.Videos;
 using Teachio.DAL.Repositories.Interfaces.Users;
@@ -8,17 +10,21 @@ namespace Teachio.DAL.Repositories.Interfaces.Base;
 
 public interface IRepositoryWrapper
 {
-    public ICoursesRepository CoursesRepository { get; }
+    ICoursesRepository CoursesRepository { get; }
 
-    public ISectionsRepository SectionsRepository { get; }
+    IThumbnailFilesRepository ThumbnailFilesRepository { get; }
 
-    public IVideosRepository VideosRepository { get; }
+    ISectionsRepository SectionsRepository { get; }
 
-    public IVideoProgressRepository VideoProgressRepository { get; }
+    IVideosRepository VideosRepository { get; }
 
-    public IAppUsersRepository AppUsersRepository { get; }
+    IVideoFilesRepository VideoFilesRepository { get; }
 
-    public int SaveChanges();
+    IVideoProgressRepository VideoProgressRepository { get; }
 
-    public Task<int> SaveChangesAsync();
+    IAppUsersRepository AppUsersRepository { get; }
+
+    int SaveChanges();
+
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

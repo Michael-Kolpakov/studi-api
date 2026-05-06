@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace Teachio.DAL.Utils.Validators;
 
@@ -10,8 +11,8 @@ public class DateValidatorAttribute : ValidationAttribute
 
     public DateValidatorAttribute(string minDate, string maxDate)
     {
-        MinDate = DateTime.Parse(minDate);
-        MaxDate = DateTime.Parse(maxDate);
+        MinDate = DateTime.Parse(minDate, CultureInfo.InvariantCulture);
+        MaxDate = DateTime.Parse(maxDate, CultureInfo.InvariantCulture);
     }
 
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

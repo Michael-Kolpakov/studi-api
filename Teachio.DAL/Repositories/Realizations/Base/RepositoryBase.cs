@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Persistence;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using Teachio.DAL.Utils.Helpers;
@@ -19,8 +19,8 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
     }
 
     public IQueryable<T> FindAll(
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default)
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null)
     {
         return GetQueryable(predicate, include).AsNoTracking();
     }
@@ -30,16 +30,16 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return _dbContext.Set<T>().Add(entity).Entity;
     }
 
-    public async Task<T> CreateAsync(T entity)
+    public async Task<T> CreateAsync(T entity, CancellationToken cancellationToken = default)
     {
-        var entityEntry = await _dbContext.Set<T>().AddAsync(entity);
+        var entityEntry = await _dbContext.Set<T>().AddAsync(entity, cancellationToken);
 
         return entityEntry.Entity;
     }
 
-    public Task CreateRangeAsync(IEnumerable<T> items)
+    public Task CreateRangeAsync(IEnumerable<T> items, CancellationToken cancellationToken = default)
     {
-        return _dbContext.Set<T>().AddRangeAsync(items);
+        return _dbContext.Set<T>().AddRangeAsync(items, cancellationToken);
     }
 
     public T Update(T entity)
@@ -72,26 +72,28 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         return _dbContext.Entry(entity);
     }
 
-    public Task ExecuteSqlRaw(string query)
+    public Task ExecuteSqlRaw(string query, CancellationToken cancellationToken = default)
     {
-        return _dbContext.Database.ExecuteSqlRawAsync(query);
+        return _dbContext.Database.ExecuteSqlRawAsync(query, cancellationToken);
     }
 
     public async Task<IEnumerable<T>> GetAllAsync(
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default)
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+        CancellationToken cancellationToken = default)
     {
-        return await GetQueryable(predicate, include).ToListAsync();
+        return await GetQueryable(predicate, include).ToListAsync(cancellationToken);
     }
 
     public async Task<PaginationResponse<T>> GetAllPaginatedAsync(
         ushort? pageNumber = null,
         ushort? pageSize = null,
-        Expression<Func<T, T>>? selector = default,
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default,
-        Expression<Func<T, object>>? ascendingSortKeySelector = default,
-        Expression<Func<T, object>>? descendingSortKeySelector = default)
+        Expression<Func<T, T>>? selector = null,
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+        Expression<Func<T, object>>? ascendingSortKeySelector = null,
+        Expression<Func<T, object>>? descendingSortKeySelector = null,
+        CancellationToken cancellationToken = default)
     {
         var query = GetQueryable(
             predicate,
@@ -100,13 +102,13 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
             ascendingSortKeySelector,
             descendingSortKeySelector);
 
-        var totalItems = await query.CountAsync();
+        var totalItems = await query.CountAsync(cancellationToken);
 
         IEnumerable<T> items;
 
         if (pageNumber is null && pageSize is null)
         {
-            items = await query.ToListAsync();
+            items = await query.ToListAsync(cancellationToken);
         }
         else if (pageNumber == 0 || pageSize == 0)
         {
@@ -121,41 +123,90 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
             items = await query
                 .Skip(offset)
                 .Take(resolvedPageSize)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
         return PaginationResponse<T>.Create(items, totalItems, pageNumber, pageSize);
     }
 
     public async Task<T?> GetSingleOrDefaultAsync(
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default)
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+        CancellationToken cancellationToken = default)
     {
-        return await GetQueryable(predicate, include).SingleOrDefaultAsync();
+        return await GetQueryable(predicate, include).SingleOrDefaultAsync(cancellationToken);
     }
 
     public async Task<T?> GetFirstOrDefaultAsync(
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default)
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+        CancellationToken cancellationToken = default)
     {
-        return await GetQueryable(predicate, include).FirstOrDefaultAsync();
-    }
-
-    public async Task<T?> GetFirstOrDefaultAsync(
-        Expression<Func<T, T>> selector,
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default)
-    {
-        return await GetQueryable(predicate, include, selector).FirstOrDefaultAsync();
+        return await GetQueryable(predicate, include).FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<T?> GetFirstOrDefaultAsync(
         Expression<Func<T, T>> selector,
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default,
-        Expression<Func<T, object>>? ascendingSortKeySelector = default,
-        Expression<Func<T, object>>? descendingSortKeySelector = default,
-        int? offset = null)
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await GetQueryable(predicate, include, selector).FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<TResult?> GetSingleOrDefaultProjectedAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        Expression<Func<T, bool>>? predicate = null,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _dbContext.Set<T>().AsNoTracking();
+
+        if (predicate is not null)
+        {
+            query = query.Where(predicate);
+        }
+
+        return await query.Select(selector).SingleOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<TResult?> GetFirstOrDefaultProjectedAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        Expression<Func<T, bool>>? predicate = null,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _dbContext.Set<T>().AsNoTracking();
+
+        if (predicate is not null)
+        {
+            query = query.Where(predicate);
+        }
+
+        return await query.Select(selector).FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<List<TResult>> GetProjectedListAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        Expression<Func<T, bool>>? predicate = null,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _dbContext.Set<T>().AsNoTracking();
+
+        if (predicate is not null)
+        {
+            query = query.Where(predicate);
+        }
+
+        return await query.Select(selector).ToListAsync(cancellationToken);
+    }
+
+    public async Task<T?> GetFirstOrDefaultAsync(
+        Expression<Func<T, T>> selector,
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+        Expression<Func<T, object>>? ascendingSortKeySelector = null,
+        Expression<Func<T, object>>? descendingSortKeySelector = null,
+        int? offset = null,
+        CancellationToken cancellationToken = default)
     {
         return await GetQueryable(
                 predicate,
@@ -164,26 +215,28 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
                 ascendingSortKeySelector,
                 descendingSortKeySelector,
                 offset: offset)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<int> GetSelfCountAsync(
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default)
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+        CancellationToken cancellationToken = default)
     {
         var query = GetQueryable(predicate, include);
-        var count = await query.CountAsync();
+        var count = await query.CountAsync(cancellationToken);
 
         return count;
     }
 
     public async Task<int> GetNavigationCollectionsCountAsync<TProperty>(
         Expression<Func<T, IEnumerable<TProperty>>> collectionSelector,
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default)
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+        CancellationToken cancellationToken = default)
     {
         var query = GetQueryable(predicate, include);
-        var elementsCount = await query.SelectMany(collectionSelector).CountAsync();
+        var elementsCount = await query.SelectMany(collectionSelector).CountAsync(cancellationToken);
 
         return elementsCount;
     }
@@ -191,8 +244,9 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
     public async Task<Dictionary<TKey, int>> GetNavigationCollectionsCountsAsync<TKey, TProperty>(
         Expression<Func<T, TKey>> keySelector,
         Expression<Func<T, IEnumerable<TProperty>>> collectionSelector,
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default)
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+        CancellationToken cancellationToken = default)
         where TKey : notnull
     {
         var query = GetQueryable(predicate, include);
@@ -205,7 +259,8 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
             .GroupBy(x => x.Key)
             .ToDictionaryAsync(
                 g => g.Key,
-                g => g.Count(item => item.CollectionItem != null));
+                g => g.Count(item => item.CollectionItem != null),
+                cancellationToken);
     }
 
     private static IQueryable<NavigationCollectionProjection<TKey, TProperty>> BuildNavigationProjection<TKey, TProperty>(
@@ -264,11 +319,11 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
     }
 
     private IQueryable<T> GetQueryable(
-        Expression<Func<T, bool>>? predicate = default,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = default,
-        Expression<Func<T, T>>? selector = default,
-        Expression<Func<T, object>>? ascendingSortKeySelector = default,
-        Expression<Func<T, object>>? descendingSortKeySelector = default,
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+        Expression<Func<T, T>>? selector = null,
+        Expression<Func<T, object>>? ascendingSortKeySelector = null,
+        Expression<Func<T, object>>? descendingSortKeySelector = null,
         int? limit = null,
         int? offset = null)
     {

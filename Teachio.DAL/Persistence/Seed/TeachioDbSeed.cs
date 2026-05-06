@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Courses.Sections;
+using Teachio.DAL.Entities.Courses.ThumbnailFiles;
+using Teachio.DAL.Entities.Courses.Videos.VideoFiles;
 using Teachio.DAL.Entities.Courses.Videos.VideoProgress;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Entities.Shared;
@@ -13,10 +15,13 @@ namespace Teachio.DAL.Persistence.Seed;
 
 public static class TeachioDbSeed
 {
-    private static readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
+    private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
     {
         PropertyNameCaseInsensitive = true,
-        Converters = { new JsonStringEnumConverter() }
+        Converters =
+        {
+            new JsonStringEnumConverter()
+        }
     };
 
     public static async Task SeedAsync(
@@ -32,8 +37,10 @@ public static class TeachioDbSeed
         await SeedEntityAsync(dbContext, dbContext.AppUsers, nameof(AppUser), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.Courses, nameof(Course), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.UserCourses, nameof(UserCourse), logger, cancellationToken);
+        await SeedEntityAsync(dbContext, dbContext.ThumbnailFiles, nameof(ThumbnailFile), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.Sections, nameof(Section), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.Videos, nameof(Video), logger, cancellationToken);
+        await SeedEntityAsync(dbContext, dbContext.VideoFiles, nameof(VideoFile), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.VideoProgress, nameof(VideoProgress), logger, cancellationToken);
 
         logger.Information("Database seeding completed.");
@@ -55,7 +62,7 @@ public static class TeachioDbSeed
         }
 
         var assemblyPath = Path.GetDirectoryName(typeof(TeachioDbSeed).Assembly.Location);
-        var fullPath = Path.Combine(assemblyPath!, $@"Persistence\Seed\Content\{jsonFileName}.json");
+        var fullPath = Path.Combine(assemblyPath!, "Persistence", "Seed", "Content", $"{jsonFileName}.json");
 
         if (!File.Exists(fullPath))
         {
@@ -66,7 +73,7 @@ public static class TeachioDbSeed
 
         var jsonData = await File.ReadAllTextAsync(fullPath, cancellationToken);
 
-        var entities = JsonSerializer.Deserialize<List<TEntity>>(jsonData, jsonOptions);
+        var entities = JsonSerializer.Deserialize<List<TEntity>>(jsonData, _jsonOptions);
 
         if (entities is null || entities.Count == 0)
         {

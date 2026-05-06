@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Teachio.BLL.Dto.Courses.Courses.Response;
+using Teachio.BLL.DTOs.Courses.Courses.Response;
 using Teachio.DAL.Entities.Courses.Courses;
 
 namespace Teachio.BLL.Utils.MappingResolvers;
@@ -19,7 +19,7 @@ public class TotalDurationResolver : IValueResolver<Course, object, float>
     {
         var durationSeconds = source.Sections
             .SelectMany(s => s.Videos)
-            .Sum(v => v.DurationSeconds);
+            .Sum(v => v.VideoFile?.DurationSeconds ?? 0);
 
         var durationHours = durationSeconds / 3600f;
 

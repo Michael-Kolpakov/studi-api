@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Teachio.DAL.Entities.Courses.Videos.VideoFiles;
 using Teachio.DAL.Utils.Constants;
+using Teachio.DAL.Utils.Helpers;
 
 namespace Teachio.DAL.Entities.Courses.Videos.Videos;
 
@@ -8,8 +10,12 @@ public static class VideoConfiguration
     public static void ConfigureVideos(this ModelBuilder builder)
     {
         builder.Entity<Video>()
-            .ToTable("Videos", "courses")
+            .ToTable($"{nameof(Video)}s", DatabaseConstants.CoursesSchema)
             .HasKey(v => v.Id);
+
+        builder.Entity<Video>()
+            .HasIndex(v => new { v.SectionId, v.OrderIndex })
+            .IsUnique();
 
         builder.Entity<Video>(typeBuilder =>
         {
@@ -18,14 +24,12 @@ public static class VideoConfiguration
 
             typeBuilder.Property(v => v.Title)
                 .IsRequired()
-                .HasMaxLength(60);
+                .HasMaxLength(EntityConstants.MaxVideoTitleLength);
 
-            typeBuilder.Property(v => v.VideoName)
-                .IsRequired()
-                .HasMaxLength(110);
-
-            typeBuilder.Property(v => v.ContentType)
-                .HasMaxLength(100);
+            typeBuilder.ToTable(t =>
+                t.HasCheckConstraint(
+                    $"CK_{nameof(Video)}_{nameof(Video.Title)}_{nameof(CheckConstraintType.Regex)}",
+                    Constraint.CreateSqlRegexCheck(nameof(Video.Title), ValidationRule.Title)));
 
             typeBuilder.Property(v => v.SectionId)
                 .IsRequired();
@@ -35,32 +39,26 @@ public static class VideoConfiguration
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
-                    "CK_Video_OrderIndex_NonNegative",
-                    "[OrderIndex] >= 0"));
-
-            typeBuilder.Property(v => v.DurationSeconds)
-                .IsRequired();
-
-            typeBuilder.ToTable(t =>
-                t.HasCheckConstraint(
-                    "CK_Video_DurationSeconds_Range",
-                    $"[DurationSeconds] >= 0 AND [DurationSeconds] <= {EntityConstants.MaxVideoDurationSeconds}"));
-
-            typeBuilder.Property(v => v.Status)
-                .IsRequired()
-                .HasConversion<int>();
-
-            typeBuilder.Property(v => v.ProcessingError)
-                .HasMaxLength(100);
+                    $"CK_{nameof(Video)}_{nameof(Video.OrderIndex)}_{nameof(CheckConstraintType.Range)}",
+                    Constraint.CreateSqlRangeCheck(
+                        nameof(Video.OrderIndex),
+                        EntityConstants.MinNonNegativeValue,
+                        EntityConstants.MaxVideosPerSection - 1)));
 
             typeBuilder.Property(v => v.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
-                .ValueGeneratedOnAdd();
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
+                .IsRequired();
 
             typeBuilder.Property(v => v.UpdatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
                 .IsRequired();
         });
+
+        builder.Entity<Video>()
+            .HasOne<VideoFile>(video => video.VideoFile)
+            .WithOne(videoFile => videoFile.Video)
+            .HasForeignKey<VideoFile>(videoFile => videoFile.VideoId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Video>()
             .HasOne<VideoProgress.VideoProgress>(video => video.VideoProgress)

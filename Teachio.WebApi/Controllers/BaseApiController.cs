@@ -1,8 +1,8 @@
 ﻿using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Teachio.BLL.Dto.Shared;
-using Teachio.BLL.MediatR.ResultValidations;
+using Teachio.BLL.CQRS.ResultValidations;
+using Teachio.BLL.DTOs.Shared;
 
 namespace Teachio.WebApi.Controllers;
 

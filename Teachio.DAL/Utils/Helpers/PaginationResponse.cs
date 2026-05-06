@@ -16,13 +16,12 @@ public class PaginationResponse<T>
     }
 
     public int TotalItems { get; private set; }
-    
+
     public int CurrentPage { get; private set; }
-    
+
     public int TotalPages { get; private set; }
-    
+
     public int PageSize { get; private set; }
-    
 
     public IEnumerable<T> Entities { get; set; }
 

@@ -1,5 +1,5 @@
 using System.Reflection;
-using Teachio.BLL.Dto.Courses.Courses.Request.Update;
+using Teachio.BLL.DTOs.Courses.Courses.Request.Update;
 using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.XIntegrationTests.Utils.Extractors;
 using Xunit.Sdk;
@@ -16,15 +16,15 @@ public class ExtractUpdateTestCourseAttribute : BeforeAfterTestAttribute
     public override void Before(MethodInfo methodUnderTest)
     {
         var courseId = Guid.Parse("9d5400a6-9fba-48a1-b18c-517f2bd52db9");
-        PersistedCourse = CourseExtractor.Extract(courseId);
+        var appUserId = Guid.Parse("34cff13a-867f-4424-bcaf-fd8ec958359f");
+
+        PersistedCourse = CourseExtractor.Extract(courseId, appUserId);
 
         CourseUpdateRequestDto = new CourseUpdateRequestDto()
         {
             Id = PersistedCourse.Id,
             Title = "CourseUpdateRequestDto for Update Test",
-            Description = "Description of CourseUpdateRequestDto for Update Test",
-            ThumbnailName = "courseupdaterequestdto-for-update-test.png",
-            OwnerUserId = PersistedCourse.OwnerUserId
+            Description = "Description of CourseUpdateRequestDto for Update Test"
         };
     }
 

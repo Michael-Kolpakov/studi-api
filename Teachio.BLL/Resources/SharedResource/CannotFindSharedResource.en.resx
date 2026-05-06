@@ -39,7 +39,7 @@
     <data name="CannotFindVideoByKey" xml:space="preserve">
         <value>There is no video with key '{1}': {0}</value>
     </data>
-    <data name="CannotFindUserByKey" xml:space="preserve">
-        <value>There is no user with key '{1}': {0}</value>
+    <data name="CannotFindVideoProgressById" xml:space="preserve">
+        <value>There is no video progress with such Id: {0}</value>
     </data>
 </root>

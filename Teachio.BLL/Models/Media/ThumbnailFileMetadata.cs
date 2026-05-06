@@ -1,0 +1,14 @@
+namespace Teachio.BLL.Models.Media;
+
+public class ThumbnailFileMetadata
+{
+    public string ContentType { get; set; } = null!;
+
+    public string FileExtension { get; set; } = null!;
+
+    public string Resolution { get; set; } = null!;
+
+    public int Width { get; set; }
+
+    public int Height { get; set; }
+}

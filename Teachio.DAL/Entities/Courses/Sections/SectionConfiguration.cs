@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Utils.Constants;
+using Teachio.DAL.Utils.Helpers;
 
 namespace Teachio.DAL.Entities.Courses.Sections;
 
@@ -9,8 +10,12 @@ public static class SectionConfiguration
     public static void ConfigureSections(this ModelBuilder builder)
     {
         builder.Entity<Section>()
-            .ToTable("Sections", "courses")
+            .ToTable($"{nameof(Section)}s", DatabaseConstants.CoursesSchema)
             .HasKey(s => s.Id);
+
+        builder.Entity<Section>()
+            .HasIndex(s => new { s.CourseId, s.OrderIndex })
+            .IsUnique();
 
         builder.Entity<Section>(typeBuilder =>
         {
@@ -19,38 +24,54 @@ public static class SectionConfiguration
 
             typeBuilder.Property(s => s.Title)
                 .IsRequired()
-                .HasMaxLength(60);
+                .HasMaxLength(EntityConstants.MaxSectionTitleLength);
+
+            typeBuilder.ToTable(t =>
+                t.HasCheckConstraint(
+                    $"CK_{nameof(Section)}_{nameof(Section.Title)}_{nameof(CheckConstraintType.Regex)}",
+                    Constraint.CreateSqlRegexCheck(nameof(Section.Title), ValidationRule.Title)));
 
             typeBuilder.Property(s => s.SectionName)
                 .IsRequired()
-                .HasMaxLength(60);
+                .HasMaxLength(EntityConstants.MaxSectionNameLength);
+
+            typeBuilder.ToTable(t =>
+                t.HasCheckConstraint(
+                    $"CK_{nameof(Section)}_{nameof(Section.SectionName)}_{nameof(CheckConstraintType.Regex)}",
+                    Constraint.CreateSqlRegexCheck(nameof(Section.SectionName), ValidationRule.Name)));
 
             typeBuilder.Property(s => s.OrderIndex)
                 .IsRequired();
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
-                    "CK_Section_OrderIndex_NonNegative",
-                    "[OrderIndex] >= 0"));
+                    $"CK_{nameof(Section)}_{nameof(Section.OrderIndex)}_{nameof(CheckConstraintType.Range)}",
+                    Constraint.CreateSqlRangeCheck(
+                        nameof(Section.OrderIndex),
+                        EntityConstants.MinNonNegativeValue,
+                        EntityConstants.MaxSectionsPerCourse - 1)));
 
             typeBuilder.Property(s => s.VideosCount)
                 .IsRequired()
-                .HasDefaultValue(0);
+                .HasDefaultValue(EntityConstants.MinNonNegativeValue);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
-                    "CK_Section_VideosCount_Max",
-                    $"[VideosCount] >= 0 AND [VideosCount] <= {EntityConstants.MaxVideosPerSection}"));
+                    $"CK_{nameof(Section)}_{nameof(Section.VideosCount)}_{nameof(CheckConstraintType.Range)}",
+                    Constraint.CreateSqlRangeCheck(
+                        nameof(Section.VideosCount),
+                        EntityConstants.MinNonNegativeValue,
+                        EntityConstants.MaxVideosPerSection)));
 
             typeBuilder.Property(s => s.CourseId)
                 .IsRequired();
 
             typeBuilder.Property(s => s.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
-                .ValueGeneratedOnAdd();
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
+                .IsRequired();
 
             typeBuilder.Property(s => s.UpdatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
                 .IsRequired();
         });
 

@@ -19,7 +19,7 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
 {
     public Mock<IEmailService> EmailServiceMock { get; private set; } = new Mock<IEmailService>();
 
-    public Mock<IGoogleService> GoogleServiceMock { get; private set; } = new  Mock<IGoogleService>();
+    public Mock<IGoogleService> GoogleServiceMock { get; private set; } = new Mock<IGoogleService>();
 
     public void SetupMockEmailService(bool success = true)
     {

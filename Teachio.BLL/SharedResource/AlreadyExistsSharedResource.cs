@@ -1,3 +1,3 @@
-﻿namespace Teachio.BLL.SharedResource;
+namespace Teachio.BLL.SharedResource;
 
 public class AlreadyExistsSharedResource;

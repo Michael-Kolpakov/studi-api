@@ -1,19 +1,23 @@
 ﻿using AutoMapper;
-using Teachio.BLL.Dto.Courses.Courses.Request;
-using Teachio.BLL.Dto.Courses.Sections.Request;
+using Teachio.BLL.DTOs.Courses.Courses.Request;
+using Teachio.BLL.DTOs.Courses.Sections.Request;
 using Teachio.DAL.Entities.Courses.Courses;
+using Teachio.DAL.Entities.Courses.Sections;
 
 namespace Teachio.BLL.Utils.MappingResolvers;
 
-public class NameFromTitleResolver : IValueResolver<object, Course, string>
+public class NameFromTitleResolver : IValueResolver<object, object, string>
 {
-    public string Resolve(object source, Course destination, string destMember, ResolutionContext context)
+    public string Resolve(object source, object destination, string destMember, ResolutionContext context)
     {
-        return source switch
+        return (source, destination) switch
         {
-            CourseCreateUpdateRequestDto courseSource => CreateNameFromTitle(courseSource.Title),
-            SectionCreateUpdateRequestDto sectionSource => CreateNameFromTitle(sectionSource.Title),
-            _ => throw new ArgumentException($"Unknown source '{nameof(source)}' type", nameof(source))
+            (CourseCreateUpdateRequestDto courseSource, Course) =>
+                CreateNameFromTitle(courseSource.Title),
+            (SectionCreateUpdateRequestDto sectionSource, Section) =>
+                CreateNameFromTitle(sectionSource.Title),
+            _ => throw new ArgumentException(
+                $"Unknown source '{source.GetType().Name}' and destination '{destination.GetType().Name}' types combination.")
         };
     }
 

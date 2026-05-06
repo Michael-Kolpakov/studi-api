@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Teachio.BLL.Dto.Courses.Courses.Request.Create;
-using Teachio.BLL.Dto.Courses.Courses.Request.Update;
-using Teachio.BLL.Dto.Courses.Courses.Response;
-using Teachio.BLL.MediatR.Courses.Courses.Create;
-using Teachio.BLL.MediatR.Courses.Courses.Delete;
-using Teachio.BLL.MediatR.Courses.Courses.GetById;
-using Teachio.BLL.MediatR.Courses.Courses.GetByIdPreview;
-using Teachio.BLL.MediatR.Courses.Courses.GetPaginated;
-using Teachio.BLL.MediatR.Courses.Courses.Update;
-using Teachio.BLL.MediatR.Courses.Courses.UploadThumbnail;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
+using Teachio.BLL.CQRS.Courses.Courses.Create;
+using Teachio.BLL.CQRS.Courses.Courses.Delete;
+using Teachio.BLL.CQRS.Courses.Courses.GetById;
+using Teachio.BLL.CQRS.Courses.Courses.GetByIdPreview;
+using Teachio.BLL.CQRS.Courses.Courses.GetPaginated;
+using Teachio.BLL.CQRS.Courses.Courses.StreamThumbnail;
+using Teachio.BLL.CQRS.Courses.Courses.Update;
+using Teachio.BLL.CQRS.Courses.Courses.UploadThumbnail;
+using Teachio.BLL.DTOs.Courses.Courses.Request.Create;
+using Teachio.BLL.DTOs.Courses.Courses.Request.Update;
+using Teachio.BLL.DTOs.Courses.Courses.Request.Upload;
+using Teachio.BLL.DTOs.Courses.Courses.Response;
 using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Courses;
@@ -31,6 +33,20 @@ public class CoursesController : BaseApiController
     }
 
     /// <summary>
+    /// Retrieves a preview of a course by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the course to retrieve.</param>
+    /// <returns>Returns a preview of the corresponding course.</returns>
+    [HttpGet(CoursesRelativeRoutes.GetByIdPreview)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CoursePreviewResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetByIdPreview([FromRoute] Guid id)
+    {
+        return HandleResult(await Mediator.Send(new GetCoursePreviewByIdQuery(id)));
+    }
+
+    /// <summary>
     /// Retrieves a course by its unique identifier.
     /// </summary>
     /// <param name="id">The unique identifier of the course to retrieve.</param>
@@ -46,17 +62,44 @@ public class CoursesController : BaseApiController
     }
 
     /// <summary>
-    /// Retrieves a preview of a course by its unique identifier.
+    /// Streams a course thumbnail by course unique identifier.
     /// </summary>
-    /// <param name="id">The unique identifier of the course to retrieve.</param>
-    /// <returns>Returns a preview of the corresponding course.</returns>
-    [HttpGet(CoursesRelativeRoutes.GetByIdPreview)]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CoursePreviewResponseDto))]
+    /// <param name="id">The unique identifier of the course to get thumbnail for.</param>
+    /// <returns>Returns the requested thumbnail stream.</returns>
+    [HttpGet(CoursesRelativeRoutes.StreamThumbnail)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status206PartialContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetByIdPreview([FromRoute] Guid id)
+    public async Task<IActionResult> StreamThumbnail([FromRoute] Guid id)
     {
-        return HandleResult(await Mediator.Send(new GetCoursePreviewByIdQuery(id)));
+        var rangeHeader = Request.Headers.Range.ToString();
+        var result = await Mediator.Send(new StreamCourseThumbnailQuery(id, rangeHeader));
+
+        if (result.IsFailed)
+        {
+            return HandleResult(result);
+        }
+
+        var streamResult = result.Value;
+
+        Response.Headers[HeaderNames.AcceptRanges] = "bytes";
+
+        if (!string.IsNullOrWhiteSpace(streamResult.ContentRange))
+        {
+            Response.Headers[HeaderNames.ContentRange] = streamResult.ContentRange;
+        }
+
+        if (streamResult.ContentLength.HasValue)
+        {
+            Response.ContentLength = streamResult.ContentLength.Value;
+        }
+
+        Response.StatusCode = streamResult.IsPartialContent
+            ? StatusCodes.Status206PartialContent
+            : StatusCodes.Status200OK;
+
+        return new FileStreamResult(streamResult.ContentStream, streamResult.ContentType);
     }
 
     /// <summary>
@@ -65,7 +108,6 @@ public class CoursesController : BaseApiController
     /// <param name="courseCreateRequestDto">The data for the new course.</param>
     /// <returns>Returns the newly created course.</returns>
     [HttpPost(CoursesRelativeRoutes.Create)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CourseResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -76,16 +118,17 @@ public class CoursesController : BaseApiController
     }
 
     /// <summary>
-    /// Uploads a thumbnail for a course.
+    /// Uploads a thumbnail for an existing course.
     /// </summary>
     /// <param name="thumbnailUploadRequestDto">The data for uploading course thumbnail.</param>
     /// <returns>Returns the newly uploaded thumbnail unique identifier.</returns>
     [HttpPost(CoursesRelativeRoutes.UploadThumbnail)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ThumbnailUploadResponseDto))]
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ThumbnailUploadResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UploadThumbnail([FromForm] ThumbnailUploadRequestDto thumbnailUploadRequestDto)
     {
         return HandleResult(await Mediator.Send(new UploadThumbnailCommand(thumbnailUploadRequestDto)));
@@ -97,7 +140,6 @@ public class CoursesController : BaseApiController
     /// <param name="courseUpdateRequestDto">The updated data for the course.</param>
     /// <returns>Returns the newly updated course.</returns>
     [HttpPut(CoursesRelativeRoutes.Update)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -113,7 +155,6 @@ public class CoursesController : BaseApiController
     /// <param name="id">The unique identifier of the course to delete.</param>
     /// <returns>Returns the newly deleted course.</returns>
     [HttpDelete(CoursesRelativeRoutes.Delete)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

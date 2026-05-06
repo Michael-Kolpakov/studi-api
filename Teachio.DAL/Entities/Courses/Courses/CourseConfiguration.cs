@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Teachio.DAL.Entities.Courses.Sections;
+using Teachio.DAL.Entities.Courses.ThumbnailFiles;
 using Teachio.DAL.Entities.Shared;
 using Teachio.DAL.Entities.Users;
 using Teachio.DAL.Utils.Constants;
+using Teachio.DAL.Utils.Helpers;
 
 namespace Teachio.DAL.Entities.Courses.Courses;
 
@@ -11,7 +13,7 @@ public static class CourseConfiguration
     public static void ConfigureCourses(this ModelBuilder builder)
     {
         builder.Entity<Course>()
-            .ToTable("Courses", "courses")
+            .ToTable($"{nameof(Course)}s", DatabaseConstants.CoursesSchema)
             .HasKey(c => c.Id);
 
         builder.Entity<Course>(typeBuilder =>
@@ -21,46 +23,60 @@ public static class CourseConfiguration
 
             typeBuilder.Property(c => c.Title)
                 .IsRequired()
-                .HasMaxLength(60);
+                .HasMaxLength(EntityConstants.MaxCourseTitleLength);
+
+            typeBuilder.ToTable(t =>
+                t.HasCheckConstraint(
+                    $"CK_{nameof(Course)}_{nameof(Course.Title)}_{nameof(CheckConstraintType.Regex)}",
+                    Constraint.CreateSqlRegexCheck(nameof(Course.Title), ValidationRule.Title)));
 
             typeBuilder.Property(c => c.Description)
-                .HasMaxLength(1000);
+                .HasMaxLength(EntityConstants.MaxCourseDescriptionLength);
+
+            typeBuilder.ToTable(t =>
+                t.HasCheckConstraint(
+                    $"CK_{nameof(Course)}_{nameof(Course.Description)}_{nameof(CheckConstraintType.Regex)}",
+                    Constraint.CreateSqlRegexCheck(nameof(Course.Description), ValidationRule.Description)));
 
             typeBuilder.Property(c => c.CourseName)
                 .IsRequired()
-                .HasMaxLength(60);
+                .HasMaxLength(EntityConstants.MaxCourseNameLength);
 
-            typeBuilder.Property(c => c.ThumbnailName)
-                .IsRequired()
-                .HasMaxLength(110);
+            typeBuilder.ToTable(t =>
+                t.HasCheckConstraint(
+                    $"CK_{nameof(Course)}_{nameof(Course.CourseName)}_{nameof(CheckConstraintType.Regex)}",
+                    Constraint.CreateSqlRegexCheck(nameof(Course.CourseName), ValidationRule.Name)));
 
             typeBuilder.Property(s => s.SectionsCount)
                 .IsRequired()
-                .HasDefaultValue(0);
+                .HasDefaultValue(EntityConstants.MinNonNegativeValue);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
-                    "CK_Course_SectionsCount_Max",
-                    $"[SectionsCount] >= 0 AND [SectionsCount] <= {EntityConstants.MaxSectionsPerCourse}"));
+                    $"CK_{nameof(Course)}_{nameof(Course.SectionsCount)}_{nameof(CheckConstraintType.Range)}",
+                    Constraint.CreateSqlRangeCheck(
+                        nameof(Course.SectionsCount),
+                        EntityConstants.MinNonNegativeValue,
+                        EntityConstants.MaxSectionsPerCourse)));
 
             typeBuilder.Property(s => s.WatchingUsersCount)
                 .IsRequired()
-                .HasDefaultValue(0);
+                .HasDefaultValue(EntityConstants.MinNonNegativeValue);
 
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
-                    "CK_Course_WatchingUsersCount_NonNegative",
-                    $"[WatchingUsersCount] >= 0"));
+                    $"CK_{nameof(Course)}_{nameof(Course.WatchingUsersCount)}_{nameof(CheckConstraintType.NonNegative)}",
+                    Constraint.CreateSqlNonNegativeCheck(nameof(Course.WatchingUsersCount))));
 
             typeBuilder.Property(c => c.OwnerUserId)
                 .IsRequired();
 
             typeBuilder.Property(c => c.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
-                .ValueGeneratedOnAdd();
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
+                .IsRequired();
 
             typeBuilder.Property(c => c.UpdatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
+                .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
                 .IsRequired();
         });
 
@@ -69,13 +85,19 @@ public static class CourseConfiguration
             .WithMany(appUser => appUser.OwnedCourses)
             .HasForeignKey(course => course.OwnerUserId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
+        builder.Entity<Course>()
+            .HasOne<ThumbnailFile>(course => course.ThumbnailFile)
+            .WithOne(thumbnailFile => thumbnailFile.Course)
+            .HasForeignKey<ThumbnailFile>(thumbnailFile => thumbnailFile.CourseId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.Entity<Course>()
             .HasMany<Section>(course => course.Sections)
             .WithOne(section => section.Course)
             .HasForeignKey(section => section.CourseId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         builder.Entity<Course>()
             .HasMany(course => course.WatchingUsers)
             .WithMany(appUser => appUser.WatchingCourses)
@@ -93,7 +115,7 @@ public static class CourseConfiguration
                 j =>
                 {
                     j.HasKey(userCourse => new { userCourse.AppUserId, userCourse.CourseId });
-                    j.ToTable("UserCourse", "courses");
+                    j.ToTable(DatabaseConstants.UserCourseTableName, DatabaseConstants.CoursesSchema);
                 });
     }
 }

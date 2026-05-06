@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Teachio.BLL.Dto.Courses.Sections.Request.Create;
-using Teachio.BLL.Dto.Courses.Sections.Request.Update;
-using Teachio.BLL.Dto.Courses.Sections.Response;
-using Teachio.BLL.MediatR.Courses.Sections.Create;
-using Teachio.BLL.MediatR.Courses.Sections.Delete;
-using Teachio.BLL.MediatR.Courses.Sections.GetById;
-using Teachio.BLL.MediatR.Courses.Sections.Update;
+﻿using Microsoft.AspNetCore.Mvc;
+using Teachio.BLL.CQRS.Courses.Sections.Create;
+using Teachio.BLL.CQRS.Courses.Sections.Delete;
+using Teachio.BLL.CQRS.Courses.Sections.GetById;
+using Teachio.BLL.CQRS.Courses.Sections.Update;
+using Teachio.BLL.DTOs.Courses.Sections.Request.Create;
+using Teachio.BLL.DTOs.Courses.Sections.Request.Update;
+using Teachio.BLL.DTOs.Courses.Sections.Response;
 using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Sections;
@@ -33,7 +32,6 @@ public class SectionsController : BaseApiController
     /// <param name="sectionCreateRequestDto">The data for the new course section.</param>
     /// <returns>Returns the newly created course section.</returns>
     [HttpPost(SectionsRelativeRoutes.Create)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(SectionResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -49,7 +47,6 @@ public class SectionsController : BaseApiController
     /// <param name="sectionUpdateRequestDto">The updated data for the course section.</param>
     /// <returns>Returns the newly updated course section.</returns>
     [HttpPut(SectionsRelativeRoutes.Update)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SectionResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -65,7 +62,6 @@ public class SectionsController : BaseApiController
     /// <param name="id">The unique identifier of the course section to delete.</param>
     /// <returns>Returns the newly deleted course section.</returns>
     [HttpDelete(SectionsRelativeRoutes.Delete)]
-    // [Authorize(Roles = nameof(UserRole.ContentCreator))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SectionResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

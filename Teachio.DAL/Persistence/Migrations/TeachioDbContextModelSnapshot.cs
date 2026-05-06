@@ -181,11 +181,6 @@ namespace Teachio.DAL.Persistence.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
-                    b.Property<string>("ThumbnailName")
-                        .IsRequired()
-                        .HasMaxLength(110)
-                        .HasColumnType("nvarchar(110)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(60)
@@ -207,7 +202,13 @@ namespace Teachio.DAL.Persistence.Migrations
 
                     b.ToTable("Courses", "courses", t =>
                         {
-                            t.HasCheckConstraint("CK_Course_SectionsCount_Max", "[SectionsCount] >= 0 AND [SectionsCount] <= 35");
+                            t.HasCheckConstraint("CK_Course_CourseName_Regex", "[CourseName] NOT LIKE '%[^A-Za-z0-9,!?-]%'");
+
+                            t.HasCheckConstraint("CK_Course_Description_Regex", "[Description] NOT LIKE '%[^A-Za-z0-9 ,.!?%$#\"'':&()+=*/-–]%'");
+
+                            t.HasCheckConstraint("CK_Course_SectionsCount_Range", "[SectionsCount] >= 0 AND [SectionsCount] <= 35");
+
+                            t.HasCheckConstraint("CK_Course_Title_Regex", "[Title] NOT LIKE '%[^A-Za-z0-9 ,!?-]%'");
 
                             t.HasCheckConstraint("CK_Course_WatchingUsersCount_NonNegative", "[WatchingUsersCount] >= 0");
                         });
@@ -252,13 +253,119 @@ namespace Teachio.DAL.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CourseId");
+                    b.HasIndex("CourseId", "OrderIndex")
+                        .IsUnique();
 
                     b.ToTable("Sections", "courses", t =>
                         {
-                            t.HasCheckConstraint("CK_Section_OrderIndex_NonNegative", "[OrderIndex] >= 0");
+                            t.HasCheckConstraint("CK_Section_OrderIndex_Range", "[OrderIndex] >= 0 AND [OrderIndex] <= 34");
 
-                            t.HasCheckConstraint("CK_Section_VideosCount_Max", "[VideosCount] >= 0 AND [VideosCount] <= 40");
+                            t.HasCheckConstraint("CK_Section_SectionName_Regex", "[SectionName] NOT LIKE '%[^A-Za-z0-9,!?-]%'");
+
+                            t.HasCheckConstraint("CK_Section_Title_Regex", "[Title] NOT LIKE '%[^A-Za-z0-9 ,!?-]%'");
+
+                            t.HasCheckConstraint("CK_Section_VideosCount_Range", "[VideosCount] >= 0 AND [VideosCount] <= 40");
+                        });
+                });
+
+            modelBuilder.Entity("Teachio.DAL.Entities.Courses.ThumbnailFiles.ThumbnailFile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Resolution")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<string>("ThumbnailName")
+                        .IsRequired()
+                        .HasMaxLength(110)
+                        .HasColumnType("nvarchar(110)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId")
+                        .IsUnique();
+
+                    b.ToTable("ThumbnailFiles", "courses", t =>
+                        {
+                            t.HasCheckConstraint("CK_ThumbnailFile_ContentType_AllowedValues", "[ContentType] IN ('image/jpeg', 'image/png')");
+
+                            t.HasCheckConstraint("CK_ThumbnailFile_Resolution_AspectRatioRange", "CHARINDEX('x', [Resolution]) > 1 AND CHARINDEX('x', [Resolution]) < LEN([Resolution]) AND CHARINDEX('x', [Resolution], CHARINDEX('x', [Resolution]) + 1) = 0 AND TRY_CONVERT(int, LEFT([Resolution], CHARINDEX('x', [Resolution]) - 1)) IS NOT NULL AND TRY_CONVERT(int, SUBSTRING([Resolution], CHARINDEX('x', [Resolution]) + 1, LEN([Resolution]))) IS NOT NULL AND TRY_CONVERT(int, LEFT([Resolution], CHARINDEX('x', [Resolution]) - 1)) >= 1280 AND TRY_CONVERT(int, LEFT([Resolution], CHARINDEX('x', [Resolution]) - 1)) <= 2560 AND TRY_CONVERT(int, SUBSTRING([Resolution], CHARINDEX('x', [Resolution]) + 1, LEN([Resolution]))) >= 720 AND TRY_CONVERT(int, SUBSTRING([Resolution], CHARINDEX('x', [Resolution]) + 1, LEN([Resolution]))) <= 1440 AND TRY_CONVERT(int, LEFT([Resolution], CHARINDEX('x', [Resolution]) - 1)) * 9 = TRY_CONVERT(int, SUBSTRING([Resolution], CHARINDEX('x', [Resolution]) + 1, LEN([Resolution]))) * 16");
+
+                            t.HasCheckConstraint("CK_ThumbnailFile_ThumbnailName_Regex", "[ThumbnailName] NOT LIKE '%[^A-Za-z0-9.,!?-]%'");
+                        });
+                });
+
+            modelBuilder.Entity("Teachio.DAL.Entities.Courses.Videos.VideoFiles.VideoFile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<int>("DurationSeconds")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Resolution")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid>("VideoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("VideoName")
+                        .IsRequired()
+                        .HasMaxLength(110)
+                        .HasColumnType("nvarchar(110)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VideoId")
+                        .IsUnique();
+
+                    b.ToTable("VideoFiles", "courses", t =>
+                        {
+                            t.HasCheckConstraint("CK_VideoFile_ContentType_AllowedValues", "[ContentType] IN ('video/mp4', 'video/quicktime')");
+
+                            t.HasCheckConstraint("CK_VideoFile_DurationSeconds_Range", "[DurationSeconds] >= 0 AND [DurationSeconds] <= 3600");
+
+                            t.HasCheckConstraint("CK_VideoFile_Resolution_AllowedValues", "[Resolution] IN (480, 720, 1080, 1440)");
+
+                            t.HasCheckConstraint("CK_VideoFile_VideoName_Regex", "[VideoName] NOT LIKE '%[^A-Za-z0-9.,!?-]%'");
                         });
                 });
 
@@ -293,7 +400,7 @@ namespace Teachio.DAL.Persistence.Migrations
 
                     b.ToTable("VideoProgress", "courses", t =>
                         {
-                            t.HasCheckConstraint("CK_Video_PositionSeconds_Range", "[PositionSeconds] >= 0 AND [PositionSeconds] <= 3600");
+                            t.HasCheckConstraint("CK_VideoProgress_PositionSeconds_Range", "[PositionSeconds] >= 0 AND [PositionSeconds] <= 3600");
                         });
                 });
 
@@ -303,30 +410,16 @@ namespace Teachio.DAL.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ContentType")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<int>("DurationSeconds")
-                        .HasColumnType("int");
-
                     b.Property<int>("OrderIndex")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProcessingError")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<Guid>("SectionId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -338,20 +431,16 @@ namespace Teachio.DAL.Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<string>("VideoName")
-                        .IsRequired()
-                        .HasMaxLength(110)
-                        .HasColumnType("nvarchar(110)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("SectionId");
+                    b.HasIndex("SectionId", "OrderIndex")
+                        .IsUnique();
 
                     b.ToTable("Videos", "courses", t =>
                         {
-                            t.HasCheckConstraint("CK_Video_DurationSeconds_Range", "[DurationSeconds] >= 0 AND [DurationSeconds] <= 3600");
+                            t.HasCheckConstraint("CK_Video_OrderIndex_Range", "[OrderIndex] >= 0 AND [OrderIndex] <= 39");
 
-                            t.HasCheckConstraint("CK_Video_OrderIndex_NonNegative", "[OrderIndex] >= 0");
+                            t.HasCheckConstraint("CK_Video_Title_Regex", "[Title] NOT LIKE '%[^A-Za-z0-9 ,!?-]%'");
                         });
                 });
 
@@ -529,6 +618,28 @@ namespace Teachio.DAL.Persistence.Migrations
                     b.Navigation("Course");
                 });
 
+            modelBuilder.Entity("Teachio.DAL.Entities.Courses.ThumbnailFiles.ThumbnailFile", b =>
+                {
+                    b.HasOne("Teachio.DAL.Entities.Courses.Courses.Course", "Course")
+                        .WithOne("ThumbnailFile")
+                        .HasForeignKey("Teachio.DAL.Entities.Courses.ThumbnailFiles.ThumbnailFile", "CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("Teachio.DAL.Entities.Courses.Videos.VideoFiles.VideoFile", b =>
+                {
+                    b.HasOne("Teachio.DAL.Entities.Courses.Videos.Videos.Video", "Video")
+                        .WithOne("VideoFile")
+                        .HasForeignKey("Teachio.DAL.Entities.Courses.Videos.VideoFiles.VideoFile", "VideoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Video");
+                });
+
             modelBuilder.Entity("Teachio.DAL.Entities.Courses.Videos.VideoProgress.VideoProgress", b =>
                 {
                     b.HasOne("Teachio.DAL.Entities.Courses.Videos.Videos.Video", "Video")
@@ -573,6 +684,8 @@ namespace Teachio.DAL.Persistence.Migrations
             modelBuilder.Entity("Teachio.DAL.Entities.Courses.Courses.Course", b =>
                 {
                     b.Navigation("Sections");
+
+                    b.Navigation("ThumbnailFile");
                 });
 
             modelBuilder.Entity("Teachio.DAL.Entities.Courses.Sections.Section", b =>
@@ -582,6 +695,8 @@ namespace Teachio.DAL.Persistence.Migrations
 
             modelBuilder.Entity("Teachio.DAL.Entities.Courses.Videos.Videos.Video", b =>
                 {
+                    b.Navigation("VideoFile");
+
                     b.Navigation("VideoProgress")
                         .IsRequired();
                 });

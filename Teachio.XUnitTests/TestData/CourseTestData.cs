@@ -1,4 +1,4 @@
-﻿using Teachio.BLL.Dto.Courses.Courses.Response;
+﻿using Teachio.BLL.DTOs.Courses.Courses.Response;
 using Teachio.DAL.Entities.Courses.Courses;
 
 namespace Teachio.XUnitTests.TestData;
@@ -14,13 +14,12 @@ public static class CourseTestData
         int sectionsCount = 2,
         int videosCount = 2,
         string title = "Title of a Course",
-        string description = "Description for a Course",
-        string thumbnailName = "title-of-a-course.png")
+        string description = "Description for a Course")
     {
         var id = courseId ?? Guid.NewGuid();
         var ownerUserId = ownerId ?? Guid.NewGuid();
-        var actualTitle = courseNumber.HasValue 
-            ? string.Join(" ", title, courseNumber.Value) 
+        var actualTitle = courseNumber.HasValue
+            ? string.Join(" ", title, courseNumber.Value)
             : title;
 
         return new Course()
@@ -29,7 +28,6 @@ public static class CourseTestData
             Title = actualTitle,
             Description = description,
             CourseName = string.Join("-", actualTitle.Trim().ToLowerInvariant().Split(" ", StringSplitOptions.RemoveEmptyEntries)),
-            ThumbnailName = thumbnailName,
             OwnerUserId = ownerUserId,
             OwnerUser = AppUserTestData.GetUser(ownerUserId),
             Sections = Enumerable.Range(1, sectionsCount).Select(i => SectionTestData.GetSection(i, videosCount, id)).ToList()
@@ -69,7 +67,6 @@ public static class CourseTestData
             SectionsCount = course.SectionsCount,
             TotalDuration = totalDuration,
             WatchingUsersCount = watchingUsersCount,
-            OwnerUserId = course.OwnerUserId
         };
     }
 
@@ -86,7 +83,6 @@ public static class CourseTestData
             SectionsCount = course.SectionsCount,
             TotalDuration = totalDuration,
             WatchingUsersCount = watchingUsersCount,
-            OwnerUserId = course.OwnerUserId
         };
     }
 
@@ -104,10 +100,8 @@ public static class CourseTestData
             VideosCount = course.Sections.Sum(s => s.VideosCount),
             TotalDuration = totalDuration + index,
             WatchingUsersCount = watchingUsersCount + index,
-            OwnerUserId = course.OwnerUserId
         };
     }
 
     #endregion
 }
-

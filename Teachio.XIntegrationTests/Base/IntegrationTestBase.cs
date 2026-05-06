@@ -12,7 +12,7 @@ public class IntegrationTestBase
 
         var configurationBuilder = new ConfigurationBuilder()
             .ConfigureCustom(environment);
-        
+
         Configuration = configurationBuilder.Build();
     }
 

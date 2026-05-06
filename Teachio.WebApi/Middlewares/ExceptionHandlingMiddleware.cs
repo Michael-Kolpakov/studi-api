@@ -31,7 +31,7 @@ public class ExceptionHandlingMiddleware
         };
     }
 
-    public async Task InvokeAsync(HttpContext  context)
+    public async Task InvokeAsync(HttpContext context)
     {
         try
         {
@@ -42,7 +42,7 @@ public class ExceptionHandlingMiddleware
             await HandleExceptionAsync(context, ex);
         }
     }
-    
+
     private async Task HandleExceptionAsync(HttpContext context, Exception ex)
     {
         var logger = context.RequestServices.GetRequiredService<ILoggerService>();

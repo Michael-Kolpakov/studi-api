@@ -1,0 +1,16 @@
+namespace Teachio.WebApi.Utils.RelativeRoutes;
+
+public static class VideosRelativeRoutes
+{
+    public const string GetById = "get-by-id/{id:guid}";
+
+    public const string Stream = "stream/{id:guid}";
+
+    public const string Create = "create";
+
+    public const string Upload = "upload";
+
+    public const string Update = "update";
+
+    public const string Delete = "delete/{id:guid}";
+}

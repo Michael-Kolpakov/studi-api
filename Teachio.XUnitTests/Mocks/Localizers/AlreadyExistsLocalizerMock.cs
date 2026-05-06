@@ -9,10 +9,21 @@ public class AlreadyExistsLocalizerMock : BaseLocalizerMock<AlreadyExistsSharedR
         var groupedErrors = new Dictionary<int, List<string>>()
         {
             {
-                2, [
-                    "CourseAlreadyExists"
+                1, [
+                    "CourseAlreadyExistsForUser"
                 ]
-            }
+            },
+            {
+                2, [
+                    "CourseAlreadyExistsForUserWithId"
+                ]
+            },
+            {
+                3, [
+                    "SectionAlreadyExistsForCourse",
+                    "VideoAlreadyExistsForSection"
+                ]
+            },
         };
 
         return groupedErrors;
