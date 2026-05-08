@@ -4,6 +4,7 @@ using Teachio.BLL.DTOs.Courses.Sections.Request.Update;
 using Teachio.BLL.DTOs.Courses.Sections.Response;
 using Teachio.BLL.Utils.MappingResolvers;
 using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
+using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Teachio.BLL.Mappings.Course.Section;
 
@@ -27,10 +28,19 @@ public class SectionProfile : Profile
                 dest => dest.SectionName,
                 opt => opt.MapFrom<NameFromTitleResolver>());
 
-        CreateMap<SectionEntity, SectionResponseDto>();
+        CreateMap<SectionEntity, SectionResponseDto>()
+            .ForMember(
+                dest => dest.Videos,
+                opt => opt.MapFrom(src => GetOrderedVideos(src)));
 
-        CreateMap<SectionEntity, SectionPreviewResponseDto>();
+        CreateMap<SectionEntity, SectionPreviewResponseDto>()
+            .ForMember(
+                dest => dest.Videos,
+                opt => opt.MapFrom(src => GetOrderedVideos(src)));
 
         CreateMap<SectionEntity, SectionShortResponseDto>();
     }
+
+    private static IEnumerable<VideoEntity> GetOrderedVideos(SectionEntity section) =>
+        section.Videos.OrderBy(v => v.OrderIndex);
 }

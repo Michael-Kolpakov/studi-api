@@ -40,10 +40,10 @@ public class CourseProfile : Profile
         CreateMap<CourseEntity, CourseResponseDto>()
             .ForMember(
                 dest => dest.Sections,
-                opt => opt.MapFrom(src => GetVisibleSections(src)))
+                opt => opt.MapFrom(src => GetOrderedVisibleSectionsAndVideos(src)))
             .ForMember(
                 dest => dest.SectionsCount,
-                opt => opt.MapFrom<VisibleSectionCountResolver>())
+                opt => opt.MapFrom<VisibleSectionsCountResolver>())
             .ForMember(
                 dest => dest.TotalDuration,
                 opt => opt.MapFrom<TotalDurationResolver>());
@@ -51,10 +51,10 @@ public class CourseProfile : Profile
         CreateMap<CourseEntity, CoursePreviewResponseDto>()
             .ForMember(
                 dest => dest.Sections,
-                opt => opt.MapFrom(src => GetVisibleSections(src)))
+                opt => opt.MapFrom(src => GetOrderedVisibleSectionsAndVideos(src)))
             .ForMember(
                 dest => dest.SectionsCount,
-                opt => opt.MapFrom<VisibleSectionCountResolver>())
+                opt => opt.MapFrom<VisibleSectionsCountResolver>())
             .ForMember(
                 dest => dest.TotalDuration,
                 opt => opt.MapFrom<TotalDurationResolver>())
@@ -74,6 +74,21 @@ public class CourseProfile : Profile
                 opt => opt.MapFrom<RelativePathResolver>());
     }
 
-    private static IEnumerable<SectionEntity> GetVisibleSections(CourseEntity course) =>
-        course.Sections.Where(x => x.VideosCount > 0);
+    private static List<SectionEntity> GetOrderedVisibleSectionsAndVideos(CourseEntity course)
+    {
+        var sections = course.Sections
+            .Where(s => s.VideosCount > 0)
+            .OrderBy(s => s.OrderIndex)
+            .ToList();
+
+        foreach (var section in sections)
+        {
+            if (section.Videos is not null)
+            {
+                section.Videos = section.Videos.OrderBy(v => v.OrderIndex).ToList();
+            }
+        }
+
+        return sections;
+    }
 }
