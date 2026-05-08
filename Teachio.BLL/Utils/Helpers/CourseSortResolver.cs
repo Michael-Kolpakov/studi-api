@@ -31,7 +31,7 @@ public static class CourseSortResolver
         Expression<Func<CourseEntity, object>>? sortKeySelector = sortBy switch
         {
             CoursesSortBy.None => null,
-            CoursesSortBy.TotalDuration => GetTotalDurationSortKeySelector(),
+            CoursesSortBy.TotalDurationHours => GetTotalDurationHoursSortKeySelector(),
             CoursesSortBy.WatchingUsersCount => course => course.WatchingUsersCount,
             _ => null
         };
@@ -78,9 +78,9 @@ public static class CourseSortResolver
         return (primaryAscending, primaryDescending, secondaryAscending, secondaryDescending);
     }
 
-    private static Expression<Func<CourseEntity, object>> GetTotalDurationSortKeySelector()
+    private static Expression<Func<CourseEntity, object>> GetTotalDurationHoursSortKeySelector()
     {
-        var durationExpression = TotalDurationResolver.TotalDurationHoursExpression;
+        var durationExpression = TotalDurationHoursResolver.TotalDurationHoursExpression;
 
         return Expression.Lambda<Func<CourseEntity, object>>(
             Expression.Convert(durationExpression.Body, typeof(object)),

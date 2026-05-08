@@ -6,7 +6,7 @@ using Teachio.DAL.Entities.Courses.Videos.Videos;
 
 namespace Teachio.BLL.Utils.MappingResolvers;
 
-public class TotalDurationResolver : IValueResolver<Course, object, float>
+public class TotalDurationHoursResolver : IValueResolver<Course, object, float>
 {
     public static Expression<Func<Course, float>> TotalDurationHoursExpression { get; } =
         course => (float)Math.Round(
@@ -19,12 +19,12 @@ public class TotalDurationResolver : IValueResolver<Course, object, float>
     {
         return destination switch
         {
-            CourseResponseDto or CoursePreviewResponseDto or CoursePreviewShortResponseDto => CalculateTotalDurationInHours(source),
+            CourseResponseDto or CoursePreviewResponseDto or CoursePreviewShortResponseDto => CalculateTotalDurationHours(source),
             _ => throw new ArgumentException($"Unknown destination '{nameof(destination)}' type", nameof(destination))
         };
     }
 
-    private static float CalculateTotalDurationInHours(Course source)
+    private static float CalculateTotalDurationHours(Course source)
     {
         var durationSeconds = source.Sections?
             .SelectMany(s => s.Videos ?? Enumerable.Empty<Video>())

@@ -41,7 +41,7 @@ public static class CourseTestData
     public static CourseResponseDto GetCourseResponseDto(
         string title = "Title of a Course",
         string description = "Description of a Course",
-        float totalDuration = 999.9f,
+        float totalDurationHours = 999.9f,
         int watchingUsersCount = 123)
     {
         return new CourseResponseDto()
@@ -49,14 +49,14 @@ public static class CourseTestData
             Id = Guid.NewGuid(),
             Title = title,
             Description = description,
-            TotalDuration = totalDuration,
+            TotalDurationHours = totalDurationHours,
             WatchingUsersCount = watchingUsersCount
         };
     }
 
     public static CourseResponseDto GetCourseResponseDto(
         Course course,
-        float totalDuration = 999.9f,
+        float totalDurationHours = 999.9f,
         int watchingUsersCount = 123)
     {
         return new CourseResponseDto()
@@ -65,14 +65,14 @@ public static class CourseTestData
             Title = course.Title,
             Description = course.Description,
             SectionsCount = course.SectionsCount,
-            TotalDuration = totalDuration,
+            TotalDurationHours = totalDurationHours,
             WatchingUsersCount = watchingUsersCount,
         };
     }
 
     public static CoursePreviewResponseDto GetCoursePreviewResponseDto(
         Course course,
-        float totalDuration = 999.9f,
+        float totalDurationHours = 999.9f,
         int watchingUsersCount = 123)
     {
         return new CoursePreviewResponseDto()
@@ -81,7 +81,7 @@ public static class CourseTestData
             Title = course.Title,
             Description = course.Description,
             SectionsCount = course.SectionsCount,
-            TotalDuration = totalDuration,
+            TotalDurationHours = totalDurationHours,
             WatchingUsersCount = watchingUsersCount,
         };
     }
@@ -89,7 +89,7 @@ public static class CourseTestData
     public static CoursePreviewShortResponseDto GetCoursePreviewShortResponseDto(
         Course course,
         int index = 0,
-        float totalDuration = 999.9f,
+        float totalDurationHours = 999.9f,
         int watchingUsersCount = 123)
     {
         return new CoursePreviewShortResponseDto()
@@ -98,7 +98,7 @@ public static class CourseTestData
             Title = course.Title,
             Description = course.Description,
             VideosCount = course.Sections.Sum(s => s.VideosCount),
-            TotalDuration = totalDuration + index,
+            TotalDurationHours = totalDurationHours + index,
             WatchingUsersCount = watchingUsersCount + index,
         };
     }

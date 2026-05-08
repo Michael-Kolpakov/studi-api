@@ -16,7 +16,7 @@ public record GetPaginatedCoursesQuery(
 public enum CoursesSortBy
 {
     None = 0,
-    TotalDuration = 1,
+    TotalDurationHours = 1,
     WatchingUsersCount = 2
 }
 

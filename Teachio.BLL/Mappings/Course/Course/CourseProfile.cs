@@ -45,8 +45,8 @@ public class CourseProfile : Profile
                 dest => dest.SectionsCount,
                 opt => opt.MapFrom<VisibleSectionsCountResolver>())
             .ForMember(
-                dest => dest.TotalDuration,
-                opt => opt.MapFrom<TotalDurationResolver>());
+                dest => dest.TotalDurationHours,
+                opt => opt.MapFrom<TotalDurationHoursResolver>());
 
         CreateMap<CourseEntity, CoursePreviewResponseDto>()
             .ForMember(
@@ -56,16 +56,16 @@ public class CourseProfile : Profile
                 dest => dest.SectionsCount,
                 opt => opt.MapFrom<VisibleSectionsCountResolver>())
             .ForMember(
-                dest => dest.TotalDuration,
-                opt => opt.MapFrom<TotalDurationResolver>())
+                dest => dest.TotalDurationHours,
+                opt => opt.MapFrom<TotalDurationHoursResolver>())
             .ForMember(
                 dest => dest.ThumbnailRelativePath,
                 opt => opt.MapFrom<RelativePathResolver>());
 
         CreateMap<CourseEntity, CoursePreviewShortResponseDto>()
             .ForMember(
-                dest => dest.TotalDuration,
-                opt => opt.MapFrom<TotalDurationResolver>())
+                dest => dest.TotalDurationHours,
+                opt => opt.MapFrom<TotalDurationHoursResolver>())
             .ForMember(
                 dest => dest.VideosCount,
                 opt => opt.MapFrom<VideosCountResolver>())

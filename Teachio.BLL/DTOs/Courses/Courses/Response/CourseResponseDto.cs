@@ -13,7 +13,7 @@ public class CourseResponseDto
 
     public int SectionsCount { get; set; }
 
-    public float TotalDuration { get; set; }
+    public float TotalDurationHours { get; set; }
 
     public int WatchingUsersCount { get; set; }
 

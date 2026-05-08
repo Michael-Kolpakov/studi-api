@@ -10,7 +10,7 @@ public class CoursePreviewShortResponseDto
 
     public int VideosCount { get; set; }
 
-    public float TotalDuration { get; set; }
+    public float TotalDurationHours { get; set; }
 
     public string? ThumbnailRelativePath { get; set; }
 
