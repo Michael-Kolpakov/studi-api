@@ -31,14 +31,26 @@ public class SectionProfile : Profile
         CreateMap<SectionEntity, SectionResponseDto>()
             .ForMember(
                 dest => dest.Videos,
-                opt => opt.MapFrom(src => GetOrderedVideos(src)));
+                opt => opt.MapFrom(src => GetOrderedVideos(src)))
+            .ForMember(
+                dest => dest.TotalDurationSeconds,
+                opt => opt.MapFrom<TotalDurationSecondsResolver>()
+            );
 
         CreateMap<SectionEntity, SectionPreviewResponseDto>()
             .ForMember(
                 dest => dest.Videos,
-                opt => opt.MapFrom(src => GetOrderedVideos(src)));
+                opt => opt.MapFrom(src => GetOrderedVideos(src)))
+            .ForMember(
+                dest => dest.TotalDurationSeconds,
+                opt => opt.MapFrom<TotalDurationSecondsResolver>()
+            );
 
-        CreateMap<SectionEntity, SectionShortResponseDto>();
+        CreateMap<SectionEntity, SectionShortResponseDto>()
+            .ForMember(
+                dest => dest.TotalDurationSeconds,
+                opt => opt.MapFrom<TotalDurationSecondsResolver>()
+            );
     }
 
     private static IEnumerable<VideoEntity> GetOrderedVideos(SectionEntity section) =>

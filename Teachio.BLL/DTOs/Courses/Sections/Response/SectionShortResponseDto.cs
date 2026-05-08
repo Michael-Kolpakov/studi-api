@@ -12,6 +12,8 @@ public class SectionShortResponseDto
 
     public int VideosCount { get; set; }
 
+    public float TotalDurationSeconds { get; set; }
+
     public Guid CourseId { get; set; }
 
     public List<VideoShortResponseDto> Videos { get; set; } = new List<VideoShortResponseDto>();
