@@ -48,10 +48,6 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         var userId = _currentUserService.GetUserId();
         _logger.LogInformation($"Entered '{GetType().Name}' to create a new video by UserId: {userId}");
 
-        // TODO: validate whether OwnerUserId really belongs to the user making the request
-
-        // TODO: validate whether video file exists (database relationships and ownership)
-
         var newVideo = _mapper.Map<VideoEntity>(request.VideoCreateRequestDto);
 
         if (newVideo is null)
@@ -111,8 +107,6 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         {
             Video = newVideo
         };
-
-        // TODO: validate whether video was created successfully, if not - address Google Drive API (or CDN in the future) to delete video file
 
         await _repositoryWrapper.VideosRepository.CreateAsync(newVideo, cancellationToken);
         await _repositoryWrapper.VideoProgressRepository.CreateAsync(newVideoProgress, cancellationToken);

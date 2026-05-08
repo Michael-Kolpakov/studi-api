@@ -50,8 +50,6 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
         var userId = _currentUserService.GetUserId();
         _logger.LogInformation($"Entered '{GetType().Name}' to delete a video with Id: {request.VideoId} by UserId: {userId}");
 
-        // TODO: validate whether gained video really belongs to the user making the request (and perhaps remove check below)
-
         var video = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.VideoId,
             IncludeVideoRelatedEntities,

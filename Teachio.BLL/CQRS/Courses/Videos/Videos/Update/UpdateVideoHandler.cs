@@ -105,10 +105,6 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
                 cancellationToken);
         }
 
-        // TODO: validate whether course was updated successfully, if YES - address Google Drive API (or CDN in the future) to delete old video file and set new one
-
-        // TODO: validate whether course was updated successfully, if NO - address Google Drive API (or CDN in the future) to delete current video file
-
         _mapper.Map(request.VideoUpdateRequestDto, existingVideo);
         existingVideo.OrderIndex = targetOrderIndex;
 

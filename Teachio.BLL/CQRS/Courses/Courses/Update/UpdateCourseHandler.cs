@@ -44,8 +44,6 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
         var userId = _currentUserService.GetUserId();
         _logger.LogInformation($"Entered '{GetType().Name}' to update a course with Id: {request.CourseUpdateRequestDto.Id} by UserId: {userId}");
 
-        // TODO: validate whether course thumbnail exists (database relationships and ownership)
-
         var existingCourse = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.CourseUpdateRequestDto.Id,
             cancellationToken: cancellationToken);
@@ -103,10 +101,6 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
             return Result.Fail(responseErrorMessage);
         }
-
-        // TODO: validate whether course was updated successfully, if YES - address Google Drive API (or CDN in the future) to delete old thumbnail image and set new one
-
-        // TODO: validate whether course was updated successfully, if NO - address Google Drive API (or CDN in the future) to delete current thumbnail image
 
         _mapper.Map(request.CourseUpdateRequestDto, existingCourse);
 

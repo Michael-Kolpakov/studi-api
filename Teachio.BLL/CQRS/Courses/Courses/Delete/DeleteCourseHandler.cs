@@ -83,7 +83,6 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
             return Result.Fail(responseErrorMessage);
         }
 
-        // TODO: make sure whether we really delete all course dependent entities: Sections, Videos and VideoProgress
         var ownerUserEmail = course.OwnerUser.Email;
 
         var courseFolderDeletionResult = await DeleteCourseFolderFromCDNAsync(course, ownerUserEmail!, request, cancellationToken);
