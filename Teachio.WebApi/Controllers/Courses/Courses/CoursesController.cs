@@ -19,17 +19,33 @@ namespace Teachio.WebApi.Controllers.Courses.Courses;
 public class CoursesController : BaseApiController
 {
     /// <summary>
-    /// Retrieves a paginated list of courses based on the provided page number and page size.
+    /// Retrieves a paginated list of courses with optional filtering and sorting.
     /// </summary>
     /// <param name="pageNumber">The number of the page need to retrieve.</param>
     /// <param name="pageSize">The number of items per page.</param>
+    /// <param name="titleFilter">The case-insensitive course title filter.</param>
+    /// <param name="sortBy">The field to sort by.</param>
+    /// <param name="sortDirection">The sorting direction.</param>
+    /// <param name="mode">The data mode for pagination.</param>
     /// <returns>Returns a paginated list of the courses.</returns>
     [HttpGet(CoursesRelativeRoutes.GetPaginated)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedCoursesResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetPaginated([FromQuery] ushort pageNumber, [FromQuery] ushort pageSize)
+    public async Task<IActionResult> GetPaginated(
+        [FromQuery] ushort pageNumber,
+        [FromQuery] ushort pageSize,
+        [FromQuery] string? titleFilter = null,
+        [FromQuery] CoursesSortBy sortBy = CoursesSortBy.None,
+        [FromQuery] SortDirection sortDirection = SortDirection.None,
+        [FromQuery] CoursesPaginationMode mode = CoursesPaginationMode.Available)
     {
-        return HandleResult(await Mediator.Send(new GetPaginatedCoursesQuery(pageNumber, pageSize)));
+        return HandleResult(await Mediator.Send(new GetPaginatedCoursesQuery(
+            pageNumber,
+            pageSize,
+            titleFilter,
+            sortBy,
+            sortDirection,
+            mode)));
     }
 
     /// <summary>

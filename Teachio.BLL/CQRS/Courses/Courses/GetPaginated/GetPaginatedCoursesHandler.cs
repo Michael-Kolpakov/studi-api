@@ -4,9 +4,15 @@ using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.Localization;
 using Teachio.BLL.DTOs.Courses.Courses.Response;
+using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
+using Teachio.BLL.SharedResource;
+using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Repositories.Interfaces.Base;
+using Teachio.DAL.Utils.Constants;
+using Teachio.DAL.Utils.Helpers;
 using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 
 namespace Teachio.BLL.CQRS.Courses.Courses.GetPaginated;
@@ -17,30 +23,57 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IStringLocalizer<BllSharedResource> _stringLocalizerBll;
 
     public GetPaginatedCoursesHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        IStringLocalizer<BllSharedResource> stringLocalizerBll)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
         _currentUserService = currentUserService;
+        _stringLocalizerBll = stringLocalizerBll;
     }
 
     public async Task<Result<PaginatedCoursesResponseDto>> Handle(GetPaginatedCoursesQuery request, CancellationToken cancellationToken)
     {
         var userId = _currentUserService.GetUserId();
-        _logger.LogInformation($"Entered '{GetType().Name}' to get paginated courses (page number: {request.PageNumber}, page size: {request.PageSize}) by UserId: {userId}");
+        var normalizedTitleFilter = NormalizeTitleFilter(request.TitleFilter);
+
+        if (!IsTitleFilterValid(normalizedTitleFilter, out var validationErrorMessage))
+        {
+            _logger.LogError(request, validationErrorMessage);
+
+            return Result.Fail(validationErrorMessage);
+        }
+
+        var titleFilterInfo = normalizedTitleFilter ?? "none";
+        var resolvedSortDirection = CourseSortResolver.ResolveSortDirection(request.SortBy, request.SortDirection);
+
+        _logger.LogInformation($"Entered '{GetType().Name}' to get paginated courses (page number: {request.PageNumber}, page size: {request.PageSize}, mode: {request.Mode}, title filter: {titleFilterInfo}, sort by: {request.SortBy}, sort direction: {resolvedSortDirection}) by UserId: {userId}");
+
+        var predicate = CourseFilterHelper.BuildCoursesPredicate(
+            userId,
+            request.Mode == CoursesPaginationMode.InProgress,
+            normalizedTitleFilter,
+            excludeCoursesWithoutVideos: true);
+
+        var (primaryAscending, primaryDescending, secondaryAscending, secondaryDescending) =
+            CourseSortResolver.BuildSortSelectors(request.SortBy, resolvedSortDirection);
 
         var paginatedCourses = await _repositoryWrapper.CoursesRepository.GetAllPaginatedAsync(
             request.PageNumber,
             request.PageSize,
-            predicate: x => x.OwnerUserId != userId,
+            predicate: predicate,
             include: IncludeCourseRelatedEntities,
-            descendingSortKeySelector: c => c.WatchingUsersCount,
+            ascendingSortKeySelector: primaryAscending,
+            descendingSortKeySelector: primaryDescending,
+            secondaryAscendingSortKeySelector: secondaryAscending,
+            secondaryDescendingSortKeySelector: secondaryDescending,
             cancellationToken: cancellationToken);
 
         var getAllCoursesResponseDto = new PaginatedCoursesResponseDto()
@@ -60,5 +93,39 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
             .Include(s => s.Sections)
                 .ThenInclude(v => v.Videos)
                     .ThenInclude(v => v.VideoFile!);
+    }
+
+    private static string? NormalizeTitleFilter(string? titleFilter)
+    {
+        if (string.IsNullOrWhiteSpace(titleFilter))
+        {
+            return null;
+        }
+
+        return titleFilter.Trim();
+    }
+
+    private bool IsTitleFilterValid(string? titleFilter, out string errorMessage)
+    {
+        if (string.IsNullOrWhiteSpace(titleFilter))
+        {
+            errorMessage = string.Empty;
+
+            return true;
+        }
+
+        if (titleFilter.Length > EntityConstants.MaxCourseTitleLength)
+        {
+            errorMessage = _stringLocalizerBll[
+                nameof(BllSharedResource_en.TitleFilterLengthTooLong),
+                EntityConstants.MaxCourseTitleLength
+            ].Value;
+
+            return false;
+        }
+
+        errorMessage = string.Empty;
+
+        return true;
     }
 }

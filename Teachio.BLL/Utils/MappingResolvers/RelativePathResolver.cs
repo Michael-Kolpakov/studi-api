@@ -26,6 +26,14 @@ public class RelativePathResolver : IValueResolver<object, object, string?>
             return null;
         }
 
+        if (source.OwnerUser is null
+            || string.IsNullOrWhiteSpace(source.OwnerUser.Email)
+            || string.IsNullOrWhiteSpace(source.CourseName)
+            || string.IsNullOrWhiteSpace(source.ThumbnailFile.ThumbnailName))
+        {
+            return null;
+        }
+
         return HandlerConstants.ThumbnailRelativePathTemplate
             .Replace("{AppUser}", source.OwnerUser.Email)
             .Replace("{CourseName}", source.CourseName)

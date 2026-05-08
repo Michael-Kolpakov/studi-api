@@ -41,6 +41,8 @@ public interface IRepositoryBase<T>
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
         Expression<Func<T, object>>? ascendingSortKeySelector = null,
         Expression<Func<T, object>>? descendingSortKeySelector = null,
+        Expression<Func<T, object>>? secondaryAscendingSortKeySelector = null,
+        Expression<Func<T, object>>? secondaryDescendingSortKeySelector = null,
         CancellationToken cancellationToken = default);
 
     Task<T?> GetSingleOrDefaultAsync(

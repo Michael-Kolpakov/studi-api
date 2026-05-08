@@ -27,4 +27,10 @@ public static class DatabaseConstants
     public const string UtcNowSql = "GETUTCDATE()";
 
     #endregion
+
+    #region Collations
+
+    public const string CaseInsensitiveCollation = "SQL_Latin1_General_CP1_CI_AS";
+
+    #endregion
 }

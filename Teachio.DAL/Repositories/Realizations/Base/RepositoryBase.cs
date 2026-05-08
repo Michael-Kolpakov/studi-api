@@ -93,6 +93,8 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
         Expression<Func<T, object>>? ascendingSortKeySelector = null,
         Expression<Func<T, object>>? descendingSortKeySelector = null,
+        Expression<Func<T, object>>? secondaryAscendingSortKeySelector = null,
+        Expression<Func<T, object>>? secondaryDescendingSortKeySelector = null,
         CancellationToken cancellationToken = default)
     {
         var query = GetQueryable(
@@ -100,7 +102,9 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
             include,
             selector,
             ascendingSortKeySelector,
-            descendingSortKeySelector);
+            descendingSortKeySelector,
+            secondaryAscendingSortKeySelector,
+            secondaryDescendingSortKeySelector);
 
         var totalItems = await query.CountAsync(cancellationToken);
 
@@ -324,6 +328,8 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
         Expression<Func<T, T>>? selector = null,
         Expression<Func<T, object>>? ascendingSortKeySelector = null,
         Expression<Func<T, object>>? descendingSortKeySelector = null,
+        Expression<Func<T, object>>? secondaryAscendingSortKeySelector = null,
+        Expression<Func<T, object>>? secondaryDescendingSortKeySelector = null,
         int? limit = null,
         int? offset = null)
     {
@@ -346,12 +352,44 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
 
         if (ascendingSortKeySelector is not null)
         {
-            query = query.OrderBy(ascendingSortKeySelector);
-        }
+            var ordered = query.OrderBy(ascendingSortKeySelector);
 
-        if (descendingSortKeySelector is not null)
+            if (secondaryAscendingSortKeySelector is not null)
+            {
+                ordered = ordered.ThenBy(secondaryAscendingSortKeySelector);
+            }
+            else if (secondaryDescendingSortKeySelector is not null)
+            {
+                ordered = ordered.ThenByDescending(secondaryDescendingSortKeySelector);
+            }
+
+            query = ordered;
+        }
+        else if (descendingSortKeySelector is not null)
         {
-            query = query.OrderByDescending(descendingSortKeySelector);
+            var ordered = query.OrderByDescending(descendingSortKeySelector);
+
+            if (secondaryDescendingSortKeySelector is not null)
+            {
+                ordered = ordered.ThenByDescending(secondaryDescendingSortKeySelector);
+            }
+            else if (secondaryAscendingSortKeySelector is not null)
+            {
+                ordered = ordered.ThenBy(secondaryAscendingSortKeySelector);
+            }
+
+            query = ordered;
+        }
+        else
+        {
+            if (secondaryAscendingSortKeySelector is not null)
+            {
+                query = query.OrderBy(secondaryAscendingSortKeySelector);
+            }
+            else if (secondaryDescendingSortKeySelector is not null)
+            {
+                query = query.OrderByDescending(secondaryDescendingSortKeySelector);
+            }
         }
 
         if (offset is >= 0)

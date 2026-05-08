@@ -86,6 +86,8 @@ public static class RepositoryMocks
                 It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>(),
                 It.IsAny<Expression<Func<TEntity, object>>>(),
                 It.IsAny<Expression<Func<TEntity, object>>>(),
+                It.IsAny<Expression<Func<TEntity, object>>>(),
+                It.IsAny<Expression<Func<TEntity, object>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(entities);
     }

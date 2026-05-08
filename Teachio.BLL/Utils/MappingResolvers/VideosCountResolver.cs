@@ -8,6 +8,6 @@ public class VideosCountResolver : IValueResolver<Course, CoursePreviewShortResp
 {
     public int Resolve(Course source, CoursePreviewShortResponseDto destination, int destMember, ResolutionContext context)
     {
-        return source.Sections.Sum(section => section.VideosCount);
+        return source.Sections?.Sum(section => section.VideosCount) ?? 0;
     }
 }

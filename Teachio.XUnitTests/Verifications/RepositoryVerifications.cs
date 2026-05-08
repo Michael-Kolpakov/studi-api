@@ -65,6 +65,8 @@ public static class RepositoryVerifications
                 It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>(),
                 It.IsAny<Expression<Func<TEntity, object>>>(),
                 It.IsAny<Expression<Func<TEntity, object>>>(),
+                It.IsAny<Expression<Func<TEntity, object>>>(),
+                It.IsAny<Expression<Func<TEntity, object>>>(),
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }

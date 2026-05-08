@@ -7,6 +7,7 @@ using Teachio.DAL.Repositories.Interfaces.Base;
 using Teachio.DAL.Repositories.Interfaces.Courses.Courses;
 using Teachio.DAL.Utils.Helpers;
 using Teachio.XUnitTests.Mocks;
+using Teachio.XUnitTests.Mocks.Localizers;
 using Teachio.XUnitTests.TestData;
 using Teachio.XUnitTests.Verifications;
 using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
@@ -19,6 +20,7 @@ public class GetPaginatedCoursesHandlerTests
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<ILoggerService> _mockLoggerService;
     private readonly Mock<ICurrentUserService> _mockCurrentUserService;
+    private readonly BllLocalizerMock _bllLocalizerMock;
 
     private readonly GetPaginatedCoursesHandler _sut;
 
@@ -30,6 +32,7 @@ public class GetPaginatedCoursesHandlerTests
         _mockMapper = new Mock<IMapper>();
         _mockLoggerService = new Mock<ILoggerService>();
         _mockCurrentUserService = new Mock<ICurrentUserService>();
+        _bllLocalizerMock = new BllLocalizerMock();
 
         _mockRepository
             .Setup(x => x.CoursesRepository)
@@ -39,7 +42,8 @@ public class GetPaginatedCoursesHandlerTests
             _mockMapper.Object,
             _mockRepository.Object,
             _mockLoggerService.Object,
-            _mockCurrentUserService.Object);
+            _mockCurrentUserService.Object,
+            _bllLocalizerMock);
     }
 
     [Theory]
