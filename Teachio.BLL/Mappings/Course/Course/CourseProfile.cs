@@ -4,6 +4,7 @@ using Teachio.BLL.DTOs.Courses.Courses.Request.Update;
 using Teachio.BLL.DTOs.Courses.Courses.Response;
 using Teachio.BLL.Utils.MappingResolvers;
 using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
+using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.Mappings.Course.Course;
 
@@ -38,10 +39,22 @@ public class CourseProfile : Profile
 
         CreateMap<CourseEntity, CourseResponseDto>()
             .ForMember(
+                dest => dest.Sections,
+                opt => opt.MapFrom(src => GetVisibleSections(src)))
+            .ForMember(
+                dest => dest.SectionsCount,
+                opt => opt.MapFrom<VisibleSectionCountResolver>())
+            .ForMember(
                 dest => dest.TotalDuration,
                 opt => opt.MapFrom<TotalDurationResolver>());
 
         CreateMap<CourseEntity, CoursePreviewResponseDto>()
+            .ForMember(
+                dest => dest.Sections,
+                opt => opt.MapFrom(src => GetVisibleSections(src)))
+            .ForMember(
+                dest => dest.SectionsCount,
+                opt => opt.MapFrom<VisibleSectionCountResolver>())
             .ForMember(
                 dest => dest.TotalDuration,
                 opt => opt.MapFrom<TotalDurationResolver>())
@@ -60,4 +73,7 @@ public class CourseProfile : Profile
                 dest => dest.ThumbnailRelativePath,
                 opt => opt.MapFrom<RelativePathResolver>());
     }
+
+    private static IEnumerable<SectionEntity> GetVisibleSections(CourseEntity course) =>
+        course.Sections.Where(x => x.VideosCount > 0);
 }
