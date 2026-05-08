@@ -12,7 +12,7 @@ public class VideoShortResponseDto
 
     public int OrderIndex { get; set; }
 
-    public int DurationSeconds { get; set; }
+    public int? DurationSeconds { get; set; }
 
     public VideoProgressResponseDto VideoProgress { get; set; } = null!;
 }

@@ -70,6 +70,8 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
     {
         return query
             .Include(s => s.Videos)
-                .ThenInclude(v => v.VideoProgress);
+                .ThenInclude(v => v.VideoProgress)
+            .Include(s => s.Videos)
+                .ThenInclude(v => v.VideoFile!);
     }
 }

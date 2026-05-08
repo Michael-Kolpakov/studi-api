@@ -10,5 +10,5 @@ public class VideoPreviewResponseDto
 
     public int OrderIndex { get; set; }
 
-    public int DurationSeconds { get; set; }
+    public int? DurationSeconds { get; set; }
 }

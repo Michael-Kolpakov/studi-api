@@ -27,16 +27,16 @@ public class VideoProfile : Profile
                 opt => opt.MapFrom<RelativePathResolver>())
             .ForMember(
                 dest => dest.DurationSeconds,
-                opt => opt.MapFrom(src => src.VideoFile == null ? 0 : src.VideoFile.DurationSeconds));
+                opt => opt.MapFrom(src => src.VideoFile!.DurationSeconds));
 
         CreateMap<VideoEntity, VideoPreviewResponseDto>()
             .ForMember(
                 dest => dest.DurationSeconds,
-                opt => opt.MapFrom(src => src.VideoFile == null ? 0 : src.VideoFile.DurationSeconds));
+                opt => opt.MapFrom(src => src.VideoFile!.DurationSeconds));
 
         CreateMap<VideoEntity, VideoShortResponseDto>()
             .ForMember(
                 dest => dest.DurationSeconds,
-                opt => opt.MapFrom(src => src.VideoFile == null ? 0 : src.VideoFile.DurationSeconds));
+                opt => opt.MapFrom(src => src.VideoFile!.DurationSeconds));
     }
 }
