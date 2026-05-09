@@ -1,4 +1,3 @@
-using System.Text;
 using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -74,32 +73,6 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
             return Result.Fail(errorMessage);
         }
 
-        var uploadedFileTitle = Path.GetFileNameWithoutExtension(request.VideoUploadRequestDto.VideoFile.FileName);
-
-        if (string.IsNullOrWhiteSpace(uploadedFileTitle))
-        {
-            var errorMessage = _stringLocalizerVideoUpload[
-                nameof(VideoUploadSharedResource_en.UploadedVideoFileNameIsEmpty)
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
-        var normalizedFileTitle = NormalizeVideoTitle(uploadedFileTitle);
-
-        if (string.IsNullOrWhiteSpace(normalizedFileTitle))
-        {
-            var errorMessage = _stringLocalizerVideoUpload[
-                nameof(VideoUploadSharedResource_en.UploadedVideoFileTitleIsEmpty)
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
         var uploadVideoContext = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultProjectedAsync(
             x => new UploadVideoContext
             {
@@ -108,6 +81,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
                 OwnerUserEmail = x.Section.Course.OwnerUser!.Email,
                 CourseName = x.Section.Course.CourseName,
                 SectionName = x.Section.SectionName,
+                Title = x.Title,
                 ExistingVideoFileName = x.VideoFile == null
                     ? null
                     : x.VideoFile.VideoName
@@ -165,7 +139,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
                 return Result.Fail(errorMessage);
             }
 
-            var videoName = BuildVideoName(normalizedFileTitle, metadataResult.Value.FileExtension);
+            var videoName = BuildVideoName(uploadVideoContext.Title, metadataResult.Value.FileExtension);
 
             if (videoName.Length > EntityConstants.MaxVideoFileNameLength)
             {
@@ -333,37 +307,6 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
         return $"{normalizedName}.{fileExtension}";
     }
 
-    private static string NormalizeVideoTitle(string rawTitle)
-    {
-        var builder = new StringBuilder(rawTitle.Length);
-
-        foreach (var character in rawTitle)
-        {
-            if (IsAsciiLetterOrDigit(character)
-                || character == ' '
-                || character == ','
-                || character == '!'
-                || character == '?'
-                || character == '-')
-            {
-                builder.Append(character);
-            }
-            else
-            {
-                builder.Append(' ');
-            }
-        }
-
-        return string.Join(" ", builder.ToString().Split(' ', StringSplitOptions.RemoveEmptyEntries));
-    }
-
-    private static bool IsAsciiLetterOrDigit(char character)
-    {
-        return character is (>= 'A' and <= 'Z')
-            or (>= 'a' and <= 'z')
-            or (>= '0' and <= '9');
-    }
-
     private static async Task SaveUploadedFileToTemporaryStorageAsync(
         IFormFile uploadedFile,
         string temporaryFilePath,
@@ -406,6 +349,8 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
         public string CourseName { get; set; } = null!;
 
         public string SectionName { get; set; } = null!;
+
+        public string Title { get; set; } = null!;
 
         public string? ExistingVideoFileName { get; set; }
     }

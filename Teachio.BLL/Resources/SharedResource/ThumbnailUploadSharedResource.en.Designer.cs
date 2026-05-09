@@ -103,23 +103,5 @@ namespace Teachio.BLL.Resources.SharedResource {
                 return ResourceManager.GetString("UploadedThumbnailFileIsEmpty", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Uploaded thumbnail file name is empty.
-        /// </summary>
-        internal static string UploadedThumbnailFileNameIsEmpty {
-            get {
-                return ResourceManager.GetString("UploadedThumbnailFileNameIsEmpty", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Uploaded thumbnail file title is empty.
-        /// </summary>
-        internal static string UploadedThumbnailFileTitleIsEmpty {
-            get {
-                return ResourceManager.GetString("UploadedThumbnailFileTitleIsEmpty", resourceCulture);
-            }
-        }
     }
 }

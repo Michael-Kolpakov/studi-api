@@ -1,5 +1,4 @@
-﻿using System.Text;
-using FluentResults;
+﻿using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
@@ -8,7 +7,6 @@ using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.Helpers;
-using Teachio.BLL.Utils.MappingResolvers;
 using Teachio.DAL.Entities.Courses.ThumbnailFiles;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using Teachio.DAL.Utils.Constants;
@@ -67,32 +65,6 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
             var errorMessage = _stringLocalizerThumbnailUpload[
                 nameof(ThumbnailUploadSharedResource_en.UploadedThumbnailFileSizeExceedsLimit),
                 maxThumbnailFileSizeMegabytes
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
-        var uploadedFileTitle = Path.GetFileNameWithoutExtension(request.ThumbnailUploadRequestDto.ThumbnailFile.FileName);
-
-        if (string.IsNullOrWhiteSpace(uploadedFileTitle))
-        {
-            var errorMessage = _stringLocalizerThumbnailUpload[
-                nameof(ThumbnailUploadSharedResource_en.UploadedThumbnailFileNameIsEmpty)
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
-        var normalizedFileTitle = NormalizeThumbnailTitle(uploadedFileTitle);
-
-        if (string.IsNullOrWhiteSpace(normalizedFileTitle))
-        {
-            var errorMessage = _stringLocalizerThumbnailUpload[
-                nameof(ThumbnailUploadSharedResource_en.UploadedThumbnailFileTitleIsEmpty)
             ].Value;
 
             _logger.LogError(request, errorMessage);
@@ -164,7 +136,7 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
                 return Result.Fail(errorMessage);
             }
 
-            var thumbnailName = BuildThumbnailName(normalizedFileTitle, metadataResult.Value.FileExtension);
+            var thumbnailName = $"{uploadThumbnailContext.CourseName}.{metadataResult.Value.FileExtension}";
 
             if (thumbnailName.Length > EntityConstants.MaxThumbnailFileNameLength)
             {
@@ -317,44 +289,6 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
         var extension = Path.GetExtension(sourceFileName);
 
         return Path.Combine(Path.GetTempPath(), $"teachio-thumbnail-{Guid.NewGuid():N}{extension}");
-    }
-
-    private static string BuildThumbnailName(string thumbnailTitle, string fileExtension)
-    {
-        var normalizedName = NameFromTitleResolver.CreateNameFromTitle(thumbnailTitle);
-
-        return $"{normalizedName}.{fileExtension}";
-    }
-
-    private static string NormalizeThumbnailTitle(string rawTitle)
-    {
-        var builder = new StringBuilder(rawTitle.Length);
-
-        foreach (var character in rawTitle)
-        {
-            if (IsAsciiLetterOrDigit(character)
-                || character == ' '
-                || character == ','
-                || character == '!'
-                || character == '?'
-                || character == '-')
-            {
-                builder.Append(character);
-            }
-            else
-            {
-                builder.Append(' ');
-            }
-        }
-
-        return string.Join(" ", builder.ToString().Split(' ', StringSplitOptions.RemoveEmptyEntries));
-    }
-
-    private static bool IsAsciiLetterOrDigit(char character)
-    {
-        return character is (>= 'A' and <= 'Z')
-            or (>= 'a' and <= 'z')
-            or (>= '0' and <= '9');
     }
 
     private static async Task SaveUploadedFileToTemporaryStorageAsync(

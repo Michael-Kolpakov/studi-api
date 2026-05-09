@@ -96,29 +96,11 @@ namespace Teachio.BLL.Resources.SharedResource {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Uploaded video file name is empty.
-        /// </summary>
-        internal static string UploadedVideoFileNameIsEmpty {
-            get {
-                return ResourceManager.GetString("UploadedVideoFileNameIsEmpty", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Uploaded video file size exceeds the maximum allowed value of {0} MB.
         /// </summary>
         internal static string UploadedVideoFileSizeExceedsLimit {
             get {
                 return ResourceManager.GetString("UploadedVideoFileSizeExceedsLimit", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Uploaded video file title is empty.
-        /// </summary>
-        internal static string UploadedVideoFileTitleIsEmpty {
-            get {
-                return ResourceManager.GetString("UploadedVideoFileTitleIsEmpty", resourceCulture);
             }
         }
     }

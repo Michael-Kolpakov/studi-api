@@ -24,12 +24,6 @@
     <data name="UploadedVideoFileSizeExceedsLimit" xml:space="preserve">
         <value>Uploaded video file size exceeds the maximum allowed value of {0} MB.</value>
     </data>
-    <data name="UploadedVideoFileNameIsEmpty" xml:space="preserve">
-        <value>Uploaded video file name is empty.</value>
-    </data>
-    <data name="UploadedVideoFileTitleIsEmpty" xml:space="preserve">
-        <value>Uploaded video file title is empty.</value>
-    </data>
     <data name="GeneratedVideoFileNameTooLong" xml:space="preserve">
         <value>Generated video file name exceeds the maximum allowed length of {0} characters.</value>
     </data>

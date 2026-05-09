@@ -21,12 +21,6 @@
     <data name="UploadedThumbnailFileIsEmpty" xml:space="preserve">
         <value>Uploaded thumbnail file is empty.</value>
     </data>
-    <data name="UploadedThumbnailFileNameIsEmpty" xml:space="preserve">
-        <value>Uploaded thumbnail file name is empty.</value>
-    </data>
-    <data name="UploadedThumbnailFileTitleIsEmpty" xml:space="preserve">
-        <value>Uploaded thumbnail file title is empty.</value>
-    </data>
     <data name="GeneratedThumbnailFileNameTooLong" xml:space="preserve">
         <value>Generated thumbnail file name exceeds the maximum allowed length of {0} characters.</value>
     </data>
