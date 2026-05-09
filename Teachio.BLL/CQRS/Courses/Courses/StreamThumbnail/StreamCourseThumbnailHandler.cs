@@ -18,6 +18,7 @@ public class StreamCourseThumbnailHandler : IRequestHandler<StreamCourseThumbnai
     private readonly ILoggerService _logger;
     private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
+    private readonly IStringLocalizer<GoogleDriveStorageSharedResource> _stringLocalizerGoogleDriveStorage;
     private readonly IStringLocalizer<ThumbnailStreamSharedResource> _stringLocalizerThumbnailStream;
 
     public StreamCourseThumbnailHandler(
@@ -26,6 +27,7 @@ public class StreamCourseThumbnailHandler : IRequestHandler<StreamCourseThumbnai
         ILoggerService logger,
         ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
+        IStringLocalizer<GoogleDriveStorageSharedResource> stringLocalizerGoogleDriveStorage,
         IStringLocalizer<ThumbnailStreamSharedResource> stringLocalizerThumbnailStream)
     {
         _repositoryWrapper = repositoryWrapper;
@@ -33,6 +35,7 @@ public class StreamCourseThumbnailHandler : IRequestHandler<StreamCourseThumbnai
         _logger = logger;
         _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
+        _stringLocalizerGoogleDriveStorage = stringLocalizerGoogleDriveStorage;
         _stringLocalizerThumbnailStream = stringLocalizerThumbnailStream;
     }
 
@@ -101,6 +104,12 @@ public class StreamCourseThumbnailHandler : IRequestHandler<StreamCourseThumbnai
         if (downloadResult.IsFailed)
         {
             var errorMessage = downloadResult.Errors[0].Message;
+
+            if (IsMissingThumbnailFileError(errorMessage, streamContext.ThumbnailName))
+            {
+                return await StreamDefaultThumbnailAsync(normalizedRangeHeader, cancellationToken);
+            }
+
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);
@@ -138,6 +147,16 @@ public class StreamCourseThumbnailHandler : IRequestHandler<StreamCourseThumbnai
         streamResult.ContentType = HandlerConstants.DefaultThumbnailContentType;
 
         return Result.Ok(streamResult);
+    }
+
+    private bool IsMissingThumbnailFileError(string errorMessage, string fileName)
+    {
+        var expectedErrorMessage = _stringLocalizerGoogleDriveStorage[
+            nameof(GoogleDriveStorageSharedResource_en.FileNotFoundByPath),
+            fileName
+        ].Value;
+
+        return string.Equals(errorMessage, expectedErrorMessage, StringComparison.Ordinal);
     }
 
     private sealed class StreamThumbnailContext
