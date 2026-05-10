@@ -10,7 +10,7 @@ public static class RepositoryMocks
 {
     public static void SetupGetSingleOrDefaultAsyncMock<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector,
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector,
         TEntity? entity)
         where TEntity : class
     {
@@ -26,7 +26,7 @@ public static class RepositoryMocks
 
     public static void SetupGetFirstOrDefaultAsyncMock<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector,
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector,
         TEntity? entity)
         where TEntity : class
     {
@@ -42,7 +42,7 @@ public static class RepositoryMocks
 
     public static void SetupCreateAsyncMock<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector,
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector,
         TEntity entity)
         where TEntity : class
     {
@@ -55,7 +55,7 @@ public static class RepositoryMocks
 
     public static void SetupGetAllAsyncMock<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector,
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector,
         IEnumerable<TEntity> entities)
         where TEntity : class
     {
@@ -71,7 +71,7 @@ public static class RepositoryMocks
 
     public static void SetupGetAllPaginatedAsyncMock<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector,
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector,
         PaginationResponse<TEntity> entities)
         where TEntity : class
     {
@@ -94,7 +94,7 @@ public static class RepositoryMocks
 
     public static void SetupUpdateMock<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector,
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector,
         TEntity entity)
         where TEntity : class
     {
@@ -107,7 +107,7 @@ public static class RepositoryMocks
 
     public static void SetupDeleteMock<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector,
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector,
         TEntity entity)
         where TEntity : class
     {
@@ -118,9 +118,9 @@ public static class RepositoryMocks
             .Returns(entity);
     }
 
-    private static IRepositoryBase<TEntity> GetRepository<TEntity>(
+    private static IBaseRepository<TEntity> GetRepository<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector)
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector)
         where TEntity : class
     {
         var func = repositorySelector.Compile();

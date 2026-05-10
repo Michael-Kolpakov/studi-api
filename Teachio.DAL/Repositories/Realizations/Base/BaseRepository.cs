@@ -8,12 +8,12 @@ using Teachio.DAL.Utils.Helpers;
 
 namespace Teachio.DAL.Repositories.Realizations.Base;
 
-public abstract class RepositoryBase<T> : IRepositoryBase<T>
+public abstract class BaseRepository<T> : IBaseRepository<T>
     where T : class
 {
     private readonly TeachioDbContext _dbContext;
 
-    protected RepositoryBase(TeachioDbContext dbContext)
+    protected BaseRepository(TeachioDbContext dbContext)
     {
         _dbContext = dbContext;
     }

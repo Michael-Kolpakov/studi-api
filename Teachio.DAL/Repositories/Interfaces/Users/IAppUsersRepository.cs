@@ -3,4 +3,4 @@ using Teachio.DAL.Repositories.Interfaces.Base;
 
 namespace Teachio.DAL.Repositories.Interfaces.Users;
 
-public interface IAppUsersRepository : IRepositoryBase<AppUser>;
+public interface IAppUsersRepository : IBaseRepository<AppUser>;

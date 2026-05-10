@@ -6,4 +6,4 @@ using Teachio.DAL.Repositories.Realizations.Base;
 namespace Teachio.DAL.Repositories.Realizations.Users;
 
 public class AppUsersRepository(TeachioDbContext dbContext)
-    : RepositoryBase<AppUser>(dbContext), IAppUsersRepository;
+    : BaseRepository<AppUser>(dbContext), IAppUsersRepository;

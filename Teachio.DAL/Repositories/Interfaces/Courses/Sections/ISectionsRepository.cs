@@ -3,4 +3,4 @@ using Teachio.DAL.Repositories.Interfaces.Base;
 
 namespace Teachio.DAL.Repositories.Interfaces.Courses.Sections;
 
-public interface ISectionsRepository : IRepositoryBase<Section>;
+public interface ISectionsRepository : IBaseRepository<Section>;

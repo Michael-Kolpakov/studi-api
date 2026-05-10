@@ -5,7 +5,7 @@ using Teachio.DAL.Utils.Helpers;
 
 namespace Teachio.DAL.Repositories.Interfaces.Base;
 
-public interface IRepositoryBase<T>
+public interface IBaseRepository<T>
     where T : class
 {
     T Create(T entity);

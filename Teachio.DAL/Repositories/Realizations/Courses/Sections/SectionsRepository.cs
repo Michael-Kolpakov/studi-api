@@ -6,4 +6,4 @@ using Teachio.DAL.Repositories.Realizations.Base;
 namespace Teachio.DAL.Repositories.Realizations.Courses.Sections;
 
 public class SectionsRepository(TeachioDbContext dbContext)
-    : RepositoryBase<Section>(dbContext), ISectionsRepository;
+    : BaseRepository<Section>(dbContext), ISectionsRepository;

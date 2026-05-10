@@ -6,4 +6,4 @@ using Teachio.DAL.Repositories.Realizations.Base;
 namespace Teachio.DAL.Repositories.Realizations.Courses.Videos.VideoFiles;
 
 public class VideoFilesRepository(TeachioDbContext dbContext)
-    : RepositoryBase<VideoFile>(dbContext), IVideoFilesRepository;
+    : BaseRepository<VideoFile>(dbContext), IVideoFilesRepository;

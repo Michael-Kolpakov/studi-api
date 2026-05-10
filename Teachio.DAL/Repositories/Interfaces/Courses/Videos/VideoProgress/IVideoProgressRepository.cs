@@ -2,4 +2,4 @@
 
 namespace Teachio.DAL.Repositories.Interfaces.Courses.Videos.VideoProgress;
 
-public interface IVideoProgressRepository : IRepositoryBase<Entities.Courses.Videos.VideoProgress.VideoProgress>;
+public interface IVideoProgressRepository : IBaseRepository<Entities.Courses.Videos.VideoProgress.VideoProgress>;

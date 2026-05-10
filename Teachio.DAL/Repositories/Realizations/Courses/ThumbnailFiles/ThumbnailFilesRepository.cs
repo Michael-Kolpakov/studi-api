@@ -6,4 +6,4 @@ using Teachio.DAL.Repositories.Realizations.Base;
 namespace Teachio.DAL.Repositories.Realizations.Courses.ThumbnailFiles;
 
 public class ThumbnailFilesRepository(TeachioDbContext dbContext)
-    : RepositoryBase<ThumbnailFile>(dbContext), IThumbnailFilesRepository;
+    : BaseRepository<ThumbnailFile>(dbContext), IThumbnailFilesRepository;

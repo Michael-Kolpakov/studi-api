@@ -9,7 +9,7 @@ public static class RepositoryVerifications
 {
     public static void VarifyGetFirstOrDefaultAsyncWasCalled<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector)
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector)
         where TEntity : class
     {
         var repository = GetRepository(mockRepositoryWrapper, repositorySelector);
@@ -24,7 +24,7 @@ public static class RepositoryVerifications
 
     public static void VerifyGetSingleOrDefaultAsyncWasCalled<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector)
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector)
         where TEntity : class
     {
         var repository = GetRepository(mockRepositoryWrapper, repositorySelector);
@@ -39,7 +39,7 @@ public static class RepositoryVerifications
 
     public static void VerifyCreateAsyncWasCalled<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector)
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector)
         where TEntity : class
     {
         var repository = GetRepository(mockRepositoryWrapper, repositorySelector);
@@ -51,7 +51,7 @@ public static class RepositoryVerifications
 
     public static void VerifyGetAllPaginatedAsyncWasCalled<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector)
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector)
         where TEntity : class
     {
         var repository = GetRepository(mockRepositoryWrapper, repositorySelector);
@@ -73,7 +73,7 @@ public static class RepositoryVerifications
 
     public static void VerifyDeleteWasCalled<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector)
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector)
         where TEntity : class
     {
         var repository = GetRepository(mockRepositoryWrapper, repositorySelector);
@@ -85,7 +85,7 @@ public static class RepositoryVerifications
 
     public static void VerifyUpdateWasCalled<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector)
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector)
         where TEntity : class
     {
         var repository = GetRepository(mockRepositoryWrapper, repositorySelector);
@@ -103,9 +103,9 @@ public static class RepositoryVerifications
             Times.Once);
     }
 
-    private static IRepositoryBase<TEntity> GetRepository<TEntity>(
+    private static IBaseRepository<TEntity> GetRepository<TEntity>(
         Mock<IRepositoryWrapper> mockRepositoryWrapper,
-        Expression<Func<IRepositoryWrapper, IRepositoryBase<TEntity>>> repositorySelector)
+        Expression<Func<IRepositoryWrapper, IBaseRepository<TEntity>>> repositorySelector)
         where TEntity : class
     {
         var func = repositorySelector.Compile();

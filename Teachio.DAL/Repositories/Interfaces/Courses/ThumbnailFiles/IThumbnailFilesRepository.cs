@@ -3,4 +3,4 @@ using Teachio.DAL.Repositories.Interfaces.Base;
 
 namespace Teachio.DAL.Repositories.Interfaces.Courses.ThumbnailFiles;
 
-public interface IThumbnailFilesRepository : IRepositoryBase<ThumbnailFile>;
+public interface IThumbnailFilesRepository : IBaseRepository<ThumbnailFile>;

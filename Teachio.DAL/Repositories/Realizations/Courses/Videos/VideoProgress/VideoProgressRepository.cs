@@ -5,4 +5,4 @@ using Teachio.DAL.Repositories.Realizations.Base;
 namespace Teachio.DAL.Repositories.Realizations.Courses.Videos.VideoProgress;
 
 public class VideoProgressRepository(TeachioDbContext dbContext)
-    : RepositoryBase<Entities.Courses.Videos.VideoProgress.VideoProgress>(dbContext), IVideoProgressRepository;
+    : BaseRepository<Entities.Courses.Videos.VideoProgress.VideoProgress>(dbContext), IVideoProgressRepository;
