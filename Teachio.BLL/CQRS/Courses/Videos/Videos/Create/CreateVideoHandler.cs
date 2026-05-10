@@ -9,7 +9,6 @@ using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Repositories.Interfaces.Base;
-using Teachio.DAL.Utils.Constants;
 using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 using VideoProgressEntity = Teachio.DAL.Entities.Courses.Videos.VideoProgress.VideoProgress;
 
@@ -100,7 +99,13 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
 
         if (sectionVideos.Count > 0)
         {
-            await ShiftOrderIndexesForCreateAsync(newVideo.SectionId, targetOrderIndex, cancellationToken);
+            await OrderIndexShiftHelper.ShiftOrderIndexesForCreateAsync(
+                _repositoryWrapper.VideosRepository,
+                $"{nameof(Video)}s",
+                nameof(VideoEntity.SectionId),
+                newVideo.SectionId,
+                targetOrderIndex,
+                cancellationToken);
         }
 
         var newVideoProgress = new VideoProgressEntity()
@@ -119,23 +124,6 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         var videoResponseDto = _mapper.Map<VideoResponseDto>(newVideo);
 
         return Result.Ok(videoResponseDto);
-    }
-
-    private async Task ShiftOrderIndexesForCreateAsync(
-        Guid sectionId,
-        int targetOrderIndex,
-        CancellationToken cancellationToken)
-    {
-        var table = $"[{DatabaseConstants.CoursesSchema}].[{nameof(Video)}s]";
-
-        var sql = $"""
-            UPDATE {table}
-            SET {nameof(VideoEntity.OrderIndex)} = {nameof(VideoEntity.OrderIndex)} + 1
-            WHERE {nameof(VideoEntity.SectionId)} = '{sectionId}'
-                AND {nameof(VideoEntity.OrderIndex)} >= {targetOrderIndex}
-        """;
-
-        await _repositoryWrapper.VideosRepository.ExecuteSqlRaw(sql, cancellationToken);
     }
 
     private static int PrepareOrderIndexForCreate(List<VideoEntity> sectionVideos, int requestedOrderIndex)

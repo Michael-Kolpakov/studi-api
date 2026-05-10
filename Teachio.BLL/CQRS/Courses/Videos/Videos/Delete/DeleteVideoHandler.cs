@@ -12,7 +12,6 @@ using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Repositories.Interfaces.Base;
-using Teachio.DAL.Utils.Constants;
 using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Teachio.BLL.CQRS.Courses.Videos.Videos.Delete;
@@ -94,7 +93,10 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
         _repositoryWrapper.VideosRepository.Delete(video);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
-        await ShiftOrderIndexesForDeleteAsync(
+        await OrderIndexShiftHelper.ShiftOrderIndexesForDeleteAsync(
+            _repositoryWrapper.VideosRepository,
+            $"{nameof(Video)}s",
+            nameof(VideoEntity.SectionId),
             video.SectionId,
             video.OrderIndex,
             cancellationToken);
@@ -120,23 +122,6 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
                     .ThenInclude(c => c!.OwnerUser)
             .Include(v => v.VideoFile)
             .Include(v => v.VideoProgress);
-    }
-
-    private async Task ShiftOrderIndexesForDeleteAsync(
-        Guid sectionId,
-        int deletedOrderIndex,
-        CancellationToken cancellationToken)
-    {
-        var table = $"[{DatabaseConstants.CoursesSchema}].[{nameof(Video)}s]";
-
-        var sql = $"""
-            UPDATE {table}
-            SET {nameof(VideoEntity.OrderIndex)} = {nameof(VideoEntity.OrderIndex)} - 1
-            WHERE {nameof(VideoEntity.SectionId)} = '{sectionId}'
-                AND {nameof(VideoEntity.OrderIndex)} > {deletedOrderIndex}
-        """;
-
-        await _repositoryWrapper.VideosRepository.ExecuteSqlRaw(sql, cancellationToken);
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]

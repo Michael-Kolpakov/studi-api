@@ -6,9 +6,9 @@ using Teachio.BLL.DTOs.Courses.Sections.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
+using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Repositories.Interfaces.Base;
-using Teachio.DAL.Utils.Constants;
 using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.CQRS.Courses.Sections.Update;
@@ -93,8 +93,12 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
 
         if (targetOrderIndex != existingSection.OrderIndex)
         {
-            await ShiftOrderIndexesForUpdateAsync(
+            await OrderIndexShiftHelper.ShiftOrderIndexesForUpdateAsync(
+                _repositoryWrapper.SectionsRepository,
+                $"{nameof(Section)}s",
+                nameof(SectionEntity.CourseId),
                 existingSection.CourseId,
+                nameof(SectionEntity.Id),
                 existingSection.Id,
                 existingSection.OrderIndex,
                 targetOrderIndex,
@@ -112,50 +116,6 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
         var sectionResponseDto = _mapper.Map<SectionResponseDto>(existingSection);
 
         return Result.Ok(sectionResponseDto);
-    }
-
-    private async Task ShiftOrderIndexesForUpdateAsync(
-        Guid courseId,
-        Guid sectionId,
-        int currentOrderIndex,
-        int targetOrderIndex,
-        CancellationToken cancellationToken)
-    {
-        var table = $"[{DatabaseConstants.CoursesSchema}].[{nameof(Section)}s]";
-
-        var sql = $"""
-            UPDATE {table}
-            SET {nameof(SectionEntity.OrderIndex)} =
-                CASE
-                    WHEN {nameof(SectionEntity.Id)} = '{sectionId}'
-                        THEN {targetOrderIndex}
-                    WHEN {targetOrderIndex} < {currentOrderIndex}
-                        AND {nameof(SectionEntity.OrderIndex)} >= {targetOrderIndex}
-                        AND {nameof(SectionEntity.OrderIndex)} < {currentOrderIndex}
-                        THEN {nameof(SectionEntity.OrderIndex)} + 1
-                    WHEN {targetOrderIndex} > {currentOrderIndex}
-                        AND {nameof(SectionEntity.OrderIndex)} <= {targetOrderIndex}
-                        AND {nameof(SectionEntity.OrderIndex)} > {currentOrderIndex}
-                        THEN {nameof(SectionEntity.OrderIndex)} - 1
-                    ELSE {nameof(SectionEntity.OrderIndex)}
-                END
-            WHERE {nameof(SectionEntity.CourseId)} = '{courseId}'
-                AND (
-                    {nameof(SectionEntity.Id)} = '{sectionId}'
-                    OR (
-                        {targetOrderIndex} < {currentOrderIndex}
-                        AND {nameof(SectionEntity.OrderIndex)} >= {targetOrderIndex}
-                        AND {nameof(SectionEntity.OrderIndex)} < {currentOrderIndex}
-                    )
-                    OR (
-                        {targetOrderIndex} > {currentOrderIndex}
-                        AND {nameof(SectionEntity.OrderIndex)} <= {targetOrderIndex}
-                        AND {nameof(SectionEntity.OrderIndex)} > {currentOrderIndex}
-                    )
-                )
-        """;
-
-        await _repositoryWrapper.SectionsRepository.ExecuteSqlRaw(sql, cancellationToken);
     }
 
     private static int PrepareOrderIndexForUpdate(

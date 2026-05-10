@@ -9,9 +9,9 @@ using Teachio.BLL.DTOs.Courses.Videos.Videos.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
+using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Repositories.Interfaces.Base;
-using Teachio.DAL.Utils.Constants;
 using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Teachio.BLL.CQRS.Courses.Videos.Videos.Update;
@@ -97,8 +97,12 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
 
         if (targetOrderIndex != existingVideo.OrderIndex)
         {
-            await ShiftOrderIndexesForUpdateAsync(
+            await OrderIndexShiftHelper.ShiftOrderIndexesForUpdateAsync(
+                _repositoryWrapper.VideosRepository,
+                $"{nameof(Video)}s",
+                nameof(VideoEntity.SectionId),
                 existingVideo.SectionId,
+                nameof(VideoEntity.Id),
                 existingVideo.Id,
                 existingVideo.OrderIndex,
                 targetOrderIndex,
@@ -122,50 +126,6 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
         return query
             .Include(v => v.VideoFile)
             .Include(v => v.VideoProgress);
-    }
-
-    private async Task ShiftOrderIndexesForUpdateAsync(
-        Guid sectionId,
-        Guid videoId,
-        int currentOrderIndex,
-        int targetOrderIndex,
-        CancellationToken cancellationToken)
-    {
-        var table = $"[{DatabaseConstants.CoursesSchema}].[{nameof(Video)}s]";
-
-        var sql = $"""
-            UPDATE {table}
-            SET {nameof(VideoEntity.OrderIndex)} =
-                CASE
-                    WHEN {nameof(VideoEntity.Id)} = '{videoId}'
-                        THEN {targetOrderIndex}
-                    WHEN {targetOrderIndex} < {currentOrderIndex}
-                        AND {nameof(VideoEntity.OrderIndex)} >= {targetOrderIndex}
-                        AND {nameof(VideoEntity.OrderIndex)} < {currentOrderIndex}
-                        THEN {nameof(VideoEntity.OrderIndex)} + 1
-                    WHEN {targetOrderIndex} > {currentOrderIndex}
-                        AND {nameof(VideoEntity.OrderIndex)} <= {targetOrderIndex}
-                        AND {nameof(VideoEntity.OrderIndex)} > {currentOrderIndex}
-                        THEN {nameof(VideoEntity.OrderIndex)} - 1
-                    ELSE {nameof(VideoEntity.OrderIndex)}
-                END
-            WHERE {nameof(VideoEntity.SectionId)} = '{sectionId}'
-                AND (
-                    {nameof(VideoEntity.Id)} = '{videoId}'
-                    OR (
-                        {targetOrderIndex} < {currentOrderIndex}
-                        AND {nameof(VideoEntity.OrderIndex)} >= {targetOrderIndex}
-                        AND {nameof(VideoEntity.OrderIndex)} < {currentOrderIndex}
-                    )
-                    OR (
-                        {targetOrderIndex} > {currentOrderIndex}
-                        AND {nameof(VideoEntity.OrderIndex)} <= {targetOrderIndex}
-                        AND {nameof(VideoEntity.OrderIndex)} > {currentOrderIndex}
-                    )
-                )
-        """;
-
-        await _repositoryWrapper.VideosRepository.ExecuteSqlRaw(sql, cancellationToken);
     }
 
     private static int PrepareOrderIndexForUpdate(

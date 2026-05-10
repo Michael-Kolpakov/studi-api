@@ -12,7 +12,6 @@ using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Repositories.Interfaces.Base;
-using Teachio.DAL.Utils.Constants;
 using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.CQRS.Courses.Sections.Delete;
@@ -100,7 +99,10 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
         _repositoryWrapper.SectionsRepository.Delete(section);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
-        await ShiftOrderIndexesForDeleteAsync(
+        await OrderIndexShiftHelper.ShiftOrderIndexesForDeleteAsync(
+            _repositoryWrapper.SectionsRepository,
+            $"{nameof(Section)}s",
+            nameof(SectionEntity.CourseId),
             section.CourseId,
             section.OrderIndex,
             cancellationToken);
@@ -127,23 +129,6 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
                 .ThenInclude(v => v.VideoFile)
             .Include(s => s.Videos)
                 .ThenInclude(v => v.VideoProgress);
-    }
-
-    private async Task ShiftOrderIndexesForDeleteAsync(
-        Guid courseId,
-        int deletedOrderIndex,
-        CancellationToken cancellationToken)
-    {
-        var table = $"[{DatabaseConstants.CoursesSchema}].[{nameof(Section)}s]";
-
-        var sql = $"""
-            UPDATE {table}
-            SET {nameof(SectionEntity.OrderIndex)} = {nameof(SectionEntity.OrderIndex)} - 1
-            WHERE {nameof(SectionEntity.CourseId)} = '{courseId}'
-                AND {nameof(SectionEntity.OrderIndex)} > {deletedOrderIndex}
-        """;
-
-        await _repositoryWrapper.SectionsRepository.ExecuteSqlRaw(sql, cancellationToken);
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]
