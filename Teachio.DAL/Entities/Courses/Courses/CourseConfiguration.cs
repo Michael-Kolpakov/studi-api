@@ -28,7 +28,7 @@ public static class CourseConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Course)}_{nameof(Course.Title)}_{nameof(CheckConstraintType.Regex)}",
-                    Constraint.CreateSqlRegexCheck(nameof(Course.Title), ValidationRule.Title)));
+                    ConstraintHelper.CreateSqlRegexCheck(nameof(Course.Title), ValidationRule.Title)));
 
             typeBuilder.Property(c => c.Description)
                 .HasMaxLength(EntityConstants.MaxCourseDescriptionLength);
@@ -36,7 +36,7 @@ public static class CourseConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Course)}_{nameof(Course.Description)}_{nameof(CheckConstraintType.Regex)}",
-                    Constraint.CreateSqlRegexCheck(nameof(Course.Description), ValidationRule.Description)));
+                    ConstraintHelper.CreateSqlRegexCheck(nameof(Course.Description), ValidationRule.Description)));
 
             typeBuilder.Property(c => c.CourseName)
                 .IsRequired()
@@ -45,7 +45,7 @@ public static class CourseConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Course)}_{nameof(Course.CourseName)}_{nameof(CheckConstraintType.Regex)}",
-                    Constraint.CreateSqlRegexCheck(nameof(Course.CourseName), ValidationRule.Name)));
+                    ConstraintHelper.CreateSqlRegexCheck(nameof(Course.CourseName), ValidationRule.Name)));
 
             typeBuilder.Property(s => s.SectionsCount)
                 .IsRequired()
@@ -54,7 +54,7 @@ public static class CourseConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Course)}_{nameof(Course.SectionsCount)}_{nameof(CheckConstraintType.Range)}",
-                    Constraint.CreateSqlRangeCheck(
+                    ConstraintHelper.CreateSqlRangeCheck(
                         nameof(Course.SectionsCount),
                         EntityConstants.MinNonNegativeValue,
                         EntityConstants.MaxSectionsPerCourse)));
@@ -66,7 +66,7 @@ public static class CourseConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Course)}_{nameof(Course.WatchingUsersCount)}_{nameof(CheckConstraintType.NonNegative)}",
-                    Constraint.CreateSqlNonNegativeCheck(nameof(Course.WatchingUsersCount))));
+                    ConstraintHelper.CreateSqlNonNegativeCheck(nameof(Course.WatchingUsersCount))));
 
             typeBuilder.Property(c => c.OwnerUserId)
                 .IsRequired();

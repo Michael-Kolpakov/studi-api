@@ -2,7 +2,7 @@ using Teachio.DAL.Utils.Constants;
 
 namespace Teachio.DAL.Utils.Helpers;
 
-public static class Constraint
+public static class ConstraintHelper
 {
     public static string CreateSqlRegexCheck(string columnName, ValidationRule rule)
     {

@@ -31,7 +31,7 @@ public static class VideoProgressConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(VideoProgress)}_{nameof(VideoProgress.PositionSeconds)}_{nameof(CheckConstraintType.Range)}",
-                    Constraint.CreateSqlRangeCheck(
+                    ConstraintHelper.CreateSqlRangeCheck(
                         nameof(VideoProgress.PositionSeconds),
                         EntityConstants.MinNonNegativeValue,
                         EntityConstants.MaxVideoDurationSeconds)));

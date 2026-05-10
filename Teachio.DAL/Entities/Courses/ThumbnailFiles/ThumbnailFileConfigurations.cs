@@ -24,7 +24,7 @@ public static class ThumbnailFileConfigurations
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(ThumbnailFile)}_{nameof(ThumbnailFile.ThumbnailName)}_{nameof(CheckConstraintType.Regex)}",
-                    Constraint.CreateSqlRegexCheck(nameof(ThumbnailFile.ThumbnailName), ValidationRule.MediaName)));
+                    ConstraintHelper.CreateSqlRegexCheck(nameof(ThumbnailFile.ThumbnailName), ValidationRule.MediaName)));
 
             typeBuilder.Property(v => v.ContentType)
                 .IsRequired()
@@ -33,7 +33,7 @@ public static class ThumbnailFileConfigurations
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(ThumbnailFile)}_{nameof(ThumbnailFile.ContentType)}_{nameof(CheckConstraintType.AllowedValues)}",
-                    Constraint.CreateSqlAllowedValuesCheck(nameof(ThumbnailFile.ContentType), EntityConstants.AllowedThumbnailContentTypes)));
+                    ConstraintHelper.CreateSqlAllowedValuesCheck(nameof(ThumbnailFile.ContentType), EntityConstants.AllowedThumbnailContentTypes)));
 
             typeBuilder.Property(v => v.Resolution)
                 .IsRequired()
@@ -42,7 +42,7 @@ public static class ThumbnailFileConfigurations
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(ThumbnailFile)}_{nameof(ThumbnailFile.Resolution)}_{nameof(CheckConstraintType.AspectRatioRange)}",
-                    Constraint.CreateSqlAspectRatioRangeCheck(
+                    ConstraintHelper.CreateSqlAspectRatioRangeCheck(
                         nameof(ThumbnailFile.Resolution),
                         EntityConstants.MinThumbnailWidth,
                         EntityConstants.MaxThumbnailWidth,

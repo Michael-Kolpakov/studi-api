@@ -29,7 +29,7 @@ public static class VideoConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Video)}_{nameof(Video.Title)}_{nameof(CheckConstraintType.Regex)}",
-                    Constraint.CreateSqlRegexCheck(nameof(Video.Title), ValidationRule.Title)));
+                    ConstraintHelper.CreateSqlRegexCheck(nameof(Video.Title), ValidationRule.Title)));
 
             typeBuilder.Property(v => v.SectionId)
                 .IsRequired();
@@ -40,7 +40,7 @@ public static class VideoConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Video)}_{nameof(Video.OrderIndex)}_{nameof(CheckConstraintType.Range)}",
-                    Constraint.CreateSqlRangeCheck(
+                    ConstraintHelper.CreateSqlRangeCheck(
                         nameof(Video.OrderIndex),
                         EntityConstants.MinNonNegativeValue,
                         EntityConstants.MaxVideosPerSection - 1)));

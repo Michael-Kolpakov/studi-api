@@ -29,7 +29,7 @@ public static class SectionConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Section)}_{nameof(Section.Title)}_{nameof(CheckConstraintType.Regex)}",
-                    Constraint.CreateSqlRegexCheck(nameof(Section.Title), ValidationRule.Title)));
+                    ConstraintHelper.CreateSqlRegexCheck(nameof(Section.Title), ValidationRule.Title)));
 
             typeBuilder.Property(s => s.SectionName)
                 .IsRequired()
@@ -38,7 +38,7 @@ public static class SectionConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Section)}_{nameof(Section.SectionName)}_{nameof(CheckConstraintType.Regex)}",
-                    Constraint.CreateSqlRegexCheck(nameof(Section.SectionName), ValidationRule.Name)));
+                    ConstraintHelper.CreateSqlRegexCheck(nameof(Section.SectionName), ValidationRule.Name)));
 
             typeBuilder.Property(s => s.OrderIndex)
                 .IsRequired();
@@ -46,7 +46,7 @@ public static class SectionConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Section)}_{nameof(Section.OrderIndex)}_{nameof(CheckConstraintType.Range)}",
-                    Constraint.CreateSqlRangeCheck(
+                    ConstraintHelper.CreateSqlRangeCheck(
                         nameof(Section.OrderIndex),
                         EntityConstants.MinNonNegativeValue,
                         EntityConstants.MaxSectionsPerCourse - 1)));
@@ -58,7 +58,7 @@ public static class SectionConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Section)}_{nameof(Section.VideosCount)}_{nameof(CheckConstraintType.Range)}",
-                    Constraint.CreateSqlRangeCheck(
+                    ConstraintHelper.CreateSqlRangeCheck(
                         nameof(Section.VideosCount),
                         EntityConstants.MinNonNegativeValue,
                         EntityConstants.MaxVideosPerSection)));

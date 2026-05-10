@@ -24,7 +24,7 @@ public static class VideoFileConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(VideoFile)}_{nameof(VideoFile.VideoName)}_{nameof(CheckConstraintType.Regex)}",
-                    Constraint.CreateSqlRegexCheck(nameof(VideoFile.VideoName), ValidationRule.MediaName)));
+                    ConstraintHelper.CreateSqlRegexCheck(nameof(VideoFile.VideoName), ValidationRule.MediaName)));
 
             typeBuilder.Property(v => v.ContentType)
                 .IsRequired()
@@ -33,7 +33,7 @@ public static class VideoFileConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(VideoFile)}_{nameof(VideoFile.ContentType)}_{nameof(CheckConstraintType.AllowedValues)}",
-                    Constraint.CreateSqlAllowedValuesCheck(nameof(VideoFile.ContentType), EntityConstants.AllowedVideoContentTypes)));
+                    ConstraintHelper.CreateSqlAllowedValuesCheck(nameof(VideoFile.ContentType), EntityConstants.AllowedVideoContentTypes)));
 
             typeBuilder.Property(v => v.DurationSeconds)
                 .IsRequired();
@@ -41,7 +41,7 @@ public static class VideoFileConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(VideoFile)}_{nameof(VideoFile.DurationSeconds)}_{nameof(CheckConstraintType.Range)}",
-                    Constraint.CreateSqlRangeCheck(
+                    ConstraintHelper.CreateSqlRangeCheck(
                         nameof(VideoFile.DurationSeconds),
                         EntityConstants.MinNonNegativeValue,
                         EntityConstants.MaxVideoDurationSeconds)));
@@ -52,7 +52,7 @@ public static class VideoFileConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(VideoFile)}_{nameof(VideoFile.Resolution)}_{nameof(CheckConstraintType.AllowedValues)}",
-                    Constraint.CreateSqlAllowedValuesCheck(nameof(VideoFile.Resolution), EntityConstants.AllowedVideoResolutions)));
+                    ConstraintHelper.CreateSqlAllowedValuesCheck(nameof(VideoFile.Resolution), EntityConstants.AllowedVideoResolutions)));
 
             typeBuilder.Property(vp => vp.VideoId)
                 .IsRequired();
