@@ -17,22 +17,19 @@ public class UpdateVideoProgressHandler : IRequestHandler<UpdateVideoProgressCom
     private readonly ILoggerService _logger;
     private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
-    private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
 
     public UpdateVideoProgressHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
         ICurrentUserService currentUserService,
-        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
-        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
+        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
         _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
-        _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
     public async Task<Result<VideoProgressResponseDto>> Handle(UpdateVideoProgressCommand request, CancellationToken cancellationToken)
@@ -54,29 +51,6 @@ public class UpdateVideoProgressHandler : IRequestHandler<UpdateVideoProgressCom
             _logger.LogError(request, errorMessage);
 
             return Result.Fail(errorMessage);
-        }
-
-        var courseOwnerUserId = await _repositoryWrapper.VideoProgressRepository.GetSingleOrDefaultProjectedAsync(
-            vp => vp.Video!.Section!.Course!.OwnerUserId,
-            vp => vp.Id == request.VideoProgressUpdateRequestDto.Id,
-            cancellationToken);
-
-        if (courseOwnerUserId != userId)
-        {
-            var logErrorMessage = _stringLocalizerNoPermissions[
-                nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateVideoProgressForUserWithId),
-                request.VideoProgressUpdateRequestDto.Id,
-                userId
-            ].Value;
-
-            _logger.LogError(request, logErrorMessage);
-
-            var responseErrorMessage = _stringLocalizerNoPermissions[
-                nameof(NoPermissionsSharedResource_en.NoPermissionsToUpdateVideoProgressForUser),
-                request.VideoProgressUpdateRequestDto.Id
-            ].Value;
-
-            return Result.Fail(responseErrorMessage);
         }
 
         _mapper.Map(request.VideoProgressUpdateRequestDto, existingVideoProgress);
