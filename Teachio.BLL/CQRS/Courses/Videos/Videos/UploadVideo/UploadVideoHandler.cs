@@ -1,6 +1,7 @@
 using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.DTOs.Courses.Videos.Videos.Response;
 using Teachio.BLL.Resources.SharedResource;
@@ -201,6 +202,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
 
             var video = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(
                 x => x.Id == request.VideoUploadRequestDto.VideoId,
+                include: q => q.Include(x => x.VideoProgress),
                 cancellationToken: cancellationToken);
 
             if (video is null)
@@ -242,6 +244,8 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
 
                 _repositoryWrapper.VideoFilesRepository.Update(existingVideoFileEntity);
             }
+
+            video.VideoProgress.PositionSeconds = 0;
 
             _repositoryWrapper.VideosRepository.Update(video);
             await _repositoryWrapper.SaveChangesAsync(cancellationToken);
