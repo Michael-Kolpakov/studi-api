@@ -78,6 +78,7 @@ public static class ApplicationServicesExtensions
         services.AddScoped<IGoogleDriveStorageService, GoogleDriveStorageService>();
         services.AddScoped<IVideoMetadataService, VideoMetadataService>();
         services.AddScoped<IThumbnailMetadataService, ThumbnailMetadataService>();
+        services.AddScoped<IAvatarMetadataService, AvatarMetadataService>();
     }
 
     private static void AddOptions(this IServiceCollection services, IConfiguration configuration)

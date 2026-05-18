@@ -2,6 +2,28 @@ namespace Teachio.BLL.Utils.Helpers;
 
 public static class StoragePathHelper
 {
+    #region Avatars
+
+    public static IReadOnlyList<string> BuildUserFolderSegments(string ownerUserEmail)
+    {
+        return new List<string>
+        {
+            "users",
+            ownerUserEmail
+        };
+    }
+
+    public static IReadOnlyList<string> BuildDefaultAvatarFolderSegments()
+    {
+        return new List<string>
+        {
+            "defaults",
+            "avatars"
+        };
+    }
+
+    #endregion
+
     #region Thumbnails
 
     public static IReadOnlyList<string> BuildDefaultThumbnailFolderSegments()
@@ -13,7 +35,7 @@ public static class StoragePathHelper
         };
     }
 
-    public static IReadOnlyList<string> BuildThumbnailFolderSegments(
+    public static IReadOnlyList<string> BuildCourseFolderSegments(
         string ownerUserEmail,
         string courseName)
     {
@@ -30,7 +52,7 @@ public static class StoragePathHelper
 
     #region Videos
 
-    public static IReadOnlyList<string> BuildVideoFolderSegments(
+    public static IReadOnlyList<string> BuildSectionFolderSegments(
         string ownerUserEmail,
         string courseName,
         string sectionName)

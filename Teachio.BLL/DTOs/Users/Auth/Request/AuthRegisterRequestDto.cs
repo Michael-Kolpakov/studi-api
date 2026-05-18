@@ -4,7 +4,7 @@ using Teachio.DAL.Utils.Constants;
 
 namespace Teachio.BLL.DTOs.Users.Auth.Request;
 
-public class AuthRegisterRequestDto : AppUserCreateUpdateRequestDto
+public class AuthRegisterRequestDto : AccountCreateUpdateRequestDto
 {
     [Required(ErrorMessage = "Required")]
     [EmailAddress(ErrorMessage = "Email")]

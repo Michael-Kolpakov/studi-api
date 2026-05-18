@@ -9,9 +9,9 @@ using Teachio.BLL.Utils.Constants;
 using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Repositories.Interfaces.Base;
 
-namespace Teachio.BLL.CQRS.Courses.Courses.StreamThumbnail;
+namespace Teachio.BLL.CQRS.Users.Account.StreamAvatar;
 
-public class StreamCourseThumbnailHandler : IRequestHandler<StreamCourseThumbnailQuery, Result<GoogleDriveStreamResult>>
+public class StreamAvatarHandler : IRequestHandler<StreamAvatarQuery, Result<GoogleDriveStreamResult>>
 {
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IGoogleDriveStorageService _googleDriveStorageService;
@@ -19,16 +19,16 @@ public class StreamCourseThumbnailHandler : IRequestHandler<StreamCourseThumbnai
     private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<GoogleDriveStorageSharedResource> _stringLocalizerGoogleDriveStorage;
-    private readonly IStringLocalizer<ThumbnailStreamSharedResource> _stringLocalizerThumbnailStream;
+    private readonly IStringLocalizer<AvatarStreamSharedResource> _stringLocalizerAvatarStream;
 
-    public StreamCourseThumbnailHandler(
+    public StreamAvatarHandler(
         IRepositoryWrapper repositoryWrapper,
         IGoogleDriveStorageService googleDriveStorageService,
         ILoggerService logger,
         ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
         IStringLocalizer<GoogleDriveStorageSharedResource> stringLocalizerGoogleDriveStorage,
-        IStringLocalizer<ThumbnailStreamSharedResource> stringLocalizerThumbnailStream)
+        IStringLocalizer<AvatarStreamSharedResource> stringLocalizerAvatarStream)
     {
         _repositoryWrapper = repositoryWrapper;
         _googleDriveStorageService = googleDriveStorageService;
@@ -36,35 +36,33 @@ public class StreamCourseThumbnailHandler : IRequestHandler<StreamCourseThumbnai
         _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerGoogleDriveStorage = stringLocalizerGoogleDriveStorage;
-        _stringLocalizerThumbnailStream = stringLocalizerThumbnailStream;
+        _stringLocalizerAvatarStream = stringLocalizerAvatarStream;
     }
 
-    public async Task<Result<GoogleDriveStreamResult>> Handle(StreamCourseThumbnailQuery request, CancellationToken cancellationToken)
+    public async Task<Result<GoogleDriveStreamResult>> Handle(StreamAvatarQuery request, CancellationToken cancellationToken)
     {
         var userId = _currentUserService.GetUserId();
         var rangeInfo = string.IsNullOrWhiteSpace(request.RangeHeader)
             ? string.Empty
             : $" with Range: {request.RangeHeader.Trim()}";
 
-        _logger.LogInformation(
-            $"Entered '{GetType().Name}' to stream course thumbnail for CourseId: {request.CourseId} by UserId: {userId}{rangeInfo}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to stream avatar for UserId: {userId}{rangeInfo}");
 
-        var streamContext = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultProjectedAsync(
-            x => new StreamThumbnailContext
+        var streamContext = await _repositoryWrapper.AppUsersRepository.GetSingleOrDefaultProjectedAsync(
+            x => new StreamAvatarContext
             {
-                ThumbnailName = x.ThumbnailFile == null ? null : x.ThumbnailFile.ThumbnailName,
-                ThumbnailContentType = x.ThumbnailFile == null ? null : x.ThumbnailFile.ContentType,
-                OwnerUserEmail = x.OwnerUser.Email,
-                CourseName = x.CourseName
+                AvatarName = x.AvatarFile == null ? null : x.AvatarFile.AvatarName,
+                AvatarContentType = x.AvatarFile == null ? null : x.AvatarFile.ContentType,
+                OwnerUserEmail = x.Email
             },
-            x => x.Id == request.CourseId,
+            x => x.Id == userId,
             cancellationToken);
 
         if (streamContext is null)
         {
             var errorMessage = _stringLocalizerCannotFind[
-                nameof(CannotFindSharedResource_en.CannotFindCourseById),
-                request.CourseId
+                nameof(CannotFindSharedResource_en.CannotFindUserById),
+                userId
             ].Value;
 
             _logger.LogError(request, errorMessage);
@@ -76,16 +74,15 @@ public class StreamCourseThumbnailHandler : IRequestHandler<StreamCourseThumbnai
             ? null
             : request.RangeHeader.Trim();
 
-        if (string.IsNullOrWhiteSpace(streamContext.ThumbnailName))
+        if (string.IsNullOrWhiteSpace(streamContext.AvatarName))
         {
-            return await StreamDefaultThumbnailAsync(normalizedRangeHeader, cancellationToken);
+            return await StreamDefaultAvatarAsync(normalizedRangeHeader, cancellationToken);
         }
 
-        if (string.IsNullOrWhiteSpace(streamContext.OwnerUserEmail)
-            || string.IsNullOrWhiteSpace(streamContext.CourseName))
+        if (string.IsNullOrWhiteSpace(streamContext.OwnerUserEmail))
         {
-            var errorMessage = _stringLocalizerThumbnailStream[
-                nameof(ThumbnailStreamSharedResource_en.ThumbnailFileNotAvailable)
+            var errorMessage = _stringLocalizerAvatarStream[
+                nameof(AvatarStreamSharedResource_en.AvatarFileNotAvailable)
             ].Value;
 
             _logger.LogError(request, errorMessage);
@@ -94,10 +91,8 @@ public class StreamCourseThumbnailHandler : IRequestHandler<StreamCourseThumbnai
         }
 
         var downloadResult = await _googleDriveStorageService.OpenReadFileByPathAsync(
-            StoragePathHelper.BuildThumbnailFolderSegments(
-                streamContext.OwnerUserEmail,
-                streamContext.CourseName),
-            streamContext.ThumbnailName,
+            StoragePathHelper.BuildUserFolderSegments(streamContext.OwnerUserEmail),
+            streamContext.AvatarName,
             normalizedRangeHeader,
             cancellationToken);
 
@@ -105,9 +100,9 @@ public class StreamCourseThumbnailHandler : IRequestHandler<StreamCourseThumbnai
         {
             var errorMessage = downloadResult.Errors[0].Message;
 
-            if (IsMissingThumbnailFileError(errorMessage, streamContext.ThumbnailName))
+            if (IsMissingAvatarFileError(errorMessage, streamContext.AvatarName))
             {
-                return await StreamDefaultThumbnailAsync(normalizedRangeHeader, cancellationToken);
+                return await StreamDefaultAvatarAsync(normalizedRangeHeader, cancellationToken);
             }
 
             _logger.LogError(request, errorMessage);
@@ -117,21 +112,21 @@ public class StreamCourseThumbnailHandler : IRequestHandler<StreamCourseThumbnai
 
         var streamResult = downloadResult.Value;
 
-        if (!string.IsNullOrWhiteSpace(streamContext.ThumbnailContentType))
+        if (!string.IsNullOrWhiteSpace(streamContext.AvatarContentType))
         {
-            streamResult.ContentType = streamContext.ThumbnailContentType;
+            streamResult.ContentType = streamContext.AvatarContentType;
         }
 
         return Result.Ok(streamResult);
     }
 
-    private async Task<Result<GoogleDriveStreamResult>> StreamDefaultThumbnailAsync(
+    private async Task<Result<GoogleDriveStreamResult>> StreamDefaultAvatarAsync(
         string? rangeHeader,
         CancellationToken cancellationToken)
     {
         var downloadResult = await _googleDriveStorageService.OpenReadFileByPathAsync(
-            StoragePathHelper.BuildDefaultThumbnailFolderSegments(),
-            HandlerConstants.DefaultThumbnailFileName,
+            StoragePathHelper.BuildDefaultAvatarFolderSegments(),
+            HandlerConstants.DefaultAvatarFileName,
             rangeHeader,
             cancellationToken);
 
@@ -144,12 +139,12 @@ public class StreamCourseThumbnailHandler : IRequestHandler<StreamCourseThumbnai
         }
 
         var streamResult = downloadResult.Value;
-        streamResult.ContentType = HandlerConstants.DefaultThumbnailContentType;
+        streamResult.ContentType = HandlerConstants.DefaultAvatarContentType;
 
         return Result.Ok(streamResult);
     }
 
-    private bool IsMissingThumbnailFileError(string errorMessage, string fileName)
+    private bool IsMissingAvatarFileError(string errorMessage, string fileName)
     {
         var expectedErrorMessage = _stringLocalizerGoogleDriveStorage[
             nameof(GoogleDriveStorageSharedResource_en.FileNotFoundByPath),
@@ -159,14 +154,12 @@ public class StreamCourseThumbnailHandler : IRequestHandler<StreamCourseThumbnai
         return string.Equals(errorMessage, expectedErrorMessage, StringComparison.Ordinal);
     }
 
-    private sealed class StreamThumbnailContext
+    private sealed class StreamAvatarContext
     {
-        public string? ThumbnailName { get; set; }
+        public string? AvatarName { get; set; }
 
-        public string? ThumbnailContentType { get; set; }
+        public string? AvatarContentType { get; set; }
 
         public string? OwnerUserEmail { get; set; }
-
-        public string? CourseName { get; set; }
     }
 }

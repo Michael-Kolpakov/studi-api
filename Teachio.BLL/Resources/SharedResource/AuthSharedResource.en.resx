@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="UserWithEmailAlreadyExists" xml:space="preserve">
+        <value>User with email '{0}' already exists</value>
+    </data>
+    <data name="InvalidCredentials" xml:space="preserve">
+        <value>Invalid email or password</value>
+    </data>
+    <data name="RefreshTokenMissing" xml:space="preserve">
+        <value>Refresh token is missing</value>
+    </data>
+    <data name="RefreshTokenInvalid" xml:space="preserve">
+        <value>Refresh token is invalid</value>
+    </data>
+    <data name="RefreshTokenExpired" xml:space="preserve">
+        <value>Refresh token has expired</value>
+    </data>
+    <data name="RefreshTokenRevoked" xml:space="preserve">
+        <value>Refresh token has been revoked</value>
+    </data>
+    <data name="TokenIssueFailed" xml:space="preserve">
+        <value>Failed to issue authentication tokens</value>
+    </data>
+    <data name="UserRegistrationFailed" xml:space="preserve">
+        <value>Failed to register user</value>
+    </data>
+    <data name="UserUpdateFailed" xml:space="preserve">
+        <value>Failed to update user</value>
+    </data>
+    <data name="UserDeleteFailed" xml:space="preserve">
+        <value>Failed to delete user</value>
+    </data>
+    <data name="PasswordChangeRequiresBoth" xml:space="preserve">
+        <value>Current and new passwords must be provided to change password</value>
+    </data>
+    <data name="CurrentPasswordInvalid" xml:space="preserve">
+        <value>Current password is incorrect</value>
+    </data>
+    <data name="PasswordChangeFailed" xml:space="preserve">
+        <value>Failed to change password</value>
+    </data>
+</root>
