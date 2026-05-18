@@ -33,7 +33,4 @@
     <data name="UploadAvatarRollbackFailed" xml:space="preserve">
         <value>Failed to rollback uploaded Google Drive file with Id '{0}': {1}.</value>
     </data>
-    <data name="AvatarOwnerEmailMissing" xml:space="preserve">
-        <value>Avatar owner email is not available.</value>
-    </data>
 </root>

@@ -73,7 +73,9 @@ public class UploadAvatarHandler : IRequestHandler<UploadAvatarCommand, Result<A
             x => new UploadAvatarContext
             {
                 AppUserId = x.Id,
-                OwnerUserEmail = x.Email,
+                Name = x.Name,
+                Surname = x.Surname,
+                OwnerUserEmail = x.Email!,
                 ExistingAvatarName = x.AvatarFile == null
                     ? null
                     : x.AvatarFile.AvatarName
@@ -86,17 +88,6 @@ public class UploadAvatarHandler : IRequestHandler<UploadAvatarCommand, Result<A
             var errorMessage = _stringLocalizerCannotFind[
                 nameof(CannotFindSharedResource_en.CannotFindUserById),
                 userId
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
-        if (string.IsNullOrWhiteSpace(uploadAvatarContext.OwnerUserEmail))
-        {
-            var errorMessage = _stringLocalizerAvatarUpload[
-                nameof(AvatarUploadSharedResource_en.AvatarOwnerEmailMissing)
             ].Value;
 
             _logger.LogError(request, errorMessage);
@@ -124,7 +115,9 @@ public class UploadAvatarHandler : IRequestHandler<UploadAvatarCommand, Result<A
                 return Result.Fail(errorMessage);
             }
 
-            var avatarName = $"avatar.{metadataResult.Value.FileExtension}";
+            var namePart = uploadAvatarContext.Name.ToLowerInvariant();
+            var surnamePart = uploadAvatarContext.Surname.ToLowerInvariant();
+            var avatarName = $"{namePart}-{surnamePart}.{metadataResult.Value.FileExtension}";
 
             if (avatarName.Length > EntityConstants.MaxAvatarFileNameLength)
             {
@@ -310,7 +303,11 @@ public class UploadAvatarHandler : IRequestHandler<UploadAvatarCommand, Result<A
     {
         public Guid AppUserId { get; set; }
 
-        public string? OwnerUserEmail { get; set; }
+        public string Name { get; set; } = null!;
+
+        public string Surname { get; set; } = null!;
+
+        public string OwnerUserEmail { get; set; } = null!;
 
         public string? ExistingAvatarName { get; set; }
     }

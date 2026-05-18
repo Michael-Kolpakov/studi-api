@@ -74,11 +74,5 @@ namespace Teachio.BLL.Resources.SharedResource {
                 return ResourceManager.GetString("UploadAvatarRollbackFailed", resourceCulture);
             }
         }
-
-        internal static string AvatarOwnerEmailMissing {
-            get {
-                return ResourceManager.GetString("AvatarOwnerEmailMissing", resourceCulture);
-            }
-        }
     }
 }
