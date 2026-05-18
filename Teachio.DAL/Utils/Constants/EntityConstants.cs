@@ -10,6 +10,8 @@ public static class EntityConstants
 
     public const long MaxThumbnailFileSizeBytes = 10L * 1024 * 1024; // 10 MB
 
+    public const long MaxAvatarFileSizeBytes = 10L * 1024 * 1024; // 10 MB
+
     public const int MaxVideoTitleLength = 60;
 
     public const int MaxCourseTitleLength = 60;
@@ -34,13 +36,29 @@ public static class EntityConstants
 
     public const int MaxThumbnailHeight = 1440;
 
+    public const int MinAvatarWidth = 480;
+
+    public const int MaxAvatarWidth = 1440;
+
+    public const int MinAvatarHeight = 480;
+
+    public const int MaxAvatarHeight = 1440;
+
     public const int ThumbnailAspectRatioWidth = 16;
 
     public const int ThumbnailAspectRatioHeight = 9;
 
+    public const int AvatarAspectRatioWidth = 1;
+
+    public const int AvatarAspectRatioHeight = 1;
+
     public const int MaxThumbnailFileNameLength = 110;
 
     public const int MaxThumbnailResolutionLength = 9;
+
+    public const int MaxAvatarFileNameLength = 110;
+
+    public const int MaxAvatarResolutionLength = 9;
 
     public const int MaxMediaContentTypeLength = 20;
 
@@ -53,6 +71,14 @@ public static class EntityConstants
     public const int MaxUserNameLength = 20;
 
     public const int MaxUserSurnameLength = 30;
+
+    public const int MaxUserEmailLength = 256;
+
+    public const int MinUserPasswordLength = 6;
+
+    public const int MaxUserPasswordLength = 22;
+
+    public const int MaxRefreshTokenHashLength = 128;
 
     #endregion
 
@@ -70,7 +96,9 @@ public static class EntityConstants
 
     public const string DescriptionRegexPattern = @"^[A-Za-z0-9 ,.!?%$#""':&()+=*/-–]+$";
 
-    public const string NameRegexPattern = "^[A-Za-z0-9,!?-]+$";
+    public const string EntityNameRegexPattern = "^[A-Za-z0-9,!?-]+$";
+
+    public const string UserNameRegexPattern = "^[A-Za-z' ]+$";
 
     public const string MediaNameRegexPattern = "^[A-Za-z0-9.,!?-]+$";
 
@@ -79,6 +107,12 @@ public static class EntityConstants
     #region AllowedValues
 
     public static readonly string[] AllowedThumbnailContentTypes =
+    [
+        "image/jpeg",
+        "image/png"
+    ];
+
+    public static readonly string[] AllowedAvatarContentTypes =
     [
         "image/jpeg",
         "image/png"

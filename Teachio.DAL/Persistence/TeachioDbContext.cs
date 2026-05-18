@@ -9,7 +9,8 @@ using Teachio.DAL.Entities.Courses.Videos.VideoFiles;
 using Teachio.DAL.Entities.Courses.Videos.VideoProgress;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Entities.Shared;
-using Teachio.DAL.Entities.Users;
+using Teachio.DAL.Entities.Users.AvatarFiles;
+using Teachio.DAL.Entities.Users.Users;
 
 namespace Teachio.DAL.Persistence;
 
@@ -42,6 +43,8 @@ public class TeachioDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, G
 
     public DbSet<AppUser> AppUsers { get; set; } = null!;
 
+    public DbSet<AvatarFile> AvatarFiles { get; set; } = null!;
+
     public DbSet<UserCourse> UserCourses { get; set; } = null!;
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -71,6 +74,7 @@ public class TeachioDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, G
         builder.ConfigureVideoFiles();
         builder.ConfigureVideoProgress();
         builder.ConfigureAppUsers();
+        builder.ConfigureAvatarFiles();
     }
 
     private void EnsureVideoProgressDeletionInvariant()

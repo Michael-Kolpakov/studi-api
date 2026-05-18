@@ -24,6 +24,15 @@
     <data name="Length" xml:space="preserve">
         <value>The '{0}' field must be no longer than {1} characters</value>
     </data>
+    <data name="LengthRange" xml:space="preserve">
+        <value>The '{0}' field must be between {2} and {1} characters</value>
+    </data>
+    <data name="MinLength" xml:space="preserve">
+        <value>The '{0}' field must be at least {1} characters</value>
+    </data>
+    <data name="Email" xml:space="preserve">
+        <value>The '{0}' field is not a valid email address</value>
+    </data>
     <data name="Range" xml:space="preserve">
         <value>The '{0}' field must be between {1} and {2}</value>
     </data>

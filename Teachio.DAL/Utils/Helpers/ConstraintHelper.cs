@@ -12,7 +12,8 @@ public static class ConstraintHelper
         {
             ValidationRule.Title => ConvertRegexToSqlLike(EntityConstants.TitleRegexPattern),
             ValidationRule.Description => ConvertRegexToSqlLike(EntityConstants.DescriptionRegexPattern),
-            ValidationRule.Name => ConvertRegexToSqlLike(EntityConstants.NameRegexPattern),
+            ValidationRule.EntityName => ConvertRegexToSqlLike(EntityConstants.EntityNameRegexPattern),
+            ValidationRule.UserName => ConvertRegexToSqlLike(EntityConstants.UserNameRegexPattern),
             ValidationRule.MediaName => ConvertRegexToSqlLike(EntityConstants.MediaNameRegexPattern),
             _ => throw new ArgumentOutOfRangeException(nameof(rule), rule, null)
         };
@@ -188,7 +189,8 @@ public enum ValidationRule
 {
     Title,
     Description,
-    Name,
+    EntityName,
+    UserName,
     MediaName
 }
 

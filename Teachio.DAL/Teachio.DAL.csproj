@@ -36,6 +36,9 @@
       <None Update="Persistence\Seed\Content\AppUser.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="Persistence\Seed\Content\AvatarFile.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
       <None Update="Persistence\Seed\Content\Course.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>

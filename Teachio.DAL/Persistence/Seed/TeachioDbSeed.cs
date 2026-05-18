@@ -9,7 +9,8 @@ using Teachio.DAL.Entities.Courses.Videos.VideoFiles;
 using Teachio.DAL.Entities.Courses.Videos.VideoProgress;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Entities.Shared;
-using Teachio.DAL.Entities.Users;
+using Teachio.DAL.Entities.Users.AvatarFiles;
+using Teachio.DAL.Entities.Users.Users;
 
 namespace Teachio.DAL.Persistence.Seed;
 
@@ -35,6 +36,7 @@ public static class TeachioDbSeed
         logger.Information("Starting database seeding...");
 
         await SeedEntityAsync(dbContext, dbContext.AppUsers, nameof(AppUser), logger, cancellationToken);
+        await SeedEntityAsync(dbContext, dbContext.AvatarFiles, nameof(AvatarFile), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.Courses, nameof(Course), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.UserCourses, nameof(UserCourse), logger, cancellationToken);
         await SeedEntityAsync(dbContext, dbContext.ThumbnailFiles, nameof(ThumbnailFile), logger, cancellationToken);
