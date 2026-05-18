@@ -88,7 +88,7 @@ public class StreamVideoHandler : IRequestHandler<StreamVideoQuery, Result<Googl
             : request.RangeHeader.Trim();
 
         var downloadResult = await _googleDriveStorageService.OpenReadFileByPathAsync(
-            StoragePathHelper.BuildVideoFolderSegments(
+            StoragePathHelper.BuildSectionFolderSegments(
                 streamContext.OwnerUserEmail,
                 streamContext.CourseName,
                 streamContext.SectionName),

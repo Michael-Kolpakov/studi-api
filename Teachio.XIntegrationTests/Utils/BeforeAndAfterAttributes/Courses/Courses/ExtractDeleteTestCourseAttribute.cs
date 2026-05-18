@@ -1,6 +1,6 @@
 using System.Reflection;
 using Teachio.DAL.Entities.Courses.Courses;
-using Teachio.DAL.Entities.Users;
+using Teachio.DAL.Entities.Users.Users;
 using Teachio.XIntegrationTests.ControllerTests;
 using Teachio.XIntegrationTests.Utils.Extractors;
 using Xunit.Sdk;

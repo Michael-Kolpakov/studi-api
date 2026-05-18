@@ -123,7 +123,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
         CancellationToken cancellationToken)
     {
         var courseFolderDeletionResult = await _googleDriveStorageService.DeleteFolderByPathAsync(
-            StoragePathHelper.BuildThumbnailFolderSegments(ownerUserEmail, course.CourseName),
+            StoragePathHelper.BuildCourseFolderSegments(ownerUserEmail, course.CourseName),
             cancellationToken);
 
         if (courseFolderDeletionResult.IsFailed)

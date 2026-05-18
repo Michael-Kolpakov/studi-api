@@ -1,4 +1,4 @@
-using Teachio.DAL.Entities.Users;
+using Teachio.DAL.Entities.Users.Users;
 
 namespace Teachio.XIntegrationTests.Utils.Extractors;
 

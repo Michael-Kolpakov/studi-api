@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.CQRS.Courses.Sections.Create;
 using Teachio.BLL.CQRS.Courses.Sections.Delete;
 using Teachio.BLL.CQRS.Courses.Sections.GetById;
@@ -10,6 +11,7 @@ using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Sections;
 
+[Authorize]
 public class SectionsController : BaseApiController
 {
     /// <summary>

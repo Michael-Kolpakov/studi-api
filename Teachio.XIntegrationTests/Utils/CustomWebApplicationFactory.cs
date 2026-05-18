@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Teachio.BLL.Models.Email.Base;
 using Teachio.BLL.Services.Interfaces;
-using Teachio.DAL.Entities.Users;
+using Teachio.DAL.Entities.Users.Users;
 using Teachio.DAL.Persistence;
 using Teachio.DAL.Utils.Constants;
 using Teachio.DAL.Utils.Database;

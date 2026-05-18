@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.Create;
@@ -15,6 +16,7 @@ using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Videos.Videos;
 
+[Authorize]
 public class VideosController : BaseApiController
 {
     /// <summary>

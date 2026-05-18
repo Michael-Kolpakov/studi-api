@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.CQRS.Courses.Videos.VideoProgress.Update;
 using Teachio.BLL.DTOs.Courses.Videos.VideoProgress.Request.Update;
@@ -6,6 +7,7 @@ using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Videos.VideoProgress;
 
+[Authorize]
 public class VideoProgressController : BaseApiController
 {
     /// <summary>

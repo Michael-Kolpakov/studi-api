@@ -139,7 +139,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
         CancellationToken cancellationToken)
     {
         var sectionFolderDeletionResult = await _googleDriveStorageService.DeleteFolderByPathAsync(
-            StoragePathHelper.BuildVideoFolderSegments(
+            StoragePathHelper.BuildSectionFolderSegments(
                 ownerUserEmail,
                 section.Course!.CourseName,
                 section.SectionName),

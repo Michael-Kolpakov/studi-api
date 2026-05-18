@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Teachio.BLL.CQRS.Courses.Courses.Create;
 using Teachio.BLL.CQRS.Courses.Courses.Delete;
@@ -16,6 +17,7 @@ using Teachio.WebApi.Utils.RelativeRoutes;
 
 namespace Teachio.WebApi.Controllers.Courses.Courses;
 
+[Authorize]
 public class CoursesController : BaseApiController
 {
     /// <summary>
@@ -29,6 +31,7 @@ public class CoursesController : BaseApiController
     /// <param name="mode">The data mode for pagination.</param>
     /// <returns>Returns a paginated list of the courses.</returns>
     [HttpGet(CoursesRelativeRoutes.GetPaginated)]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedCoursesResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetPaginated(
@@ -54,6 +57,7 @@ public class CoursesController : BaseApiController
     /// <param name="id">The unique identifier of the course to retrieve.</param>
     /// <returns>Returns a preview of the corresponding course.</returns>
     [HttpGet(CoursesRelativeRoutes.GetByIdPreview)]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CoursePreviewResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -90,7 +94,7 @@ public class CoursesController : BaseApiController
     public async Task<IActionResult> StreamThumbnail([FromRoute] Guid id)
     {
         var rangeHeader = Request.Headers.Range.ToString();
-        var result = await Mediator.Send(new StreamCourseThumbnailQuery(id, rangeHeader));
+        var result = await Mediator.Send(new StreamThumbnailQuery(id, rangeHeader));
 
         if (result.IsFailed)
         {
