@@ -38,7 +38,7 @@ public static class SectionConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Section)}_{nameof(Section.SectionName)}_{nameof(CheckConstraintType.Regex)}",
-                    ConstraintHelper.CreateSqlRegexCheck(nameof(Section.SectionName), ValidationRule.Name)));
+                    ConstraintHelper.CreateSqlRegexCheck(nameof(Section.SectionName), ValidationRule.EntityName)));
 
             typeBuilder.Property(s => s.OrderIndex)
                 .IsRequired();

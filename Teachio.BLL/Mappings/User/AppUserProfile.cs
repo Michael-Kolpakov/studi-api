@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Teachio.BLL.DTOs.Users.Account.Request.Create;
 using Teachio.BLL.DTOs.Users.Account.Request.Update;
 using Teachio.BLL.DTOs.Users.Account.Response;
 using Teachio.BLL.DTOs.Users.Auth.Request;
@@ -11,10 +10,6 @@ public class AppUserProfile : Profile
 {
     public AppUserProfile()
     {
-        CreateMap<AppUserCreateRequestDto, AppUserEntity>();
-
-        CreateMap<AppUserUpdateRequestDto, AppUserEntity>();
-
         CreateMap<AuthRegisterRequestDto, AppUserEntity>();
 
         CreateMap<AccountUpdateRequestDto, AppUserEntity>();

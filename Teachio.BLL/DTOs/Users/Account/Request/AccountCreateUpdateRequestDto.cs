@@ -3,7 +3,7 @@ using Teachio.DAL.Utils.Constants;
 
 namespace Teachio.BLL.DTOs.Users.Account.Request;
 
-public abstract class AppUserCreateUpdateRequestDto
+public abstract class AccountCreateUpdateRequestDto
 {
     [Required(ErrorMessage = "Required")]
     [StringLength(EntityConstants.MaxUserNameLength, ErrorMessage = "Length")]

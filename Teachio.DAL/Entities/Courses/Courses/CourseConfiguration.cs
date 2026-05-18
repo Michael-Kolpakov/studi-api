@@ -2,7 +2,7 @@
 using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Entities.Courses.ThumbnailFiles;
 using Teachio.DAL.Entities.Shared;
-using Teachio.DAL.Entities.Users;
+using Teachio.DAL.Entities.Users.Users;
 using Teachio.DAL.Utils.Constants;
 using Teachio.DAL.Utils.Helpers;
 
@@ -45,7 +45,7 @@ public static class CourseConfiguration
             typeBuilder.ToTable(t =>
                 t.HasCheckConstraint(
                     $"CK_{nameof(Course)}_{nameof(Course.CourseName)}_{nameof(CheckConstraintType.Regex)}",
-                    ConstraintHelper.CreateSqlRegexCheck(nameof(Course.CourseName), ValidationRule.Name)));
+                    ConstraintHelper.CreateSqlRegexCheck(nameof(Course.CourseName), ValidationRule.EntityName)));
 
             typeBuilder.Property(s => s.SectionsCount)
                 .IsRequired()

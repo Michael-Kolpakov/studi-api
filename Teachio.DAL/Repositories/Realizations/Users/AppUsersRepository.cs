@@ -1,4 +1,4 @@
-﻿using Teachio.DAL.Entities.Users;
+﻿using Teachio.DAL.Entities.Users.Users;
 using Teachio.DAL.Persistence;
 using Teachio.DAL.Repositories.Interfaces.Users;
 using Teachio.DAL.Repositories.Realizations.Base;

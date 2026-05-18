@@ -1,6 +1,6 @@
 ﻿using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Entities.Courses.ThumbnailFiles;
-using Teachio.DAL.Entities.Users;
+using Teachio.DAL.Entities.Users.Users;
 
 namespace Teachio.DAL.Entities.Courses.Courses;
 
