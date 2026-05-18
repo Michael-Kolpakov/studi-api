@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
+using Teachio.BLL.Models.Auth;
 using Teachio.BLL.Models.Media;
 using Teachio.BLL.Models.Storage;
 using Teachio.BLL.Services.Interfaces;
@@ -37,6 +38,7 @@ public static class ApplicationServicesExtensions
                 factory.Create(typeof(DataAnnotationsSharedResource));
         });
         services.AddCustomDbContext(configuration);
+        services.AddAuthenticationServices(configuration);
         services.AddSwagger();
         services.AddSerilogLogging();
         services.AddOptions(configuration);
@@ -70,6 +72,9 @@ public static class ApplicationServicesExtensions
         services.AddScoped<ILoggerService, LoggerService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IEntityExistenceService, EntityExistenceService>();
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+        services.AddScoped<IAuthTokenIssuer, AuthTokenIssuer>();
         services.AddScoped<IGoogleDriveStorageService, GoogleDriveStorageService>();
         services.AddScoped<IVideoMetadataService, VideoMetadataService>();
         services.AddScoped<IThumbnailMetadataService, ThumbnailMetadataService>();
@@ -82,6 +87,9 @@ public static class ApplicationServicesExtensions
 
         services.Configure<FfprobeOptions>(
             configuration.GetSection(FfprobeOptions.SectionName));
+
+        services.Configure<JwtOptions>(
+            configuration.GetSection(JwtOptions.SectionName));
     }
 
     private static void AddRepositoryServices(this IServiceCollection services)

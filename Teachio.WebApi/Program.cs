@@ -37,6 +37,8 @@ public class Program
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseCors();
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.UseCustomSwagger();
         app.MapControllers();
 

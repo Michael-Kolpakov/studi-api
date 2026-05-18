@@ -20,6 +20,27 @@ public static class SwaggerExtensions
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
             options.IncludeXmlComments(xmlPath);
+
+            var jwtSecurityScheme = new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "JWT Authorization header using the Bearer scheme.",
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            };
+
+            options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                { jwtSecurityScheme, Array.Empty<string>() }
+            });
         });
 
         return services;

@@ -1,6 +1,6 @@
-﻿using Teachio.BLL.DTOs.Courses.Courses.Response;
+using Teachio.BLL.DTOs.Courses.Courses.Response;
 
-namespace Teachio.BLL.DTOs.Users.Response;
+namespace Teachio.BLL.DTOs.Users.Account.Response;
 
 public class AppUserResponseDto
 {
@@ -9,6 +9,8 @@ public class AppUserResponseDto
     public string? Name { get; set; }
 
     public string? Surname { get; set; }
+
+    public string? Email { get; set; }
 
     public List<CourseResponseDto> OwnedCourses { get; set; } = new List<CourseResponseDto>();
 

@@ -41,4 +41,24 @@ public class BaseApiController : ControllerBase
             }
         ));
     }
+
+    protected ActionResult HandleResult(Result result)
+    {
+        if (result.IsSuccess)
+        {
+            return Ok();
+        }
+
+        if (result.HasError(error => error.Message == "Unauthorized"))
+        {
+            return Unauthorized();
+        }
+
+        return BadRequest(result.Errors.Select(x =>
+            new ErrorDto()
+            {
+                Message = x.Message
+            }
+        ));
+    }
 }

@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Teachio.DAL.Utils.Constants;
 
-namespace Teachio.BLL.DTOs.Users.Request;
+namespace Teachio.BLL.DTOs.Users.Account.Request;
 
 public abstract class AppUserCreateUpdateRequestDto
 {
