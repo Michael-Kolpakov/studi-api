@@ -159,6 +159,51 @@ namespace Teachio.BLL.Resources.SharedResource {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Registration PIN has expired.
+        /// </summary>
+        internal static string RegistrationPinExpired {
+            get {
+                return ResourceManager.GetString("RegistrationPinExpired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Registration PIN is invalid.
+        /// </summary>
+        internal static string RegistrationPinInvalid {
+            get {
+                return ResourceManager.GetString("RegistrationPinInvalid", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Registration PIN request was not found.
+        /// </summary>
+        internal static string RegistrationPinNotFound {
+            get {
+                return ResourceManager.GetString("RegistrationPinNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Please wait before requesting a new PIN.
+        /// </summary>
+        internal static string RegistrationPinResendTooSoon {
+            get {
+                return ResourceManager.GetString("RegistrationPinResendTooSoon", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to send registration PIN email.
+        /// </summary>
+        internal static string RegistrationPinSendFailed {
+            get {
+                return ResourceManager.GetString("RegistrationPinSendFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Failed to update user.
         /// </summary>
         internal static string UserUpdateFailed {

@@ -42,6 +42,21 @@
     <data name="UserRegistrationFailed" xml:space="preserve">
         <value>Failed to register user</value>
     </data>
+    <data name="RegistrationPinSendFailed" xml:space="preserve">
+        <value>Failed to send registration PIN email</value>
+    </data>
+    <data name="RegistrationPinResendTooSoon" xml:space="preserve">
+        <value>Please wait before requesting a new PIN</value>
+    </data>
+    <data name="RegistrationPinNotFound" xml:space="preserve">
+        <value>Registration PIN request was not found</value>
+    </data>
+    <data name="RegistrationPinExpired" xml:space="preserve">
+        <value>Registration PIN has expired</value>
+    </data>
+    <data name="RegistrationPinInvalid" xml:space="preserve">
+        <value>Registration PIN is invalid</value>
+    </data>
     <data name="UserUpdateFailed" xml:space="preserve">
         <value>Failed to update user</value>
     </data>
