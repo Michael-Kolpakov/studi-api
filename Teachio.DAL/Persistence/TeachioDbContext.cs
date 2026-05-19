@@ -10,6 +10,7 @@ using Teachio.DAL.Entities.Courses.Videos.VideoProgress;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Entities.Shared;
 using Teachio.DAL.Entities.Users.AvatarFiles;
+using Teachio.DAL.Entities.Users.PendingRegistrations;
 using Teachio.DAL.Entities.Users.Users;
 
 namespace Teachio.DAL.Persistence;
@@ -47,6 +48,8 @@ public class TeachioDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, G
 
     public DbSet<UserCourse> UserCourses { get; set; } = null!;
 
+    public DbSet<PendingRegistration> PendingRegistrations { get; set; } = null!;
+
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
         ApplyAuditTimestamps();
@@ -75,6 +78,7 @@ public class TeachioDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, G
         builder.ConfigureVideoProgress();
         builder.ConfigureAppUsers();
         builder.ConfigureAvatarFiles();
+        builder.ConfigurePendingRegistrations();
     }
 
     private void EnsureVideoProgressDeletionInvariant()

@@ -6,16 +6,18 @@ using Teachio.DAL.Repositories.Interfaces.Courses.ThumbnailFiles;
 using Teachio.DAL.Repositories.Interfaces.Courses.Videos.VideoFiles;
 using Teachio.DAL.Repositories.Interfaces.Courses.Videos.VideoProgress;
 using Teachio.DAL.Repositories.Interfaces.Courses.Videos.Videos;
-using Teachio.DAL.Repositories.Interfaces.Users;
 using Teachio.DAL.Repositories.Interfaces.Users.AvatarFiles;
+using Teachio.DAL.Repositories.Interfaces.Users.PendingRegistrations;
+using Teachio.DAL.Repositories.Interfaces.Users.Users;
 using Teachio.DAL.Repositories.Realizations.Courses.Courses;
 using Teachio.DAL.Repositories.Realizations.Courses.Sections;
 using Teachio.DAL.Repositories.Realizations.Courses.ThumbnailFiles;
 using Teachio.DAL.Repositories.Realizations.Courses.Videos.VideoFiles;
 using Teachio.DAL.Repositories.Realizations.Courses.Videos.VideoProgress;
 using Teachio.DAL.Repositories.Realizations.Courses.Videos.Videos;
-using Teachio.DAL.Repositories.Realizations.Users;
 using Teachio.DAL.Repositories.Realizations.Users.AvatarFiles;
+using Teachio.DAL.Repositories.Realizations.Users.PendingRegistrations;
+using Teachio.DAL.Repositories.Realizations.Users.Users;
 
 namespace Teachio.DAL.Repositories.Realizations.Base;
 
@@ -38,6 +40,8 @@ public class RepositoryWrapper : IRepositoryWrapper
     private IAppUsersRepository? _appUsersRepository;
 
     private IAvatarFilesRepository? _avatarFilesRepository;
+
+    private IPendingRegistrationsRepository? _pendingRegistrationsRepository;
 
     public RepositoryWrapper(TeachioDbContext dbContext)
     {
@@ -67,6 +71,9 @@ public class RepositoryWrapper : IRepositoryWrapper
 
     public IAvatarFilesRepository AvatarFilesRepository
         => _avatarFilesRepository ??= new AvatarFilesRepository(_dbContext);
+
+    public IPendingRegistrationsRepository PendingRegistrationsRepository
+        => _pendingRegistrationsRepository ??= new PendingRegistrationsRepository(_dbContext);
 
     public int SaveChanges()
     {

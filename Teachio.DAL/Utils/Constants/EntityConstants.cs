@@ -80,6 +80,10 @@ public static class EntityConstants
 
     public const int MaxRefreshTokenHashLength = 128;
 
+    public const int MaxPasswordHashLength = 512;
+
+    public const int MaxVerificationPinHashLength = 128;
+
     #endregion
 
     #region Defaults

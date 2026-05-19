@@ -4,8 +4,9 @@ using Teachio.DAL.Repositories.Interfaces.Courses.ThumbnailFiles;
 using Teachio.DAL.Repositories.Interfaces.Courses.Videos.VideoFiles;
 using Teachio.DAL.Repositories.Interfaces.Courses.Videos.VideoProgress;
 using Teachio.DAL.Repositories.Interfaces.Courses.Videos.Videos;
-using Teachio.DAL.Repositories.Interfaces.Users;
 using Teachio.DAL.Repositories.Interfaces.Users.AvatarFiles;
+using Teachio.DAL.Repositories.Interfaces.Users.PendingRegistrations;
+using Teachio.DAL.Repositories.Interfaces.Users.Users;
 
 namespace Teachio.DAL.Repositories.Interfaces.Base;
 
@@ -26,6 +27,8 @@ public interface IRepositoryWrapper
     IAppUsersRepository AppUsersRepository { get; }
 
     IAvatarFilesRepository AvatarFilesRepository { get; }
+
+    IPendingRegistrationsRepository PendingRegistrationsRepository { get; }
 
     int SaveChanges();
 
