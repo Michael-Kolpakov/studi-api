@@ -4,6 +4,7 @@ using Teachio.BLL.CQRS.Users.Auth.Login;
 using Teachio.BLL.CQRS.Users.Auth.Logout;
 using Teachio.BLL.CQRS.Users.Auth.Refresh;
 using Teachio.BLL.CQRS.Users.Auth.Register;
+using Teachio.BLL.CQRS.Users.Auth.VerifyPin;
 using Teachio.BLL.DTOs.Users.Auth.Request;
 using Teachio.BLL.DTOs.Users.Auth.Response;
 using Teachio.WebApi.Utils.Constants;
@@ -14,17 +15,38 @@ namespace Teachio.WebApi.Controllers.Users;
 public class AuthController : BaseApiController
 {
     /// <summary>
-    /// Registers a new user and returns access token details.
+    /// Sends a registration PIN code to the user's email.
     /// </summary>
     /// <param name="authRegisterRequestDto">The registration data.</param>
-    /// <returns>Returns access token details.</returns>
+    /// <returns>Returns registration PIN details.</returns>
     [HttpPost(AuthRelativeRoutes.Register)]
     [AllowAnonymous]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthTokensResponseDto))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RegistrationPinResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] AuthRegisterRequestDto authRegisterRequestDto)
     {
         var result = await Mediator.Send(new RegisterCommand(authRegisterRequestDto));
+
+        if (result.IsFailed)
+        {
+            return HandleResult(result);
+        }
+
+        return Ok(result.Value);
+    }
+
+    /// <summary>
+    /// Verifies a registration PIN code and issues access tokens.
+    /// </summary>
+    /// <param name="verifyRegistrationPinRequestDto">The PIN verification data.</param>
+    /// <returns>Returns access token details.</returns>
+    [HttpPost(AuthRelativeRoutes.VerifyPin)]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthTokensResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> VerifyPin([FromBody] VerifyRegistrationPinRequestDto verifyRegistrationPinRequestDto)
+    {
+        var result = await Mediator.Send(new VerifyRegistrationPinCommand(verifyRegistrationPinRequestDto));
 
         if (result.IsFailed)
         {

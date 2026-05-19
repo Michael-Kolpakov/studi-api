@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.Models.Auth;
+using Teachio.BLL.Models.Email;
 using Teachio.BLL.Models.Media;
 using Teachio.BLL.Models.Storage;
 using Teachio.BLL.Services.Interfaces;
@@ -75,6 +76,8 @@ public static class ApplicationServicesExtensions
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddScoped<IAuthTokenIssuer, AuthTokenIssuer>();
+        services.AddScoped<IPinCodeService, PinCodeService>();
+        services.AddScoped<IEmailService, SmtpEmailService>();
         services.AddScoped<IGoogleDriveStorageService, GoogleDriveStorageService>();
         services.AddScoped<IVideoMetadataService, VideoMetadataService>();
         services.AddScoped<IThumbnailMetadataService, ThumbnailMetadataService>();
@@ -91,6 +94,12 @@ public static class ApplicationServicesExtensions
 
         services.Configure<JwtOptions>(
             configuration.GetSection(JwtOptions.SectionName));
+
+        services.Configure<SmtpOptions>(
+            configuration.GetSection(SmtpOptions.SectionName));
+
+        services.Configure<EmailVerificationOptions>(
+            configuration.GetSection(EmailVerificationOptions.SectionName));
     }
 
     private static void AddRepositoryServices(this IServiceCollection services)
