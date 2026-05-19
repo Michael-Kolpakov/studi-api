@@ -6,4 +6,4 @@ using Teachio.BLL.DTOs.Users.Auth.Response;
 namespace Teachio.BLL.CQRS.Users.Auth.Register;
 
 public record RegisterCommand(AuthRegisterRequestDto AuthRegisterRequestDto)
-    : IRequest<Result<AuthTokenPairDto>>;
+    : IRequest<Result<RegistrationPinResponseDto>>;
