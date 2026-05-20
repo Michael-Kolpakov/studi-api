@@ -36,14 +36,14 @@ public static class CourseFilterHelper
 
             if (excludeCoursesWithoutVideos)
             {
-                return course => course.OwnerUserId != userId
+                return course => !course.WatchingUsers.Any(user => user.Id == userId)
                     && EF.Functions.Like(
                         EF.Functions.Collate(course.Title, DatabaseConstants.CaseInsensitiveCollation),
                         likePattern)
                     && course.Sections.Any(s => s.VideosCount > 0);
             }
 
-            return course => course.OwnerUserId != userId
+            return course => !course.WatchingUsers.Any(user => user.Id == userId)
                 && EF.Functions.Like(
                     EF.Functions.Collate(course.Title, DatabaseConstants.CaseInsensitiveCollation),
                     likePattern);
@@ -62,10 +62,10 @@ public static class CourseFilterHelper
 
         if (excludeCoursesWithoutVideos)
         {
-            return course => course.OwnerUserId != userId
+            return course => !course.WatchingUsers.Any(user => user.Id == userId)
                 && course.Sections.Any(s => s.VideosCount > 0);
         }
 
-        return course => course.OwnerUserId != userId;
+        return course => !course.WatchingUsers.Any(user => user.Id == userId);
     }
 }
