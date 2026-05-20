@@ -8,6 +8,8 @@ public static class CoursesRelativeRoutes
 
     public const string GetById = "get-by-id/{id:guid}";
 
+    public const string Enroll = "enroll";
+
     public const string StreamThumbnail = "stream-thumbnail/{id:guid}";
 
     public const string Create = "create";

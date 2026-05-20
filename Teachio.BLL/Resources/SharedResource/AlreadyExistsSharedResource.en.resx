@@ -24,6 +24,12 @@
     <data name="CourseAlreadyExistsForUserWithId" xml:space="preserve">
         <value>User with Id '{1}' already has a course with name '{0}'</value>
     </data>
+    <data name="CourseAlreadyEnrolled" xml:space="preserve">
+        <value>User is already enrolled in course with Id '{0}'</value>
+    </data>
+    <data name="CourseAlreadyEnrolledForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' is already enrolled in course with Id '{0}'</value>
+    </data>
     <data name="SectionAlreadyExistsForCourse" xml:space="preserve">
         <value>Course with Id '{1}' already has a section (Id is '{0}') with order index '{2}'</value>
     </data>

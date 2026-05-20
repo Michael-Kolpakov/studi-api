@@ -44,7 +44,7 @@ namespace Teachio.BLL.Resources.SharedResource {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -58,7 +58,7 @@ namespace Teachio.BLL.Resources.SharedResource {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to User already has a course with name &apos;{0}&apos;.
         /// </summary>
@@ -67,7 +67,7 @@ namespace Teachio.BLL.Resources.SharedResource {
                 return ResourceManager.GetString("CourseAlreadyExistsForUser", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to User with Id &apos;{1}&apos; already has a course with name &apos;{0}&apos;.
         /// </summary>
@@ -76,7 +76,25 @@ namespace Teachio.BLL.Resources.SharedResource {
                 return ResourceManager.GetString("CourseAlreadyExistsForUserWithId", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to User is already enrolled in course with Id '{0}'.
+        /// </summary>
+        internal static string CourseAlreadyEnrolled {
+            get {
+                return ResourceManager.GetString("CourseAlreadyEnrolled", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to User with Id '{1}' is already enrolled in course with Id '{0}'.
+        /// </summary>
+        internal static string CourseAlreadyEnrolledForUserWithId {
+            get {
+                return ResourceManager.GetString("CourseAlreadyEnrolledForUserWithId", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Course with Id &apos;{1}&apos; already has a section (Id is &apos;{0}&apos;) with order index &apos;{2}&apos;.
         /// </summary>
@@ -85,7 +103,7 @@ namespace Teachio.BLL.Resources.SharedResource {
                 return ResourceManager.GetString("SectionAlreadyExistsForCourse", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Section with Id &apos;{1}&apos; already has a video (Id is &apos;{0}&apos;) with order index &apos;{2}&apos;.
         /// </summary>

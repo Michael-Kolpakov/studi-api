@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Teachio.BLL.CQRS.Courses.Courses.Create;
 using Teachio.BLL.CQRS.Courses.Courses.Delete;
+using Teachio.BLL.CQRS.Courses.Courses.Enroll;
 using Teachio.BLL.CQRS.Courses.Courses.GetById;
 using Teachio.BLL.CQRS.Courses.Courses.GetByIdPreview;
 using Teachio.BLL.CQRS.Courses.Courses.GetPaginated;
@@ -10,6 +11,7 @@ using Teachio.BLL.CQRS.Courses.Courses.StreamThumbnail;
 using Teachio.BLL.CQRS.Courses.Courses.Update;
 using Teachio.BLL.CQRS.Courses.Courses.UploadThumbnail;
 using Teachio.BLL.DTOs.Courses.Courses.Request.Create;
+using Teachio.BLL.DTOs.Courses.Courses.Request.Enroll;
 using Teachio.BLL.DTOs.Courses.Courses.Request.Update;
 using Teachio.BLL.DTOs.Courses.Courses.Request.Upload;
 using Teachio.BLL.DTOs.Courses.Courses.Response;
@@ -79,6 +81,20 @@ public class CoursesController : BaseApiController
     public async Task<IActionResult> GetById([FromRoute] Guid id, [FromQuery] Guid? selectedVideoId = null)
     {
         return HandleResult(await Mediator.Send(new GetCourseByIdQuery(id, selectedVideoId)));
+    }
+
+    /// <summary>
+    /// Enrolls the current user into a course.
+    /// </summary>
+    /// <param name="courseEnrollRequestDto">The enrollment data.</param>
+    /// <returns>Returns enrollment details.</returns>
+    [HttpPost(CoursesRelativeRoutes.Enroll)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseEnrollResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Enroll([FromBody] CourseEnrollRequestDto courseEnrollRequestDto)
+    {
+        return HandleResult(await Mediator.Send(new EnrollCourseCommand(courseEnrollRequestDto)));
     }
 
     /// <summary>
