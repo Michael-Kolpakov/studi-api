@@ -8,6 +8,7 @@ using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.MappingResolvers;
 using Teachio.DAL.Repositories.Interfaces.Base;
+using CourseEntity = Teachio.DAL.Entities.Courses.Courses.Course;
 
 namespace Teachio.BLL.CQRS.Courses.Courses.Update;
 
@@ -109,8 +110,27 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
         _repositoryWrapper.CoursesRepository.Update(existingCourse);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
+        await LoadOwnerUserAsync(existingCourse, cancellationToken);
+
         var courseResponseDto = _mapper.Map<CourseResponseDto>(existingCourse);
 
         return Result.Ok(courseResponseDto);
+    }
+
+    private async Task LoadOwnerUserAsync(CourseEntity course, CancellationToken cancellationToken)
+    {
+        if (course.OwnerUser is not null)
+        {
+            return;
+        }
+
+        var ownerUser = await _repositoryWrapper.AppUsersRepository.GetSingleOrDefaultAsync(
+            appUser => appUser.Id == course.OwnerUserId,
+            cancellationToken: cancellationToken);
+
+        if (ownerUser is not null)
+        {
+            course.OwnerUser = ownerUser;
+        }
     }
 }

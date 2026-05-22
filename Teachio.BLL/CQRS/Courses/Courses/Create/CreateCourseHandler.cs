@@ -78,8 +78,27 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
         await _repositoryWrapper.CoursesRepository.CreateAsync(newCourse, cancellationToken);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
 
+        await LoadOwnerUserAsync(newCourse, userId, cancellationToken);
+
         var courseResponseDto = _mapper.Map<CourseResponseDto>(newCourse);
 
         return Result.Ok(courseResponseDto);
+    }
+
+    private async Task LoadOwnerUserAsync(CourseEntity course, Guid ownerUserId, CancellationToken cancellationToken)
+    {
+        if (course.OwnerUser is not null)
+        {
+            return;
+        }
+
+        var ownerUser = await _repositoryWrapper.AppUsersRepository.GetSingleOrDefaultAsync(
+            appUser => appUser.Id == ownerUserId,
+            cancellationToken: cancellationToken);
+
+        if (ownerUser is not null)
+        {
+            course.OwnerUser = ownerUser;
+        }
     }
 }

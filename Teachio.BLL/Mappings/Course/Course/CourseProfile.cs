@@ -39,6 +39,9 @@ public class CourseProfile : Profile
 
         CreateMap<CourseEntity, CourseResponseDto>()
             .ForMember(
+                dest => dest.OwnerFullName,
+                opt => opt.MapFrom<OwnerFullNameResolver>())
+            .ForMember(
                 dest => dest.Sections,
                 opt => opt.MapFrom(src => GetOrderedVisibleSectionsAndVideos(src)))
             .ForMember(
@@ -49,6 +52,9 @@ public class CourseProfile : Profile
                 opt => opt.MapFrom<TotalDurationHoursResolver>());
 
         CreateMap<CourseEntity, CoursePreviewResponseDto>()
+            .ForMember(
+                dest => dest.OwnerFullName,
+                opt => opt.MapFrom<OwnerFullNameResolver>())
             .ForMember(
                 dest => dest.Sections,
                 opt => opt.MapFrom(src => GetOrderedVisibleSectionsAndVideos(src)))
@@ -63,6 +69,9 @@ public class CourseProfile : Profile
                 opt => opt.MapFrom<RelativePathResolver>());
 
         CreateMap<CourseEntity, CoursePreviewShortResponseDto>()
+            .ForMember(
+                dest => dest.OwnerFullName,
+                opt => opt.MapFrom<OwnerFullNameResolver>())
             .ForMember(
                 dest => dest.TotalDurationHours,
                 opt => opt.MapFrom<TotalDurationHoursResolver>())

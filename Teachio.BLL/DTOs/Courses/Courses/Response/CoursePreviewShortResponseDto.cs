@@ -8,6 +8,8 @@ public class CoursePreviewShortResponseDto
 
     public string? Description { get; set; }
 
+    public string OwnerFullName { get; set; } = null!;
+
     public int VideosCount { get; set; }
 
     public float TotalDurationHours { get; set; }

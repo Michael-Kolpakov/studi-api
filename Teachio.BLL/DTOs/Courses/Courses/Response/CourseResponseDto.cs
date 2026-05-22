@@ -11,6 +11,8 @@ public class CourseResponseDto
 
     public string? Description { get; set; }
 
+    public string OwnerFullName { get; set; } = null!;
+
     public int SectionsCount { get; set; }
 
     public float TotalDurationHours { get; set; }
