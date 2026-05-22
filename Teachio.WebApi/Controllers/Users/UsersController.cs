@@ -31,18 +31,20 @@ public class UsersController : BaseApiController
     }
 
     /// <summary>
-    /// Streams the current user's avatar.
+    /// Streams the current user's avatar or the avatar of a course owner.
     /// </summary>
+    /// <param name="courseId">The optional course identifier to stream the course owner's avatar.</param>
     /// <returns>Returns the avatar stream.</returns>
     [HttpGet(UsersRelativeRoutes.StreamAvatar)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status206PartialContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> StreamAvatar()
+    public async Task<IActionResult> StreamAvatar([FromQuery] Guid? courseId = null)
     {
         var rangeHeader = Request.Headers.Range.ToString();
-        var result = await Mediator.Send(new StreamAvatarQuery(rangeHeader));
+        var result = await Mediator.Send(new StreamAvatarQuery(rangeHeader, courseId));
 
         if (result.IsFailed)
         {

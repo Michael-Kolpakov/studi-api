@@ -19,7 +19,6 @@ public class StreamAvatarHandler : IRequestHandler<StreamAvatarQuery, Result<Goo
     private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<GoogleDriveStorageSharedResource> _stringLocalizerGoogleDriveStorage;
-    private readonly IStringLocalizer<AvatarStreamSharedResource> _stringLocalizerAvatarStream;
 
     public StreamAvatarHandler(
         IRepositoryWrapper repositoryWrapper,
@@ -27,8 +26,7 @@ public class StreamAvatarHandler : IRequestHandler<StreamAvatarQuery, Result<Goo
         ILoggerService logger,
         ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
-        IStringLocalizer<GoogleDriveStorageSharedResource> stringLocalizerGoogleDriveStorage,
-        IStringLocalizer<AvatarStreamSharedResource> stringLocalizerAvatarStream)
+        IStringLocalizer<GoogleDriveStorageSharedResource> stringLocalizerGoogleDriveStorage)
     {
         _repositoryWrapper = repositoryWrapper;
         _googleDriveStorageService = googleDriveStorageService;
@@ -36,7 +34,6 @@ public class StreamAvatarHandler : IRequestHandler<StreamAvatarQuery, Result<Goo
         _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerGoogleDriveStorage = stringLocalizerGoogleDriveStorage;
-        _stringLocalizerAvatarStream = stringLocalizerAvatarStream;
     }
 
     public async Task<Result<GoogleDriveStreamResult>> Handle(StreamAvatarQuery request, CancellationToken cancellationToken)
@@ -45,30 +42,22 @@ public class StreamAvatarHandler : IRequestHandler<StreamAvatarQuery, Result<Goo
         var rangeInfo = string.IsNullOrWhiteSpace(request.RangeHeader)
             ? string.Empty
             : $" with Range: {request.RangeHeader.Trim()}";
+        var targetInfo = request.CourseId.HasValue
+            ? $" for CourseId: {request.CourseId.Value}"
+            : $" for UserId: {userId}";
 
-        _logger.LogInformation($"Entered '{GetType().Name}' to stream avatar for UserId: {userId}{rangeInfo}");
+        _logger.LogInformation($"Entered '{GetType().Name}' to stream avatar{targetInfo}{rangeInfo}");
 
-        var streamContext = await _repositoryWrapper.AppUsersRepository.GetSingleOrDefaultProjectedAsync(
-            x => new StreamAvatarContext
-            {
-                AvatarName = x.AvatarFile == null ? null : x.AvatarFile.AvatarName,
-                AvatarContentType = x.AvatarFile == null ? null : x.AvatarFile.ContentType,
-                OwnerUserEmail = x.Email
-            },
-            x => x.Id == userId,
-            cancellationToken);
+        var streamContextResult = request.CourseId.HasValue
+            ? await GetCourseOwnerStreamContextAsync(request.CourseId.Value, request, cancellationToken)
+            : await GetCurrentUserStreamContextAsync(userId, request, cancellationToken);
 
-        if (streamContext is null)
+        if (streamContextResult.IsFailed)
         {
-            var errorMessage = _stringLocalizerCannotFind[
-                nameof(CannotFindSharedResource_en.CannotFindUserById),
-                userId
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
+            return Result.Fail(streamContextResult.Errors);
         }
+
+        var streamContext = streamContextResult.Value;
 
         var normalizedRangeHeader = string.IsNullOrWhiteSpace(request.RangeHeader)
             ? null
@@ -79,19 +68,8 @@ public class StreamAvatarHandler : IRequestHandler<StreamAvatarQuery, Result<Goo
             return await StreamDefaultAvatarAsync(normalizedRangeHeader, cancellationToken);
         }
 
-        if (string.IsNullOrWhiteSpace(streamContext.OwnerUserEmail))
-        {
-            var errorMessage = _stringLocalizerAvatarStream[
-                nameof(AvatarStreamSharedResource_en.AvatarFileNotAvailable)
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
         var downloadResult = await _googleDriveStorageService.OpenReadFileByPathAsync(
-            StoragePathHelper.BuildUserFolderSegments(streamContext.OwnerUserEmail),
+            StoragePathHelper.BuildUserFolderSegments(streamContext.OwnerUserEmail!),
             streamContext.AvatarName,
             normalizedRangeHeader,
             cancellationToken);
@@ -118,6 +96,66 @@ public class StreamAvatarHandler : IRequestHandler<StreamAvatarQuery, Result<Goo
         }
 
         return Result.Ok(streamResult);
+    }
+
+    private async Task<Result<StreamAvatarContext>> GetCurrentUserStreamContextAsync(
+        Guid userId,
+        StreamAvatarQuery request,
+        CancellationToken cancellationToken)
+    {
+        var streamContext = await _repositoryWrapper.AppUsersRepository.GetSingleOrDefaultProjectedAsync(
+            x => new StreamAvatarContext
+            {
+                AvatarName = x.AvatarFile == null ? null : x.AvatarFile.AvatarName,
+                AvatarContentType = x.AvatarFile == null ? null : x.AvatarFile.ContentType,
+                OwnerUserEmail = x.Email
+            },
+            x => x.Id == userId,
+            cancellationToken);
+
+        if (streamContext is not null)
+        {
+            return Result.Ok(streamContext);
+        }
+
+        var errorMessage = _stringLocalizerCannotFind[
+            nameof(CannotFindSharedResource_en.CannotFindUserById),
+            userId
+        ].Value;
+
+        _logger.LogError(request, errorMessage);
+
+        return Result.Fail(errorMessage);
+    }
+
+    private async Task<Result<StreamAvatarContext>> GetCourseOwnerStreamContextAsync(
+        Guid courseId,
+        StreamAvatarQuery request,
+        CancellationToken cancellationToken)
+    {
+        var streamContext = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultProjectedAsync(
+            x => new StreamAvatarContext
+            {
+                AvatarName = x.OwnerUser.AvatarFile == null ? null : x.OwnerUser.AvatarFile.AvatarName,
+                AvatarContentType = x.OwnerUser.AvatarFile == null ? null : x.OwnerUser.AvatarFile.ContentType,
+                OwnerUserEmail = x.OwnerUser.Email
+            },
+            x => x.Id == courseId,
+            cancellationToken);
+
+        if (streamContext is not null)
+        {
+            return Result.Ok(streamContext);
+        }
+
+        var errorMessage = _stringLocalizerCannotFind[
+            nameof(CannotFindSharedResource_en.CannotFindCourseById),
+            courseId
+        ].Value;
+
+        _logger.LogError(request, errorMessage);
+
+        return Result.Fail(errorMessage);
     }
 
     private async Task<Result<GoogleDriveStreamResult>> StreamDefaultAvatarAsync(
