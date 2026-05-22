@@ -106,7 +106,6 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
     {
         return query
             .Include(c => c.OwnerUser)
-            .Include(c => c.ThumbnailFile)
             .Include(c => c.Sections)
                 .ThenInclude(s => s.Videos)
                     .ThenInclude(v => v.VideoFile)

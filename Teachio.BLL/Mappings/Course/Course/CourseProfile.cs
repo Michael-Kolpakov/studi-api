@@ -63,10 +63,7 @@ public class CourseProfile : Profile
                 opt => opt.MapFrom<VisibleSectionsCountResolver>())
             .ForMember(
                 dest => dest.TotalDurationHours,
-                opt => opt.MapFrom<TotalDurationHoursResolver>())
-            .ForMember(
-                dest => dest.ThumbnailRelativePath,
-                opt => opt.MapFrom<RelativePathResolver>());
+                opt => opt.MapFrom<TotalDurationHoursResolver>());
 
         CreateMap<CourseEntity, CoursePreviewShortResponseDto>()
             .ForMember(
@@ -77,10 +74,7 @@ public class CourseProfile : Profile
                 opt => opt.MapFrom<TotalDurationHoursResolver>())
             .ForMember(
                 dest => dest.VideosCount,
-                opt => opt.MapFrom<VideosCountResolver>())
-            .ForMember(
-                dest => dest.ThumbnailRelativePath,
-                opt => opt.MapFrom<RelativePathResolver>());
+                opt => opt.MapFrom<VideosCountResolver>());
     }
 
     private static List<SectionEntity> GetOrderedVisibleSectionsAndVideos(CourseEntity course)

@@ -16,8 +16,6 @@ public class CoursePreviewResponseDto
 
     public float TotalDurationHours { get; set; }
 
-    public string? ThumbnailRelativePath { get; set; }
-
     public int WatchingUsersCount { get; set; }
 
     public List<SectionPreviewResponseDto> Sections { get; set; } = new List<SectionPreviewResponseDto>();

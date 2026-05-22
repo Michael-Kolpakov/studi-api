@@ -14,7 +14,5 @@ public class CoursePreviewShortResponseDto
 
     public float TotalDurationHours { get; set; }
 
-    public string? ThumbnailRelativePath { get; set; }
-
     public int WatchingUsersCount { get; set; }
 }

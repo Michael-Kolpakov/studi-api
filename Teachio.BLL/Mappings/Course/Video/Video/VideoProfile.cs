@@ -23,9 +23,6 @@ public class VideoProfile : Profile
 
         CreateMap<VideoEntity, VideoResponseDto>()
             .ForMember(
-                dest => dest.VideoRelativePath,
-                opt => opt.MapFrom<RelativePathResolver>())
-            .ForMember(
                 dest => dest.DurationSeconds,
                 opt => opt.MapFrom(src => src.VideoFile!.DurationSeconds));
 
