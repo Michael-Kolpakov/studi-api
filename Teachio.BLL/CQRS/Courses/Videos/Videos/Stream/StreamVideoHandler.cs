@@ -16,7 +16,9 @@ public class StreamVideoHandler : IRequestHandler<StreamVideoQuery, Result<Googl
     private readonly IGoogleDriveStorageService _googleDriveStorageService;
     private readonly ILoggerService _logger;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ICourseAccessService _courseAccessService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
+    private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
     private readonly IStringLocalizer<VideoStreamSharedResource> _stringLocalizerVideoStream;
 
     public StreamVideoHandler(
@@ -24,20 +26,25 @@ public class StreamVideoHandler : IRequestHandler<StreamVideoQuery, Result<Googl
         IGoogleDriveStorageService googleDriveStorageService,
         ILoggerService logger,
         ICurrentUserService currentUserService,
+        ICourseAccessService courseAccessService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
+        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
         IStringLocalizer<VideoStreamSharedResource> stringLocalizerVideoStream)
     {
         _repositoryWrapper = repositoryWrapper;
         _googleDriveStorageService = googleDriveStorageService;
         _logger = logger;
         _currentUserService = currentUserService;
+        _courseAccessService = courseAccessService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
+        _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
         _stringLocalizerVideoStream = stringLocalizerVideoStream;
     }
 
     public async Task<Result<GoogleDriveStreamResult>> Handle(StreamVideoQuery request, CancellationToken cancellationToken)
     {
         var userId = _currentUserService.GetUserId();
+
         var rangeInfo = string.IsNullOrWhiteSpace(request.RangeHeader)
             ? string.Empty
             : $" with Range: {request.RangeHeader.Trim()}";
@@ -61,6 +68,19 @@ public class StreamVideoHandler : IRequestHandler<StreamVideoQuery, Result<Googl
         {
             var errorMessage = _stringLocalizerCannotFind[
                 nameof(CannotFindSharedResource_en.CannotFindVideoById),
+                request.VideoId
+            ].Value;
+
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
+        var hasAccess = await _courseAccessService.HasAccessToVideoAsync(request.VideoId, userId, cancellationToken);
+        if (!hasAccess)
+        {
+            var errorMessage = _stringLocalizerNoPermissions[
+                nameof(NoPermissionsSharedResource_en.NoPermissionsToGetVideoForUser),
                 request.VideoId
             ].Value;
 

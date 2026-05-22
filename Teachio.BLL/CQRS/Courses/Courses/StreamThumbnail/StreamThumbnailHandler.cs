@@ -41,13 +41,15 @@ public class StreamThumbnailHandler : IRequestHandler<StreamThumbnailQuery, Resu
 
     public async Task<Result<GoogleDriveStreamResult>> Handle(StreamThumbnailQuery request, CancellationToken cancellationToken)
     {
-        var userId = _currentUserService.GetUserId();
+        var userInfo = _currentUserService.TryGetUserId(out var userId)
+            ? userId.ToString()
+            : "anonymous";
         var rangeInfo = string.IsNullOrWhiteSpace(request.RangeHeader)
             ? string.Empty
             : $" with Range: {request.RangeHeader.Trim()}";
 
         _logger.LogInformation(
-            $"Entered '{GetType().Name}' to stream course thumbnail for CourseId: {request.CourseId} by UserId: {userId}{rangeInfo}");
+            $"Entered '{GetType().Name}' to stream course thumbnail for CourseId: {request.CourseId} by UserId: {userInfo}{rangeInfo}");
 
         var streamContext = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultProjectedAsync(
             x => new StreamThumbnailContext

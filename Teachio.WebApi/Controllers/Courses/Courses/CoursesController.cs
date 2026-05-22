@@ -103,6 +103,7 @@ public class CoursesController : BaseApiController
     /// <param name="id">The unique identifier of the course to get thumbnail for.</param>
     /// <returns>Returns the requested thumbnail stream.</returns>
     [HttpGet(CoursesRelativeRoutes.StreamThumbnail)]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status206PartialContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

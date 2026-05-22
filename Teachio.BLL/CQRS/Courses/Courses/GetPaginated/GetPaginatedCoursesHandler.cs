@@ -41,7 +41,7 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
 
     public async Task<Result<PaginatedCoursesResponseDto>> Handle(GetPaginatedCoursesQuery request, CancellationToken cancellationToken)
     {
-        var userId = _currentUserService.GetUserId();
+        var isAuthenticated = _currentUserService.TryGetUserId(out var userId);
         var normalizedTitleFilter = NormalizeTitleFilter(request.TitleFilter);
 
         if (!IsTitleFilterValid(normalizedTitleFilter, out var validationErrorMessage))
@@ -54,13 +54,28 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
         var titleFilterInfo = normalizedTitleFilter ?? "none";
         var resolvedSortDirection = CourseSortResolver.ResolveSortDirection(request.SortBy, request.SortDirection);
 
-        _logger.LogInformation($"Entered '{GetType().Name}' to get paginated courses (page number: {request.PageNumber}, page size: {request.PageSize}, mode: {request.Mode}, title filter: {titleFilterInfo}, sort by: {request.SortBy}, sort direction: {resolvedSortDirection}) by UserId: {userId}");
+        var userInfo = isAuthenticated ? userId.ToString() : "anonymous";
 
-        var predicate = CourseFilterHelper.BuildCoursesPredicate(
-            userId,
-            request.Mode == CoursesPaginationMode.InProgress,
-            normalizedTitleFilter,
-            excludeCoursesWithoutVideos: true);
+        _logger.LogInformation($"Entered '{GetType().Name}' to get paginated courses (page number: {request.PageNumber}, page size: {request.PageSize}, mode: {request.Mode}, title filter: {titleFilterInfo}, sort by: {request.SortBy}, sort direction: {resolvedSortDirection}) by UserId: {userInfo}");
+
+        if (!isAuthenticated && request.Mode == CoursesPaginationMode.InProgress)
+        {
+            return Result.Ok(new PaginatedCoursesResponseDto()
+            {
+                TotalAmount = 0,
+                Courses = []
+            });
+        }
+
+        var predicate = isAuthenticated
+            ? CourseFilterHelper.BuildCoursesPredicate(
+                userId,
+                request.Mode == CoursesPaginationMode.InProgress,
+                normalizedTitleFilter,
+                excludeCoursesWithoutVideos: true)
+            : CourseFilterHelper.BuildAnonymousCoursesPredicate(
+                normalizedTitleFilter,
+                excludeCoursesWithoutVideos: true);
 
         var (primaryAscending, primaryDescending, secondaryAscending, secondaryDescending) =
             CourseSortResolver.BuildSortSelectors(request.SortBy, resolvedSortDirection);
@@ -92,7 +107,10 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
             .Include(c => c.OwnerUser)
             .Include(s => s.Sections)
                 .ThenInclude(v => v.Videos)
-                    .ThenInclude(v => v.VideoFile!);
+                    .ThenInclude(v => v.VideoFile)
+                .Include(s => s.Sections)
+                    .ThenInclude(v => v.Videos)
+                        .ThenInclude(v => v.VideoProgresses);
     }
 
     private static string? NormalizeTitleFilter(string? titleFilter)

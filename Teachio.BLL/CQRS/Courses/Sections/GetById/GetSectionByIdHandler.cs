@@ -9,6 +9,7 @@ using Teachio.BLL.DTOs.Courses.Sections.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
+using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
@@ -20,28 +21,33 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ICourseAccessService _courseAccessService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
+    private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
 
     public GetSectionByIdHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
         ICurrentUserService currentUserService,
-        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind)
+        ICourseAccessService courseAccessService,
+        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
+        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
         _currentUserService = currentUserService;
+        _courseAccessService = courseAccessService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
+        _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
     public async Task<Result<SectionResponseDto>> Handle(GetSectionByIdQuery request, CancellationToken cancellationToken)
     {
         var userId = _currentUserService.GetUserId();
-        _logger.LogInformation($"Entered '{GetType().Name}' to get section by Id: {request.SectionId} by UserId: {userId}");
 
-        // TODO: validate whether the user has access to the course with this section
+        _logger.LogInformation($"Entered '{GetType().Name}' to get section by Id: {request.SectionId} by UserId: {userId}");
 
         var section = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.SectionId,
@@ -60,7 +66,26 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
             return Result.Fail(errorMessage);
         }
 
+        var hasAccess = await _courseAccessService.HasAccessToSectionAsync(section.Id, userId, cancellationToken);
+        if (!hasAccess)
+        {
+            var errorMessage = _stringLocalizerNoPermissions[
+                nameof(NoPermissionsSharedResource_en.NoPermissionsToGetSectionForUser),
+                request.SectionId
+            ].Value;
+
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
         var sectionResponseDto = _mapper.Map<SectionResponseDto>(section);
+
+        foreach (var videoResponseDto in sectionResponseDto.Videos)
+        {
+            var video = section.Videos.FirstOrDefault(v => v.Id == videoResponseDto.Id);
+            videoResponseDto.VideoProgress = VideoProgressHelper.BuildResponse(video, userId);
+        }
 
         return Result.Ok(sectionResponseDto);
     }
@@ -70,7 +95,7 @@ public class GetSectionByIdHandler : IRequestHandler<GetSectionByIdQuery, Result
     {
         return query
             .Include(s => s.Videos)
-                .ThenInclude(v => v.VideoProgress)
+                .ThenInclude(v => v.VideoProgresses)
             .Include(s => s.Videos)
                 .ThenInclude(v => v.VideoFile!);
     }

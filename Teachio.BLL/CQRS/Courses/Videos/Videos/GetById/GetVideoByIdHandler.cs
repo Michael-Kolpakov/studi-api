@@ -9,6 +9,7 @@ using Teachio.BLL.DTOs.Courses.Videos.Videos.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
+using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Repositories.Interfaces.Base;
 using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 
@@ -20,28 +21,33 @@ public class GetVideoByIdHandler : IRequestHandler<GetVideoByIdQuery, Result<Vid
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ICourseAccessService _courseAccessService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
+    private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
 
     public GetVideoByIdHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
         ICurrentUserService currentUserService,
-        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind)
+        ICourseAccessService courseAccessService,
+        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
+        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
         _currentUserService = currentUserService;
+        _courseAccessService = courseAccessService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
+        _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
     public async Task<Result<VideoResponseDto>> Handle(GetVideoByIdQuery request, CancellationToken cancellationToken)
     {
         var userId = _currentUserService.GetUserId();
-        _logger.LogInformation($"Entered '{GetType().Name}' to get video by Id: {request.VideoId} by UserId: {userId}");
 
-        // TODO: validate whether the user has access to the course with this video
+        _logger.LogInformation($"Entered '{GetType().Name}' to get video by Id: {request.VideoId} by UserId: {userId}");
 
         var video = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.VideoId,
@@ -60,7 +66,21 @@ public class GetVideoByIdHandler : IRequestHandler<GetVideoByIdQuery, Result<Vid
             return Result.Fail(errorMessage);
         }
 
+        var hasAccess = await _courseAccessService.HasAccessToVideoAsync(video.Id, userId, cancellationToken);
+        if (!hasAccess)
+        {
+            var errorMessage = _stringLocalizerNoPermissions[
+                nameof(NoPermissionsSharedResource_en.NoPermissionsToGetVideoForUser),
+                request.VideoId
+            ].Value;
+
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
         var videoResponseDto = _mapper.Map<VideoResponseDto>(video);
+        videoResponseDto.VideoProgress = VideoProgressHelper.BuildResponse(video, userId);
 
         return Result.Ok(videoResponseDto);
     }
@@ -73,6 +93,6 @@ public class GetVideoByIdHandler : IRequestHandler<GetVideoByIdQuery, Result<Vid
                 .ThenInclude(s => s!.Course)
                     .ThenInclude(c => c!.OwnerUser)
             .Include(v => v.VideoFile)
-            .Include(v => v.VideoProgress);
+            .Include(v => v.VideoProgresses);
     }
 }

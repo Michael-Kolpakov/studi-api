@@ -17,7 +17,9 @@ public class GetCourseByIdHandlerTests
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<ILoggerService> _mockLoggerService;
     private readonly Mock<ICurrentUserService> _mockCurrentUserService;
+    private readonly Mock<ICourseAccessService> _mockCourseAccessService;
     private readonly CannotFindLocalizerMock _cannotFindLocalizerMock;
+    private readonly NoPermissionsLocalizerMock _noPermissionsLocalizerMock;
 
     private readonly GetCourseByIdHandler _sut;
 
@@ -29,18 +31,30 @@ public class GetCourseByIdHandlerTests
         _mockMapper = new Mock<IMapper>();
         _mockLoggerService = new Mock<ILoggerService>();
         _mockCurrentUserService = new Mock<ICurrentUserService>();
+        _mockCourseAccessService = new Mock<ICourseAccessService>();
         _cannotFindLocalizerMock = new CannotFindLocalizerMock();
+        _noPermissionsLocalizerMock = new NoPermissionsLocalizerMock();
 
         _mockRepository
             .Setup(x => x.CoursesRepository)
             .Returns(mockCoursesRepository.Object);
+
+        _mockCurrentUserService
+            .Setup(x => x.GetUserId())
+            .Returns(Guid.NewGuid());
+
+        _mockCourseAccessService
+            .Setup(x => x.HasAccessToCourseAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
 
         _sut = new GetCourseByIdHandler(
             _mockMapper.Object,
             _mockRepository.Object,
             _mockLoggerService.Object,
             _mockCurrentUserService.Object,
-            _cannotFindLocalizerMock);
+            _mockCourseAccessService.Object,
+            _cannotFindLocalizerMock,
+            _noPermissionsLocalizerMock);
     }
 
     [Fact]
@@ -97,9 +111,9 @@ public class GetCourseByIdHandlerTests
         var request = GetGetCourseByIdQuery(selectedVideoId: null);
         var course = CourseTestData.GetCourse();
 
-        course.Sections[0].Videos[0].VideoProgress.IsCompleted = true;
+        course.Sections[0].Videos[0].VideoProgresses[0].IsCompleted = true;
         var firstIncompleteVideo = course.Sections[0].Videos[1];
-        firstIncompleteVideo.VideoProgress.IsCompleted = false;
+        firstIncompleteVideo.VideoProgresses[0].IsCompleted = false;
 
         var courseResponseDto = CourseTestData.GetCourseResponseDto(course);
         var videoResponseDto = VideoTestData.GetVideoResponseDto(firstIncompleteVideo);
@@ -128,7 +142,7 @@ public class GetCourseByIdHandlerTests
 
         foreach (var video in course.Sections.SelectMany(section => section.Videos))
         {
-            video.VideoProgress.IsCompleted = true;
+            video.VideoProgresses[0].IsCompleted = true;
         }
 
         var firstVideo = course.Sections

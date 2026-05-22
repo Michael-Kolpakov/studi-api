@@ -68,4 +68,33 @@ public static class CourseFilterHelper
 
         return course => !course.WatchingUsers.Any(user => user.Id == userId);
     }
+
+    public static Expression<Func<Course, bool>> BuildAnonymousCoursesPredicate(
+        string? normalizedTitleFilter,
+        bool excludeCoursesWithoutVideos = false)
+    {
+        if (!string.IsNullOrWhiteSpace(normalizedTitleFilter))
+        {
+            var likePattern = $"%{normalizedTitleFilter}%";
+
+            if (excludeCoursesWithoutVideos)
+            {
+                return course => EF.Functions.Like(
+                        EF.Functions.Collate(course.Title, DatabaseConstants.CaseInsensitiveCollation),
+                        likePattern)
+                    && course.Sections.Any(s => s.VideosCount > 0);
+            }
+
+            return course => EF.Functions.Like(
+                EF.Functions.Collate(course.Title, DatabaseConstants.CaseInsensitiveCollation),
+                likePattern);
+        }
+
+        if (excludeCoursesWithoutVideos)
+        {
+            return course => course.Sections.Any(s => s.VideosCount > 0);
+        }
+
+        return _ => true;
+    }
 }

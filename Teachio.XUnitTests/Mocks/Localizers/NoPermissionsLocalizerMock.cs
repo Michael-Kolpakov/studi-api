@@ -17,10 +17,13 @@ public class NoPermissionsLocalizerMock : BaseLocalizerMock<NoPermissionsSharedR
             {
                 1, [
                     "NoPermissionsToDeleteCourseForUser",
+                    "NoPermissionsToGetCourseForUser",
                     "NoPermissionsToUpdateCourseForUser",
                     "NoPermissionsToDeleteSectionForUser",
+                    "NoPermissionsToGetSectionForUser",
                     "NoPermissionsToUpdateSectionForUser",
                     "NoPermissionsToDeleteVideoForUser",
+                    "NoPermissionsToGetVideoForUser",
                     "NoPermissionsToUpdateVideoForUser",
                     "NoPermissionsToUpdateVideoProgressForUser"
                 ]
@@ -28,10 +31,13 @@ public class NoPermissionsLocalizerMock : BaseLocalizerMock<NoPermissionsSharedR
             {
                 2, [
                     "NoPermissionsToDeleteCourseForUserWithId",
+                    "NoPermissionsToGetCourseForUserWithId",
                     "NoPermissionsToUpdateCourseForUserWithId",
                     "NoPermissionsToDeleteSectionForUserWithId",
+                    "NoPermissionsToGetSectionForUserWithId",
                     "NoPermissionsToUpdateSectionForUserWithId",
                     "NoPermissionsToDeleteVideoForUserWithId",
+                    "NoPermissionsToGetVideoForUserWithId",
                     "NoPermissionsToUpdateVideoForUserWithId",
                     "NoPermissionsToUpdateVideoProgressForUserWithId"
                 ]

@@ -38,8 +38,11 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
 
     public async Task<Result<CoursePreviewResponseDto>> Handle(GetCoursePreviewByIdQuery request, CancellationToken cancellationToken)
     {
-        var userId = _currentUserService.GetUserId();
-        _logger.LogInformation($"Entered '{GetType().Name}' to get course preview by Id: {request.CourseId} by UserId: {userId}");
+        var userInfo = _currentUserService.TryGetUserId(out var userId)
+            ? userId.ToString()
+            : "anonymous";
+
+        _logger.LogInformation($"Entered '{GetType().Name}' to get course preview by Id: {request.CourseId} by UserId: {userInfo}");
 
         var course = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
             x => x.Id == request.CourseId,

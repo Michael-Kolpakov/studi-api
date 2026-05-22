@@ -24,6 +24,12 @@
     <data name="NoPermissionsToDeleteCourseForUserWithId" xml:space="preserve">
         <value>User with Id '{1}' doesn't have any permission to delete course with Id '{0}'</value>
     </data>
+    <data name="NoPermissionsToGetCourseForUser" xml:space="preserve">
+        <value>User doesn't have any permission to get course with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToGetCourseForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to get course with Id '{0}'</value>
+    </data>
     <data name="NoPermissionsToUpdateCourseForUser" xml:space="preserve">
         <value>User doesn't have any permission to update course with Id '{0}'</value>
     </data>
@@ -42,6 +48,12 @@
     <data name="NoPermissionsToDeleteSectionForUserWithId" xml:space="preserve">
         <value>User with Id '{1}' doesn't have any permission to delete section with Id '{0}'</value>
     </data>
+    <data name="NoPermissionsToGetSectionForUser" xml:space="preserve">
+        <value>User doesn't have any permission to get section with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToGetSectionForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to get section with Id '{0}'</value>
+    </data>
     <data name="NoPermissionsToUpdateSectionForUser" xml:space="preserve">
         <value>User doesn't have any permission to update section with Id '{0}'</value>
     </data>
@@ -53,6 +65,12 @@
     </data>
     <data name="NoPermissionsToDeleteVideoForUserWithId" xml:space="preserve">
         <value>User with Id '{1}' doesn't have any permission to delete video with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToGetVideoForUser" xml:space="preserve">
+        <value>User doesn't have any permission to get video with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToGetVideoForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to get video with Id '{0}'</value>
     </data>
     <data name="NoPermissionsToCreateVideoForSectionOfCourseOfAnotherUser" xml:space="preserve">
         <value>User doesn't have any permission to create video for the section of another user's course</value>
