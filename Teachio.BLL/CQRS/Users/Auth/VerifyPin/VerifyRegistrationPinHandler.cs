@@ -41,7 +41,7 @@ public class VerifyRegistrationPinHandler : IRequestHandler<VerifyRegistrationPi
         var verificationId = request.VerifyRegistrationPinRequestDto.VerificationId;
         _logger.LogInformation($"Entered '{GetType().Name}' to verify registration PIN with Id: {verificationId}");
 
-        if (verificationId == Guid.Empty)
+        if (verificationId is null)
         {
             var errorMessage = _stringLocalizerAuth[
                 nameof(AuthSharedResource_en.RegistrationPinInvalid)
