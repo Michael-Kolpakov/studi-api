@@ -97,6 +97,11 @@ public class TeachioDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, G
             .Select(entry => entry.Entity.Id)
             .ToHashSet();
 
+        var deletedUserIds = ChangeTracker.Entries<AppUser>()
+            .Where(entry => entry.State == EntityState.Deleted)
+            .Select(entry => entry.Entity.Id)
+            .ToHashSet();
+
         foreach (var videoProgressEntry in deletedVideoProgressEntries)
         {
             if (deletedVideoIds.Contains(videoProgressEntry.Entity.VideoId))
@@ -104,8 +109,13 @@ public class TeachioDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, G
                 continue;
             }
 
+            if (deletedUserIds.Contains(videoProgressEntry.Entity.AppUserId))
+            {
+                continue;
+            }
+
             throw new InvalidOperationException(
-                $"{nameof(VideoProgress)} cannot be deleted unless its parent {nameof(Video)} is deleted in the same unit of work.");
+                $"{nameof(VideoProgress)} cannot be deleted unless its parent {nameof(Video)} or owning {nameof(AppUser)} is deleted in the same unit of work.");
         }
     }
 

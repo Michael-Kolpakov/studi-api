@@ -73,6 +73,7 @@ public static class ApplicationServicesExtensions
         services.AddScoped<ILoggerService, LoggerService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IEntityExistenceService, EntityExistenceService>();
+        services.AddScoped<ICourseAccessService, CourseAccessService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddScoped<IAuthTokenIssuer, AuthTokenIssuer>();

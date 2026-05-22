@@ -5,6 +5,7 @@ using Teachio.BLL.DTOs.Courses.Courses.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
+using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Entities.Shared;
 using Teachio.DAL.Repositories.Interfaces.Base;
 
@@ -81,6 +82,18 @@ public class EnrollCourseHandler : IRequestHandler<EnrollCourseCommand, Result<C
         };
 
         await _repositoryWrapper.UserCoursesRepository.CreateAsync(userCourse, cancellationToken);
+
+        var videoIds = await _repositoryWrapper.VideosRepository.GetProjectedListAsync(
+            v => v.Id,
+            v => v.Section!.CourseId == courseId,
+            cancellationToken);
+
+        var progressItems = VideoProgressHelper.CreateForVideosAndUser(videoIds, userId);
+
+        if (progressItems.Count > 0)
+        {
+            await _repositoryWrapper.VideoProgressRepository.CreateRangeAsync(progressItems, cancellationToken);
+        }
 
         course.WatchingUsersCount += 1;
 

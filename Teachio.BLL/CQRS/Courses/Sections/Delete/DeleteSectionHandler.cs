@@ -128,7 +128,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
             .Include(s => s.Videos)
                 .ThenInclude(v => v.VideoFile)
             .Include(s => s.Videos)
-                .ThenInclude(v => v.VideoProgress);
+                .ThenInclude(v => v.VideoProgresses);
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]

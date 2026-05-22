@@ -1,4 +1,5 @@
 ﻿using Teachio.BLL.DTOs.Courses.Videos.Videos.Response;
+using Teachio.DAL.Entities.Courses.Videos.VideoProgress;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 
 namespace Teachio.XUnitTests.TestData;
@@ -20,7 +21,10 @@ public static class VideoTestData
             Title = actualTitle,
             SectionId = sectionId,
             OrderIndex = videoNumber,
-            VideoProgress = VideoProgressTestData.GetVideoProgress()
+            VideoProgresses = new List<VideoProgress>
+            {
+                VideoProgressTestData.GetVideoProgress()
+            }
         };
     }
 

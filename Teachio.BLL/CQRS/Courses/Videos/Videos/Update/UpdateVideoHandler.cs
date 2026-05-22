@@ -125,7 +125,7 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
     {
         return query
             .Include(v => v.VideoFile)
-            .Include(v => v.VideoProgress);
+            .Include(v => v.VideoProgresses);
     }
 
     private static int PrepareOrderIndexForUpdate(

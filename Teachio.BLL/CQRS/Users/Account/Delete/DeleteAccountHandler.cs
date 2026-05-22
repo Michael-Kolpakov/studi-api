@@ -3,6 +3,7 @@ using AutoMapper;
 using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.DTOs.Users.Account.Response;
 using Teachio.BLL.Resources.SharedResource;
@@ -10,6 +11,7 @@ using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Entities.Users.Users;
+using Teachio.DAL.Repositories.Interfaces.Base;
 
 namespace Teachio.BLL.CQRS.Users.Account.Delete;
 
@@ -17,6 +19,7 @@ public class DeleteAccountHandler : IRequestHandler<DeleteAccountCommand, Result
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IMapper _mapper;
+    private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly IGoogleDriveStorageService _googleDriveStorageService;
     private readonly ILoggerService _logger;
     private readonly ICurrentUserService _currentUserService;
@@ -26,6 +29,7 @@ public class DeleteAccountHandler : IRequestHandler<DeleteAccountCommand, Result
     public DeleteAccountHandler(
         UserManager<AppUser> userManager,
         IMapper mapper,
+        IRepositoryWrapper repositoryWrapper,
         IGoogleDriveStorageService googleDriveStorageService,
         ILoggerService logger,
         ICurrentUserService currentUserService,
@@ -34,6 +38,7 @@ public class DeleteAccountHandler : IRequestHandler<DeleteAccountCommand, Result
     {
         _userManager = userManager;
         _mapper = mapper;
+        _repositoryWrapper = repositoryWrapper;
         _googleDriveStorageService = googleDriveStorageService;
         _logger = logger;
         _currentUserService = currentUserService;
@@ -73,6 +78,8 @@ public class DeleteAccountHandler : IRequestHandler<DeleteAccountCommand, Result
             return Result.Fail(errorMessage);
         }
 
+        await CleanupUserDataAsync(userId, cancellationToken);
+
         var userFolderDeletionResult = await DeleteUserFolderFromCDNAsync(user.Email!, request, cancellationToken);
         if (userFolderDeletionResult.IsFailed)
         {
@@ -82,6 +89,7 @@ public class DeleteAccountHandler : IRequestHandler<DeleteAccountCommand, Result
         }
 
         var responseDto = _mapper.Map<AppUserResponseDto>(user);
+
         var deleteResult = await _userManager.DeleteAsync(user);
 
         if (!deleteResult.Succeeded)
@@ -121,5 +129,41 @@ public class DeleteAccountHandler : IRequestHandler<DeleteAccountCommand, Result
         }
 
         return Result.Ok();
+    }
+
+    private async Task CleanupUserDataAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var userEnrollments = (await _repositoryWrapper.UserCoursesRepository.GetAllAsync(
+                userCourse => userCourse.AppUserId == userId,
+                include: query => query.Include(userCourse => userCourse.Course),
+                cancellationToken))
+            .ToList();
+
+        var userVideoProgresses = (await _repositoryWrapper.VideoProgressRepository.GetAllAsync(
+                videoProgress => videoProgress.AppUserId == userId,
+                cancellationToken: cancellationToken))
+            .ToList();
+
+        var affectedCourses = userEnrollments
+            .Where(userCourse => userCourse.Course.OwnerUserId != userId)
+            .Select(userCourse => userCourse.Course)
+            .DistinctBy(course => course.Id)
+            .ToList();
+
+        if (userEnrollments.Count > 0)
+        {
+            _repositoryWrapper.UserCoursesRepository.DeleteRange(userEnrollments);
+        }
+
+        if (userVideoProgresses.Count > 0)
+        {
+            _repositoryWrapper.VideoProgressRepository.DeleteRange(userVideoProgresses);
+        }
+
+        foreach (var course in affectedCourses)
+        {
+            course.WatchingUsersCount = Math.Max(0, course.WatchingUsersCount - 1);
+            _repositoryWrapper.CoursesRepository.Update(course);
+        }
     }
 }

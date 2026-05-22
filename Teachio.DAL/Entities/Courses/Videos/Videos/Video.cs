@@ -21,5 +21,5 @@ public class Video
 
     public VideoFile? VideoFile { get; set; }
 
-    public VideoProgress.VideoProgress VideoProgress { get; set; } = null!;
+    public List<VideoProgress.VideoProgress> VideoProgresses { get; set; } = new List<VideoProgress.VideoProgress>();
 }

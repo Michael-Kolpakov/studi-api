@@ -1,4 +1,5 @@
 ﻿using Teachio.DAL.Entities.Courses.Videos.Videos;
+using Teachio.DAL.Entities.Users.Users;
 
 namespace Teachio.DAL.Entities.Courses.Videos.VideoProgress;
 
@@ -9,6 +10,10 @@ public class VideoProgress
     public Guid VideoId { get; set; }
 
     public Video? Video { get; set; }
+
+    public Guid AppUserId { get; set; }
+
+    public AppUser? AppUser { get; set; }
 
     public bool IsCompleted { get; set; }
 

@@ -13,6 +13,8 @@ public static class VideoProgressTestData
         return new VideoProgress()
         {
             Id = Guid.NewGuid(),
+            VideoId = Guid.NewGuid(),
+            AppUserId = Guid.NewGuid(),
             IsCompleted = isCompleted,
             PositionSeconds = positionSeconds
         };

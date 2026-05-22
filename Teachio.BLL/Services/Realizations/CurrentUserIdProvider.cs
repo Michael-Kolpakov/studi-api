@@ -20,4 +20,18 @@ public static class CurrentUserIdProvider
 
         throw new UnauthorizedAccessException("User is not authenticated");
     }
+
+    public static bool TryGetUserId(ClaimsPrincipal? user, out Guid userId)
+    {
+        userId = Guid.Empty;
+
+        var userIdClaim = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrWhiteSpace(userIdClaim))
+        {
+            return false;
+        }
+
+        return Guid.TryParse(userIdClaim, out userId);
+    }
 }

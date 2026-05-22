@@ -61,9 +61,9 @@ public static class VideoConfiguration
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Video>()
-            .HasOne<VideoProgress.VideoProgress>(video => video.VideoProgress)
+            .HasMany<VideoProgress.VideoProgress>(video => video.VideoProgresses)
             .WithOne(videoProgress => videoProgress.Video)
-            .HasForeignKey<VideoProgress.VideoProgress>(videoProgress => videoProgress.VideoId)
+            .HasForeignKey(videoProgress => videoProgress.VideoId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

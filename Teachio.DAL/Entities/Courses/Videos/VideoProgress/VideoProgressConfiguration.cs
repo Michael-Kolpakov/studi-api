@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Teachio.DAL.Entities.Users.Users;
 using Teachio.DAL.Utils.Constants;
 using Teachio.DAL.Utils.Helpers;
 
@@ -12,12 +13,19 @@ public static class VideoProgressConfiguration
             .ToTable(nameof(VideoProgress), DatabaseConstants.CoursesSchema)
             .HasKey(vp => vp.Id);
 
+        builder.Entity<VideoProgress>()
+            .HasIndex(vp => new { vp.VideoId, vp.AppUserId })
+            .IsUnique();
+
         builder.Entity<VideoProgress>(typeBuilder =>
         {
             typeBuilder.Property(s => s.Id)
                 .ValueGeneratedOnAdd();
 
             typeBuilder.Property(vp => vp.VideoId)
+                .IsRequired();
+
+            typeBuilder.Property(vp => vp.AppUserId)
                 .IsRequired();
 
             typeBuilder.Property(vp => vp.IsCompleted)
@@ -40,5 +48,11 @@ public static class VideoProgressConfiguration
                 .HasDefaultValueSql(DatabaseConstants.UtcNowSql)
                 .IsRequired();
         });
+
+        builder.Entity<VideoProgress>()
+            .HasOne<AppUser>(vp => vp.AppUser)
+            .WithMany(u => u.VideoProgresses)
+            .HasForeignKey(vp => vp.AppUserId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

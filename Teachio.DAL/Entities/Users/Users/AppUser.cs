@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Teachio.DAL.Entities.Courses.Courses;
+using Teachio.DAL.Entities.Courses.Videos.VideoProgress;
 using Teachio.DAL.Entities.Users.AvatarFiles;
 
 namespace Teachio.DAL.Entities.Users.Users;
@@ -27,4 +28,6 @@ public class AppUser : IdentityUser<Guid>
     public List<Course> OwnedCourses { get; set; } = new List<Course>();
 
     public List<Course> WatchingCourses { get; set; } = new List<Course>();
+
+    public List<VideoProgress> VideoProgresses { get; set; } = new List<VideoProgress>();
 }

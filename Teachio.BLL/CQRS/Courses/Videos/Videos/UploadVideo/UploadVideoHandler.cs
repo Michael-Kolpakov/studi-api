@@ -202,7 +202,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
 
             var video = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultAsync(
                 x => x.Id == request.VideoUploadRequestDto.VideoId,
-                include: q => q.Include(x => x.VideoProgress),
+                include: q => q.Include(x => x.VideoProgresses),
                 cancellationToken: cancellationToken);
 
             if (video is null)
@@ -245,7 +245,13 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
                 _repositoryWrapper.VideoFilesRepository.Update(existingVideoFileEntity);
             }
 
-            video.VideoProgress.PositionSeconds = 0;
+            if (video.VideoProgresses is not null)
+            {
+                foreach (var vp in video.VideoProgresses)
+                {
+                    vp.PositionSeconds = 0;
+                }
+            }
 
             _repositoryWrapper.VideosRepository.Update(video);
             await _repositoryWrapper.SaveChangesAsync(cancellationToken);

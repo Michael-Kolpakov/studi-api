@@ -9,8 +9,6 @@ using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Repositories.Interfaces.Base;
-using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
-using VideoProgressEntity = Teachio.DAL.Entities.Courses.Videos.VideoProgress.VideoProgress;
 
 namespace Teachio.BLL.CQRS.Courses.Videos.Videos.Create;
 
@@ -47,7 +45,7 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         var userId = _currentUserService.GetUserId();
         _logger.LogInformation($"Entered '{GetType().Name}' to create a new video by UserId: {userId}");
 
-        var newVideo = _mapper.Map<VideoEntity>(request.VideoCreateRequestDto);
+        var newVideo = _mapper.Map<Video>(request.VideoCreateRequestDto);
 
         if (newVideo is null)
         {
@@ -102,19 +100,25 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
             await OrderIndexShiftHelper.ShiftOrderIndexesForCreateAsync(
                 _repositoryWrapper.VideosRepository,
                 $"{nameof(Video)}s",
-                nameof(VideoEntity.SectionId),
+                nameof(Video.SectionId),
                 newVideo.SectionId,
                 targetOrderIndex,
                 cancellationToken);
         }
 
-        var newVideoProgress = new VideoProgressEntity()
-        {
-            Video = newVideo
-        };
-
         await _repositoryWrapper.VideosRepository.CreateAsync(newVideo, cancellationToken);
-        await _repositoryWrapper.VideoProgressRepository.CreateAsync(newVideoProgress, cancellationToken);
+
+        var enrolledUserIds = await _repositoryWrapper.UserCoursesRepository.GetProjectedListAsync(
+            uc => uc.AppUserId,
+            uc => uc.CourseId == newVideo.Section!.CourseId,
+            cancellationToken);
+
+        var progressItems = VideoProgressHelper.CreateForVideoAndUsers(newVideo.Id, enrolledUserIds);
+
+        if (progressItems.Count > 0)
+        {
+            await _repositoryWrapper.VideoProgressRepository.CreateRangeAsync(progressItems, cancellationToken);
+        }
 
         section.VideosCount = sectionVideos.Count + 1;
 
@@ -126,7 +130,7 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         return Result.Ok(videoResponseDto);
     }
 
-    private static int PrepareOrderIndexForCreate(List<VideoEntity> sectionVideos, int requestedOrderIndex)
+    private static int PrepareOrderIndexForCreate(List<Video> sectionVideos, int requestedOrderIndex)
     {
         OrderIndexHelper.NormalizeOrderIndexes(sectionVideos);
 
