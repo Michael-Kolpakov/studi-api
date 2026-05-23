@@ -7,94 +7,74 @@ namespace Teachio.DAL.Utils.Helpers;
 
 public static class CourseFilterHelper
 {
-    public static Expression<Func<Course, bool>> BuildCoursesPredicate(
+    public static Expression<Func<Course, bool>> BuildAvailableCoursesPredicate(
         Guid userId,
-        bool isInProgressMode,
-        string? normalizedTitleFilter,
-        bool excludeCoursesWithoutVideos = false)
+        string? normalizedTitleFilter)
     {
         if (!string.IsNullOrWhiteSpace(normalizedTitleFilter))
         {
             var likePattern = $"%{normalizedTitleFilter}%";
 
-            if (isInProgressMode)
-            {
-                if (excludeCoursesWithoutVideos)
-                {
-                    return course => course.WatchingUsers.Any(user => user.Id == userId)
-                        && EF.Functions.Like(
-                            EF.Functions.Collate(course.Title, DatabaseConstants.CaseInsensitiveCollation),
-                            likePattern)
-                        && course.Sections.Any(s => s.VideosCount > 0);
-                }
-
-                return course => course.WatchingUsers.Any(user => user.Id == userId)
-                    && EF.Functions.Like(
-                        EF.Functions.Collate(course.Title, DatabaseConstants.CaseInsensitiveCollation),
-                        likePattern);
-            }
-
-            if (excludeCoursesWithoutVideos)
-            {
-                return course => !course.WatchingUsers.Any(user => user.Id == userId)
-                    && EF.Functions.Like(
-                        EF.Functions.Collate(course.Title, DatabaseConstants.CaseInsensitiveCollation),
-                        likePattern)
-                    && course.Sections.Any(s => s.VideosCount > 0);
-            }
-
             return course => !course.WatchingUsers.Any(user => user.Id == userId)
+                && EF.Functions.Like(
+                    EF.Functions.Collate(course.Title, DatabaseConstants.CaseInsensitiveCollation),
+                    likePattern)
+                && course.Sections.Any(s => s.VideosCount > 0);
+        }
+
+        return course => !course.WatchingUsers.Any(user => user.Id == userId)
+            && course.Sections.Any(s => s.VideosCount > 0);
+    }
+
+    public static Expression<Func<Course, bool>> BuildInProgressCoursesPredicate(
+        Guid userId,
+        string? normalizedTitleFilter)
+    {
+        if (!string.IsNullOrWhiteSpace(normalizedTitleFilter))
+        {
+            var likePattern = $"%{normalizedTitleFilter}%";
+
+            return course => course.WatchingUsers.Any(user => user.Id == userId)
+                && EF.Functions.Like(
+                    EF.Functions.Collate(course.Title, DatabaseConstants.CaseInsensitiveCollation),
+                    likePattern)
+                && course.Sections.Any(s => s.VideosCount > 0);
+        }
+
+        return course => course.WatchingUsers.Any(user => user.Id == userId)
+            && course.Sections.Any(s => s.VideosCount > 0);
+    }
+
+    public static Expression<Func<Course, bool>> BuildPersonalCoursesPredicate(
+        Guid userId,
+        string? normalizedTitleFilter)
+    {
+        if (!string.IsNullOrWhiteSpace(normalizedTitleFilter))
+        {
+            var likePattern = $"%{normalizedTitleFilter}%";
+
+            return course => course.OwnerUserId == userId
                 && EF.Functions.Like(
                     EF.Functions.Collate(course.Title, DatabaseConstants.CaseInsensitiveCollation),
                     likePattern);
         }
 
-        if (isInProgressMode)
-        {
-            if (excludeCoursesWithoutVideos)
-            {
-                return course => course.WatchingUsers.Any(user => user.Id == userId)
-                    && course.Sections.Any(s => s.VideosCount > 0);
-            }
-
-            return course => course.WatchingUsers.Any(user => user.Id == userId);
-        }
-
-        if (excludeCoursesWithoutVideos)
-        {
-            return course => !course.WatchingUsers.Any(user => user.Id == userId)
-                && course.Sections.Any(s => s.VideosCount > 0);
-        }
-
-        return course => !course.WatchingUsers.Any(user => user.Id == userId);
+        return course => course.OwnerUserId == userId;
     }
 
     public static Expression<Func<Course, bool>> BuildAnonymousCoursesPredicate(
-        string? normalizedTitleFilter,
-        bool excludeCoursesWithoutVideos = false)
+        string? normalizedTitleFilter)
     {
         if (!string.IsNullOrWhiteSpace(normalizedTitleFilter))
         {
             var likePattern = $"%{normalizedTitleFilter}%";
 
-            if (excludeCoursesWithoutVideos)
-            {
-                return course => EF.Functions.Like(
-                        EF.Functions.Collate(course.Title, DatabaseConstants.CaseInsensitiveCollation),
-                        likePattern)
-                    && course.Sections.Any(s => s.VideosCount > 0);
-            }
-
             return course => EF.Functions.Like(
-                EF.Functions.Collate(course.Title, DatabaseConstants.CaseInsensitiveCollation),
-                likePattern);
+                    EF.Functions.Collate(course.Title, DatabaseConstants.CaseInsensitiveCollation),
+                    likePattern)
+                && course.Sections.Any(s => s.VideosCount > 0);
         }
 
-        if (excludeCoursesWithoutVideos)
-        {
-            return course => course.Sections.Any(s => s.VideosCount > 0);
-        }
-
-        return _ => true;
+        return course => course.Sections.Any(s => s.VideosCount > 0);
     }
 }

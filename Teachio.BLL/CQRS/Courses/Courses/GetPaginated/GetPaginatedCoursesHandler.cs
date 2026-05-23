@@ -68,14 +68,20 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
         }
 
         var predicate = isAuthenticated
-            ? CourseFilterHelper.BuildCoursesPredicate(
-                userId,
-                request.Mode == CoursesPaginationMode.InProgress,
-                normalizedTitleFilter,
-                excludeCoursesWithoutVideos: true)
-            : CourseFilterHelper.BuildAnonymousCoursesPredicate(
-                normalizedTitleFilter,
-                excludeCoursesWithoutVideos: true);
+            ? request.Mode switch
+            {
+                CoursesPaginationMode.Available => CourseFilterHelper.BuildAvailableCoursesPredicate(
+                    userId,
+                    normalizedTitleFilter),
+                CoursesPaginationMode.InProgress => CourseFilterHelper.BuildInProgressCoursesPredicate(
+                    userId,
+                    normalizedTitleFilter),
+                CoursesPaginationMode.Personal => CourseFilterHelper.BuildPersonalCoursesPredicate(
+                    userId,
+                    normalizedTitleFilter),
+                _ => CourseFilterHelper.BuildAvailableCoursesPredicate(userId, normalizedTitleFilter)
+            }
+            : CourseFilterHelper.BuildAnonymousCoursesPredicate(normalizedTitleFilter);
 
         var (primaryAscending, primaryDescending, secondaryAscending, secondaryDescending) =
             CourseSortResolver.BuildSortSelectors(request.SortBy, resolvedSortDirection);

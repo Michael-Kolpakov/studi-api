@@ -30,7 +30,7 @@ public class CoursesController : BaseApiController
     /// <param name="titleFilter">The case-insensitive course title filter.</param>
     /// <param name="sortBy">The field to sort by.</param>
     /// <param name="sortDirection">The sorting direction.</param>
-    /// <param name="mode">The data mode for pagination.</param>
+    /// <param name="mode">The data mode for pagination: Available, InProgress, or Personal.</param>
     /// <returns>Returns a paginated list of the courses.</returns>
     [HttpGet(CoursesRelativeRoutes.GetPaginated)]
     [AllowAnonymous]

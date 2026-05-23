@@ -30,5 +30,6 @@ public enum SortDirection
 public enum CoursesPaginationMode
 {
     Available = 0,
-    InProgress = 1
+    InProgress = 1,
+    Personal = 2
 }
