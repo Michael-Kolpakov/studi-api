@@ -10,7 +10,5 @@ public class SectionEditShortResponseDto
 
     public int VideosCount { get; set; }
 
-    public float TotalDurationSeconds { get; set; }
-
     public Guid CourseId { get; set; }
 }

@@ -1,16 +1,12 @@
-using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
 using FluentResults;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.DTOs.Courses.Sections.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
 using Teachio.DAL.Repositories.Interfaces.Base;
-using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.CQRS.Courses.Sections.GetByCourseId;
 
@@ -79,7 +75,6 @@ public class GetSectionsByCourseIdHandler : IRequestHandler<GetSectionsByCourseI
 
         var sections = await _repositoryWrapper.SectionsRepository.GetAllAsync(
             section => section.CourseId == request.CourseId,
-            IncludeSectionRelatedEntities,
             cancellationToken: cancellationToken);
 
         var orderedSections = sections
@@ -92,13 +87,5 @@ public class GetSectionsByCourseIdHandler : IRequestHandler<GetSectionsByCourseI
         };
 
         return Result.Ok(sectionsResponseDto);
-    }
-
-    [ExcludeFromCodeCoverage]
-    private static IIncludableQueryable<SectionEntity, object> IncludeSectionRelatedEntities(IQueryable<SectionEntity> query)
-    {
-        return query
-            .Include(section => section.Videos)
-                .ThenInclude(video => video.VideoFile!);
     }
 }
