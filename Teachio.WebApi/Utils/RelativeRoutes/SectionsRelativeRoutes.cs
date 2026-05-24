@@ -2,7 +2,7 @@
 
 public static class SectionsRelativeRoutes
 {
-    public const string GetByCourseId = "courses/{courseId:guid}/sections";
+    public const string GetByCourseId = "get-by-course-id/{courseId:guid}";
 
     public const string GetById = "get-by-id/{id:guid}";
 
