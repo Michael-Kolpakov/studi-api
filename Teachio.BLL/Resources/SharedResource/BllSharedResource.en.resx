@@ -24,4 +24,7 @@
     <data name="SectionsCountExceedsLimit" xml:space="preserve">
         <value>Course with Id '{0}' already has the maximum allowed number of sections: {1}.</value>
     </data>
+    <data name="VideosCountExceedsLimit" xml:space="preserve">
+        <value>Section with Id '{0}' already has the maximum allowed number of videos: {1}.</value>
+    </data>
 </root>

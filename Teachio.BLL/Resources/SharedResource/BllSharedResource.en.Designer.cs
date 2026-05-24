@@ -76,5 +76,14 @@ namespace Teachio.BLL.Resources.SharedResource {
                 return ResourceManager.GetString("SectionsCountExceedsLimit", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Section with Id &apos;{0}&apos; already has the maximum allowed number of videos: {1}..
+        /// </summary>
+        internal static string VideosCountExceedsLimit {
+            get {
+                return ResourceManager.GetString("VideosCountExceedsLimit", resourceCulture);
+            }
+        }
     }
 }

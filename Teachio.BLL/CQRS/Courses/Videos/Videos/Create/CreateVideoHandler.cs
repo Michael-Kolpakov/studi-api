@@ -21,6 +21,7 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
     private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotMapSharedResource> _stringLocalizerFailedToMap;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
+    private readonly IStringLocalizer<BllSharedResource> _stringLocalizerBll;
 
     public CreateVideoHandler(
         IMapper mapper,
@@ -29,7 +30,8 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         ILoggerService logger,
         ICurrentUserService currentUserService,
         IStringLocalizer<CannotMapSharedResource> stringLocalizerFailedToMap,
-        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
+        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
+        IStringLocalizer<BllSharedResource> stringLocalizerBll)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
@@ -38,6 +40,7 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         _currentUserService = currentUserService;
         _stringLocalizerFailedToMap = stringLocalizerFailedToMap;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
+        _stringLocalizerBll = stringLocalizerBll;
     }
 
     public async Task<Result<VideoResponseDto>> Handle(CreateVideoCommand request, CancellationToken cancellationToken)
@@ -86,25 +89,24 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
             return Result.Fail(responseErrorMessage);
         }
 
-        var sectionVideos = (await _repositoryWrapper.VideosRepository.GetAllAsync(
-                v => v.SectionId == newVideo.SectionId,
-                cancellationToken: cancellationToken))
-            .OrderBy(v => v.OrderIndex)
-            .ToList();
+        var sectionVideosCount = await _repositoryWrapper.VideosRepository.GetSelfCountAsync(
+            v => v.SectionId == newVideo.SectionId,
+            cancellationToken: cancellationToken);
 
-        var targetOrderIndex = PrepareOrderIndexForCreate(sectionVideos, request.VideoCreateRequestDto.OrderIndex);
-        newVideo.OrderIndex = targetOrderIndex;
-
-        if (sectionVideos.Count > 0)
+        if (sectionVideosCount >= DAL.Utils.Constants.EntityConstants.MaxVideosPerSection)
         {
-            await OrderIndexShiftHelper.ShiftOrderIndexesForCreateAsync(
-                _repositoryWrapper.VideosRepository,
-                $"{nameof(Video)}s",
-                nameof(Video.SectionId),
+            var limitErrorMessage = _stringLocalizerBll[
+                nameof(BllSharedResource_en.VideosCountExceedsLimit),
                 newVideo.SectionId,
-                targetOrderIndex,
-                cancellationToken);
+                DAL.Utils.Constants.EntityConstants.MaxVideosPerSection
+            ].Value;
+
+            _logger.LogError(request, limitErrorMessage);
+
+            return Result.Fail(limitErrorMessage);
         }
+
+        newVideo.OrderIndex = sectionVideosCount;
 
         await _repositoryWrapper.VideosRepository.CreateAsync(newVideo, cancellationToken);
 
@@ -120,7 +122,7 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
             await _repositoryWrapper.VideoProgressRepository.CreateRangeAsync(progressItems, cancellationToken);
         }
 
-        section.VideosCount = sectionVideos.Count + 1;
+        section.VideosCount = sectionVideosCount + 1;
 
         _repositoryWrapper.SectionsRepository.Update(section);
         await _repositoryWrapper.SaveChangesAsync(cancellationToken);
@@ -128,19 +130,5 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
         var videoResponseDto = _mapper.Map<VideoResponseDto>(newVideo);
 
         return Result.Ok(videoResponseDto);
-    }
-
-    private static int PrepareOrderIndexForCreate(List<Video> sectionVideos, int requestedOrderIndex)
-    {
-        OrderIndexHelper.NormalizeOrderIndexes(sectionVideos);
-
-        var targetOrderIndex = Math.Min(requestedOrderIndex, sectionVideos.Count);
-
-        foreach (var video in sectionVideos.Where(v => v.OrderIndex >= targetOrderIndex))
-        {
-            video.OrderIndex++;
-        }
-
-        return targetOrderIndex;
     }
 }

@@ -6,6 +6,7 @@ using Teachio.BLL.CQRS.Courses.Videos.Videos.Delete;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.GetById;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.Stream;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.Update;
+using Teachio.BLL.CQRS.Courses.Videos.Videos.UpdateOrderIndex;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.UploadVideo;
 using Teachio.BLL.DTOs.Courses.Videos.Videos.Request.Create;
 using Teachio.BLL.DTOs.Courses.Videos.Videos.Request.Update;
@@ -121,6 +122,21 @@ public class VideosController : BaseApiController
     public async Task<IActionResult> Update([FromBody] VideoUpdateRequestDto videoUpdateRequestDto)
     {
         return HandleResult(await Mediator.Send(new UpdateVideoCommand(videoUpdateRequestDto)));
+    }
+
+    /// <summary>
+    /// Updates the order index of an existing course video.
+    /// </summary>
+    /// <param name="videoUpdateOrderIndexRequestDto">The data for updating the video order index.</param>
+    /// <returns>Returns the newly updated course video.</returns>
+    [HttpPut(VideosRelativeRoutes.UpdateOrderIndex)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VideoResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> UpdateOrderIndex([FromBody] VideoUpdateOrderIndexRequestDto videoUpdateOrderIndexRequestDto)
+    {
+        return HandleResult(await Mediator.Send(new UpdateVideoOrderIndexCommand(videoUpdateOrderIndexRequestDto)));
     }
 
     /// <summary>

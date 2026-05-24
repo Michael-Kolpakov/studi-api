@@ -9,8 +9,4 @@ public abstract class VideoCreateUpdateRequestDto
     [RegularExpression(EntityConstants.TitleRegexPattern, ErrorMessage = "RegexTitle")]
     [StringLength(EntityConstants.MaxVideoTitleLength, ErrorMessage = "Length")]
     public string Title { get; set; } = null!;
-
-    [Required(ErrorMessage = "Required")]
-    [Range(EntityConstants.MinNonNegativeValue, EntityConstants.MaxVideosPerSection - 1, ErrorMessage = "Range")]
-    public int OrderIndex { get; set; }
 }

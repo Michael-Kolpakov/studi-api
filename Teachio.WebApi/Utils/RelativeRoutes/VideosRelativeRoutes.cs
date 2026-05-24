@@ -12,5 +12,7 @@ public static class VideosRelativeRoutes
 
     public const string Update = "update";
 
+    public const string UpdateOrderIndex = "update-order-index";
+
     public const string Delete = "delete/{id:guid}";
 }
