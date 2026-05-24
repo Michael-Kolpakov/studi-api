@@ -17,13 +17,12 @@ public class CourseAccessService : ICourseAccessService
         var accessContext = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultProjectedAsync(
             course => new CourseAccessContext
             {
-                OwnerUserId = course.OwnerUserId,
                 IsEnrolled = course.WatchingUsers.Any(watchingUser => watchingUser.Id == userId)
             },
             course => course.Id == courseId,
             cancellationToken);
 
-        return accessContext is not null && (accessContext.OwnerUserId == userId || accessContext.IsEnrolled);
+        return accessContext is not null && accessContext.IsEnrolled;
     }
 
     public async Task<bool> HasAccessToSectionAsync(Guid sectionId, Guid userId, CancellationToken cancellationToken = default)
@@ -31,13 +30,12 @@ public class CourseAccessService : ICourseAccessService
         var accessContext = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultProjectedAsync(
             section => new CourseAccessContext
             {
-                OwnerUserId = section.Course!.OwnerUserId,
-                IsEnrolled = section.Course.WatchingUsers.Any(watchingUser => watchingUser.Id == userId)
+                IsEnrolled = section.Course!.WatchingUsers.Any(watchingUser => watchingUser.Id == userId)
             },
             section => section.Id == sectionId,
             cancellationToken);
 
-        return accessContext is not null && (accessContext.OwnerUserId == userId || accessContext.IsEnrolled);
+        return accessContext is not null && accessContext.IsEnrolled;
     }
 
     public async Task<bool> HasAccessToVideoAsync(Guid videoId, Guid userId, CancellationToken cancellationToken = default)
@@ -45,19 +43,16 @@ public class CourseAccessService : ICourseAccessService
         var accessContext = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultProjectedAsync(
             video => new CourseAccessContext
             {
-                OwnerUserId = video.Section!.Course!.OwnerUserId,
-                IsEnrolled = video.Section.Course.WatchingUsers.Any(watchingUser => watchingUser.Id == userId)
+                IsEnrolled = video.Section!.Course!.WatchingUsers.Any(watchingUser => watchingUser.Id == userId)
             },
             video => video.Id == videoId,
             cancellationToken);
 
-        return accessContext is not null && (accessContext.OwnerUserId == userId || accessContext.IsEnrolled);
+        return accessContext is not null && accessContext.IsEnrolled;
     }
 
     private sealed class CourseAccessContext
     {
-        public Guid OwnerUserId { get; set; }
-
         public bool IsEnrolled { get; set; }
     }
 }

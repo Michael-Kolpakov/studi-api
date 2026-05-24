@@ -1,11 +1,15 @@
+using System.Diagnostics.CodeAnalysis;
 using FluentResults;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Localization;
 using Teachio.BLL.DTOs.Courses.Courses.Response;
 using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.Helpers;
+using Teachio.DAL.Entities.Courses.Courses;
 using Teachio.DAL.Entities.Shared;
 using Teachio.DAL.Repositories.Interfaces.Base;
 
@@ -83,10 +87,17 @@ public class EnrollCourseHandler : IRequestHandler<EnrollCourseCommand, Result<C
 
         await _repositoryWrapper.UserCoursesRepository.CreateAsync(userCourse, cancellationToken);
 
-        var videoIds = await _repositoryWrapper.VideosRepository.GetProjectedListAsync(
-            v => v.Id,
-            v => v.Section!.CourseId == courseId,
+        var courseWithVideos = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
+            c => c.Id == courseId,
+            IncludeCourseRelatedEntities,
             cancellationToken);
+
+        var videoIds = courseWithVideos is null
+            ? []
+            : courseWithVideos.Sections
+                .SelectMany(section => section.Videos)
+                .Select(video => video.Id)
+                .ToList();
 
         var progressItems = VideoProgressHelper.CreateForVideosAndUser(videoIds, userId);
 
@@ -107,5 +118,13 @@ public class EnrollCourseHandler : IRequestHandler<EnrollCourseCommand, Result<C
         };
 
         return Result.Ok(response);
+    }
+
+    [ExcludeFromCodeCoverage]
+    private static IIncludableQueryable<Course, object> IncludeCourseRelatedEntities(IQueryable<Course> query)
+    {
+        return query
+            .Include(c => c.Sections)
+                .ThenInclude(s => s.Videos);
     }
 }

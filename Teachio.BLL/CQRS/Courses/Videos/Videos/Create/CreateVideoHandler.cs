@@ -112,7 +112,7 @@ public class CreateVideoHandler : IRequestHandler<CreateVideoCommand, Result<Vid
 
         var enrolledUserIds = await _repositoryWrapper.UserCoursesRepository.GetProjectedListAsync(
             uc => uc.AppUserId,
-            uc => uc.CourseId == newVideo.Section!.CourseId,
+            uc => uc.CourseId == section.CourseId,
             cancellationToken);
 
         var progressItems = VideoProgressHelper.CreateForVideoAndUsers(newVideo.Id, enrolledUserIds);

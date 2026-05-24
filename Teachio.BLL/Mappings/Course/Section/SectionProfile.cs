@@ -52,11 +52,7 @@ public class SectionProfile : Profile
                 opt => opt.MapFrom<TotalDurationSecondsResolver>()
             );
 
-        CreateMap<SectionEntity, SectionEditShortResponseDto>()
-            .ForMember(
-                dest => dest.TotalDurationSeconds,
-                opt => opt.MapFrom<TotalDurationSecondsResolver>()
-            );
+        CreateMap<SectionEntity, SectionEditShortResponseDto>();
     }
 
     private static IEnumerable<VideoEntity> GetOrderedVideos(SectionEntity section) =>
