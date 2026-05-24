@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Teachio.BLL.CQRS.Courses.Sections.Create;
 using Teachio.BLL.CQRS.Courses.Sections.Delete;
+using Teachio.BLL.CQRS.Courses.Sections.GetByCourseId;
 using Teachio.BLL.CQRS.Courses.Sections.GetById;
 using Teachio.BLL.CQRS.Courses.Sections.Update;
 using Teachio.BLL.CQRS.Courses.Sections.UpdateOrderIndex;
@@ -27,6 +28,22 @@ public class SectionsController : BaseApiController
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         return HandleResult(await Mediator.Send(new GetSectionByIdQuery(id)));
+    }
+
+    /// <summary>
+    /// Retrieves all course sections for the specified course.
+    /// </summary>
+    /// <param name="courseId">The unique identifier of the course.</param>
+    /// <returns>Returns the course sections ordered by their position.</returns>
+    [HttpGet(SectionsRelativeRoutes.GetByCourseId)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseSectionsResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetByCourseId([FromRoute] Guid courseId)
+    {
+        return HandleResult(await Mediator.Send(new GetSectionsByCourseIdQuery(courseId)));
     }
 
     /// <summary>

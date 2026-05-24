@@ -4,6 +4,8 @@ public static class SectionsRelativeRoutes
 {
     public const string GetById = "get-by-id/{id:guid}";
 
+    public const string GetByCourseId = "courses/{courseId:guid}/sections";
+
     public const string Create = "create";
 
     public const string Update = "update";
