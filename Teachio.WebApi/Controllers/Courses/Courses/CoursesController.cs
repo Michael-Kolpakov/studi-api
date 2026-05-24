@@ -100,20 +100,6 @@ public class CoursesController : BaseApiController
     }
 
     /// <summary>
-    /// Enrolls the current user into a course.
-    /// </summary>
-    /// <param name="courseEnrollRequestDto">The enrollment data.</param>
-    /// <returns>Returns enrollment details.</returns>
-    [HttpPost(CoursesRelativeRoutes.Enroll)]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseEnrollResponseDto))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Enroll([FromBody] CourseEnrollRequestDto courseEnrollRequestDto)
-    {
-        return HandleResult(await Mediator.Send(new EnrollCourseCommand(courseEnrollRequestDto)));
-    }
-
-    /// <summary>
     /// Streams a course thumbnail by course unique identifier.
     /// </summary>
     /// <param name="id">The unique identifier of the course to get thumbnail for.</param>
@@ -153,6 +139,20 @@ public class CoursesController : BaseApiController
             : StatusCodes.Status200OK;
 
         return new FileStreamResult(streamResult.ContentStream, streamResult.ContentType);
+    }
+
+    /// <summary>
+    /// Enrolls the current user into a course.
+    /// </summary>
+    /// <param name="courseEnrollRequestDto">The enrollment data.</param>
+    /// <returns>Returns enrollment details.</returns>
+    [HttpPost(CoursesRelativeRoutes.Enroll)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseEnrollResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Enroll([FromBody] CourseEnrollRequestDto courseEnrollRequestDto)
+    {
+        return HandleResult(await Mediator.Send(new EnrollCourseCommand(courseEnrollRequestDto)));
     }
 
     /// <summary>
