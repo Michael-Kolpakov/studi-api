@@ -2,9 +2,9 @@ namespace Teachio.WebApi.Utils.RelativeRoutes;
 
 public static class VideosRelativeRoutes
 {
-    public const string GetById = "get-by-id/{id:guid}";
-
     public const string GetBySectionId = "sections/{sectionId:guid}/videos";
+
+    public const string GetById = "get-by-id/{id:guid}";
 
     public const string Stream = "stream/{id:guid}";
 

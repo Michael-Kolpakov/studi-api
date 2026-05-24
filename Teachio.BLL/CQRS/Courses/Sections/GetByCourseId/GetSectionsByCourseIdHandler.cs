@@ -88,7 +88,7 @@ public class GetSectionsByCourseIdHandler : IRequestHandler<GetSectionsByCourseI
 
         var sectionsResponseDto = new CourseSectionsResponseDto
         {
-            Sections = _mapper.Map<List<SectionEditPreviewResponseDto>>(orderedSections)
+            Sections = _mapper.Map<List<SectionEditShortResponseDto>>(orderedSections)
         };
 
         return Result.Ok(sectionsResponseDto);

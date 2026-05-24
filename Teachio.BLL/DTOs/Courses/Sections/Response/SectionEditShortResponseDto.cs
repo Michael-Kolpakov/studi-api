@@ -1,6 +1,6 @@
 namespace Teachio.BLL.DTOs.Courses.Sections.Response;
 
-public class SectionEditPreviewResponseDto
+public class SectionEditShortResponseDto
 {
     public Guid Id { get; set; }
 

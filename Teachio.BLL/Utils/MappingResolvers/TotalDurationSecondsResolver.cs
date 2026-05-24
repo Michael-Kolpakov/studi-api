@@ -13,7 +13,7 @@ public class TotalDurationSecondsResolver : IValueResolver<Section, object, floa
             SectionResponseDto
                 or SectionPreviewResponseDto
                 or SectionShortResponseDto
-                or SectionEditPreviewResponseDto
+                or SectionEditShortResponseDto
                 => CalculateTotalDurationSeconds(source),
             _ => throw new ArgumentException($"Unknown destination '{nameof(destination)}' type", nameof(destination))
         };

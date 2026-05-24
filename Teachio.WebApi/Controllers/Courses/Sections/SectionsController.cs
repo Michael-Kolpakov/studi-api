@@ -17,20 +17,6 @@ namespace Teachio.WebApi.Controllers.Courses.Sections;
 public class SectionsController : BaseApiController
 {
     /// <summary>
-    /// Retrieves a course section by its unique identifier.
-    /// </summary>
-    /// <param name="id">The unique identifier of the course section to retrieve.</param>
-    /// <returns>Returns the corresponding course section.</returns>
-    [HttpGet(SectionsRelativeRoutes.GetById)]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SectionResponseDto))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetById([FromRoute] Guid id)
-    {
-        return HandleResult(await Mediator.Send(new GetSectionByIdQuery(id)));
-    }
-
-    /// <summary>
     /// Retrieves all course sections for the specified course.
     /// </summary>
     /// <param name="courseId">The unique identifier of the course.</param>
@@ -44,6 +30,20 @@ public class SectionsController : BaseApiController
     public async Task<IActionResult> GetByCourseId([FromRoute] Guid courseId)
     {
         return HandleResult(await Mediator.Send(new GetSectionsByCourseIdQuery(courseId)));
+    }
+
+    /// <summary>
+    /// Retrieves a course section by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the course section to retrieve.</param>
+    /// <returns>Returns the corresponding course section.</returns>
+    [HttpGet(SectionsRelativeRoutes.GetById)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SectionResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById([FromRoute] Guid id)
+    {
+        return HandleResult(await Mediator.Send(new GetSectionByIdQuery(id)));
     }
 
     /// <summary>

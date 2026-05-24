@@ -1,6 +1,6 @@
 namespace Teachio.BLL.DTOs.Courses.Videos.Videos.Response;
 
-public class VideoEditPreviewResponseDto
+public class VideoEditShortResponseDto
 {
     public Guid Id { get; set; }
 

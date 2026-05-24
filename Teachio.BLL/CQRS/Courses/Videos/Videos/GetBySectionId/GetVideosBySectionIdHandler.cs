@@ -88,7 +88,7 @@ public class GetVideosBySectionIdHandler : IRequestHandler<GetVideosBySectionIdQ
 
         var videosResponseDto = new SectionVideosResponseDto
         {
-            Videos = _mapper.Map<List<VideoEditPreviewResponseDto>>(orderedVideos)
+            Videos = _mapper.Map<List<VideoEditShortResponseDto>>(orderedVideos)
         };
 
         return Result.Ok(videosResponseDto);

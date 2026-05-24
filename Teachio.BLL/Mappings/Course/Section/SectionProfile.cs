@@ -52,7 +52,7 @@ public class SectionProfile : Profile
                 opt => opt.MapFrom<TotalDurationSecondsResolver>()
             );
 
-        CreateMap<SectionEntity, SectionEditPreviewResponseDto>()
+        CreateMap<SectionEntity, SectionEditShortResponseDto>()
             .ForMember(
                 dest => dest.TotalDurationSeconds,
                 opt => opt.MapFrom<TotalDurationSecondsResolver>()

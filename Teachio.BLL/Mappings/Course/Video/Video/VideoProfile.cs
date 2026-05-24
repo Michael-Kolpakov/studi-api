@@ -36,7 +36,7 @@ public class VideoProfile : Profile
                 dest => dest.DurationSeconds,
                 opt => opt.MapFrom(src => src.VideoFile!.DurationSeconds));
 
-        CreateMap<VideoEntity, VideoEditPreviewResponseDto>()
+        CreateMap<VideoEntity, VideoEditShortResponseDto>()
             .ForMember(
                 dest => dest.DurationSeconds,
                 opt => opt.MapFrom(src => src.VideoFile!.DurationSeconds));

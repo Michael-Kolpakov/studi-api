@@ -22,20 +22,6 @@ namespace Teachio.WebApi.Controllers.Courses.Videos.Videos;
 public class VideosController : BaseApiController
 {
     /// <summary>
-    /// Retrieves a course video by its unique identifier.
-    /// </summary>
-    /// <param name="id">The unique identifier of the course video to retrieve.</param>
-    /// <returns>Returns the corresponding course video.</returns>
-    [HttpGet(VideosRelativeRoutes.GetById)]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VideoResponseDto))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetById([FromRoute] Guid id)
-    {
-        return HandleResult(await Mediator.Send(new GetVideoByIdQuery(id)));
-    }
-
-    /// <summary>
     /// Retrieves all course videos for the specified section.
     /// </summary>
     /// <param name="sectionId">The unique identifier of the section.</param>
@@ -49,6 +35,20 @@ public class VideosController : BaseApiController
     public async Task<IActionResult> GetBySectionId([FromRoute] Guid sectionId)
     {
         return HandleResult(await Mediator.Send(new GetVideosBySectionIdQuery(sectionId)));
+    }
+
+    /// <summary>
+    /// Retrieves a course video by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the course video to retrieve.</param>
+    /// <returns>Returns the corresponding course video.</returns>
+    [HttpGet(VideosRelativeRoutes.GetById)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VideoResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById([FromRoute] Guid id)
+    {
+        return HandleResult(await Mediator.Send(new GetVideoByIdQuery(id)));
     }
 
     /// <summary>
