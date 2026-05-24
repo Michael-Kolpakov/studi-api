@@ -10,7 +10,11 @@ public class TotalDurationSecondsResolver : IValueResolver<Section, object, floa
     {
         return destination switch
         {
-            SectionResponseDto or SectionPreviewResponseDto or SectionShortResponseDto => CalculateTotalDurationSeconds(source),
+            SectionResponseDto
+                or SectionPreviewResponseDto
+                or SectionShortResponseDto
+                or SectionEditPreviewResponseDto
+                => CalculateTotalDurationSeconds(source),
             _ => throw new ArgumentException($"Unknown destination '{nameof(destination)}' type", nameof(destination))
         };
     }
