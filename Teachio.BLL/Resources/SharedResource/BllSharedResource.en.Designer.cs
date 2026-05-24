@@ -67,5 +67,14 @@ namespace Teachio.BLL.Resources.SharedResource {
                 return ResourceManager.GetString("TitleFilterLengthTooLong", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Course with Id &apos;{0}&apos; already has the maximum allowed number of sections: {1}..
+        /// </summary>
+        internal static string SectionsCountExceedsLimit {
+            get {
+                return ResourceManager.GetString("SectionsCountExceedsLimit", resourceCulture);
+            }
+        }
     }
 }

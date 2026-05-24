@@ -4,6 +4,7 @@ using Teachio.BLL.CQRS.Courses.Sections.Create;
 using Teachio.BLL.CQRS.Courses.Sections.Delete;
 using Teachio.BLL.CQRS.Courses.Sections.GetById;
 using Teachio.BLL.CQRS.Courses.Sections.Update;
+using Teachio.BLL.CQRS.Courses.Sections.UpdateOrderIndex;
 using Teachio.BLL.DTOs.Courses.Sections.Request.Create;
 using Teachio.BLL.DTOs.Courses.Sections.Request.Update;
 using Teachio.BLL.DTOs.Courses.Sections.Response;
@@ -56,6 +57,21 @@ public class SectionsController : BaseApiController
     public async Task<IActionResult> Update([FromBody] SectionUpdateRequestDto sectionUpdateRequestDto)
     {
         return HandleResult(await Mediator.Send(new UpdateSectionCommand(sectionUpdateRequestDto)));
+    }
+
+    /// <summary>
+    /// Updates the order index of an existing course section.
+    /// </summary>
+    /// <param name="sectionUpdateOrderIndexRequestDto">The data for updating the section order index.</param>
+    /// <returns>Returns the newly updated course section.</returns>
+    [HttpPut(SectionsRelativeRoutes.UpdateOrderIndex)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SectionResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> UpdateOrderIndex([FromBody] SectionUpdateOrderIndexRequestDto sectionUpdateOrderIndexRequestDto)
+    {
+        return HandleResult(await Mediator.Send(new UpdateSectionOrderIndexCommand(sectionUpdateOrderIndexRequestDto)));
     }
 
     /// <summary>
