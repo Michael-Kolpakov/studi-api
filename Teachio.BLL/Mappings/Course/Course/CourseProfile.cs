@@ -75,6 +75,8 @@ public class CourseProfile : Profile
             .ForMember(
                 dest => dest.VideosCount,
                 opt => opt.MapFrom<VideosCountResolver>());
+
+        CreateMap<CourseEntity, CourseEditShortResponseDto>();
     }
 
     private static List<SectionEntity> GetOrderedVisibleSectionsAndVideos(CourseEntity course)

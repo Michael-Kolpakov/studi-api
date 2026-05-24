@@ -6,6 +6,8 @@ public static class CoursesRelativeRoutes
 
     public const string GetByIdPreview = "get-by-id-preview/{id:guid}";
 
+    public const string GetByIdShort = "get-by-id-short/{id:guid}";
+
     public const string GetById = "get-by-id/{id:guid}";
 
     public const string Enroll = "enroll";

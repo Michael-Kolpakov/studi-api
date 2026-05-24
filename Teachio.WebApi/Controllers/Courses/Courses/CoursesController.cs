@@ -6,6 +6,7 @@ using Teachio.BLL.CQRS.Courses.Courses.Delete;
 using Teachio.BLL.CQRS.Courses.Courses.Enroll;
 using Teachio.BLL.CQRS.Courses.Courses.GetById;
 using Teachio.BLL.CQRS.Courses.Courses.GetByIdPreview;
+using Teachio.BLL.CQRS.Courses.Courses.GetByIdShort;
 using Teachio.BLL.CQRS.Courses.Courses.GetPaginated;
 using Teachio.BLL.CQRS.Courses.Courses.StreamThumbnail;
 using Teachio.BLL.CQRS.Courses.Courses.Update;
@@ -66,6 +67,21 @@ public class CoursesController : BaseApiController
     public async Task<IActionResult> GetByIdPreview([FromRoute] Guid id)
     {
         return HandleResult(await Mediator.Send(new GetCoursePreviewByIdQuery(id)));
+    }
+
+    /// <summary>
+    /// Retrieves a short information view of a course by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the course to retrieve.</param>
+    /// <returns>Returns the corresponding short course information.</returns>
+    [HttpGet(CoursesRelativeRoutes.GetByIdShort)]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourseEditShortResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetByIdShort([FromRoute] Guid id)
+    {
+        return HandleResult(await Mediator.Send(new GetCourseShortByIdQuery(id)));
     }
 
     /// <summary>
