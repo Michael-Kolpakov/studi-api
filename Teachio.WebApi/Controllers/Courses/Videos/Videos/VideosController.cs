@@ -4,6 +4,7 @@ using Microsoft.Net.Http.Headers;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.Create;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.Delete;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.GetById;
+using Teachio.BLL.CQRS.Courses.Videos.Videos.GetBySectionId;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.Stream;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.Update;
 using Teachio.BLL.CQRS.Courses.Videos.Videos.UpdateOrderIndex;
@@ -32,6 +33,22 @@ public class VideosController : BaseApiController
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         return HandleResult(await Mediator.Send(new GetVideoByIdQuery(id)));
+    }
+
+    /// <summary>
+    /// Retrieves all course videos for the specified section.
+    /// </summary>
+    /// <param name="sectionId">The unique identifier of the section.</param>
+    /// <returns>Returns the section videos ordered by their position.</returns>
+    [HttpGet(VideosRelativeRoutes.GetBySectionId)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SectionVideosResponseDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetBySectionId([FromRoute] Guid sectionId)
+    {
+        return HandleResult(await Mediator.Send(new GetVideosBySectionIdQuery(sectionId)));
     }
 
     /// <summary>

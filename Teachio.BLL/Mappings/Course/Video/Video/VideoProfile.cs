@@ -35,5 +35,10 @@ public class VideoProfile : Profile
             .ForMember(
                 dest => dest.DurationSeconds,
                 opt => opt.MapFrom(src => src.VideoFile!.DurationSeconds));
+
+        CreateMap<VideoEntity, VideoEditPreviewResponseDto>()
+            .ForMember(
+                dest => dest.DurationSeconds,
+                opt => opt.MapFrom(src => src.VideoFile!.DurationSeconds));
     }
 }
