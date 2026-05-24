@@ -7,8 +7,8 @@ using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.Helpers;
+using Teachio.DAL.Entities.Courses.Videos.Videos;
 using Teachio.DAL.Repositories.Interfaces.Base;
-using VideoEntity = Teachio.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Teachio.BLL.CQRS.Courses.Videos.Videos.UpdateOrderIndex;
 
@@ -94,10 +94,10 @@ public class UpdateVideoOrderIndexHandler : IRequestHandler<UpdateVideoOrderInde
         {
             await OrderIndexShiftHelper.ShiftOrderIndexesForUpdateAsync(
                 _repositoryWrapper.VideosRepository,
-                $"{nameof(VideoEntity)}s",
-                nameof(VideoEntity.SectionId),
+                $"{nameof(Video)}s",
+                nameof(Video.SectionId),
                 existingVideo.SectionId,
-                nameof(VideoEntity.Id),
+                nameof(Video.Id),
                 existingVideo.Id,
                 existingVideo.OrderIndex,
                 targetOrderIndex,

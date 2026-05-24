@@ -7,8 +7,8 @@ using Teachio.BLL.Resources.SharedResource;
 using Teachio.BLL.Services.Interfaces;
 using Teachio.BLL.SharedResource;
 using Teachio.BLL.Utils.Helpers;
+using Teachio.DAL.Entities.Courses.Sections;
 using Teachio.DAL.Repositories.Interfaces.Base;
-using SectionEntity = Teachio.DAL.Entities.Courses.Sections.Section;
 
 namespace Teachio.BLL.CQRS.Courses.Sections.UpdateOrderIndex;
 
@@ -94,10 +94,10 @@ public class UpdateSectionOrderIndexHandler : IRequestHandler<UpdateSectionOrder
         {
             await OrderIndexShiftHelper.ShiftOrderIndexesForUpdateAsync(
                 _repositoryWrapper.SectionsRepository,
-                $"{nameof(SectionEntity)}s",
-                nameof(SectionEntity.CourseId),
+                $"{nameof(Section)}s",
+                nameof(Section.CourseId),
                 existingSection.CourseId,
-                nameof(SectionEntity.Id),
+                nameof(Section.Id),
                 existingSection.Id,
                 existingSection.OrderIndex,
                 targetOrderIndex,
