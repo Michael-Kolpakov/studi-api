@@ -98,6 +98,9 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
         }
 
         var courseResponseDto = _mapper.Map<CourseResponseDto>(course);
+
+        MapSectionVideosProgress(courseResponseDto, course, userId);
+
         courseResponseDto.SelectedVideo = selectedVideo is null
             ? null
             : MapSelectedVideo(selectedVideo, userId);
@@ -111,6 +114,26 @@ public class GetCourseByIdHandler : IRequestHandler<GetCourseByIdQuery, Result<C
         selectedVideoResponseDto.VideoProgress = VideoProgressHelper.BuildResponse(selectedVideo, userId);
 
         return selectedVideoResponseDto;
+    }
+
+    private static void MapSectionVideosProgress(CourseResponseDto courseResponseDto, Course course, Guid userId)
+    {
+        var videosById = course.Sections
+            .SelectMany(section => section.Videos)
+            .ToDictionary(video => video.Id, video => video);
+
+        foreach (var sectionDto in courseResponseDto.Sections)
+        {
+            foreach (var videoDto in sectionDto.Videos)
+            {
+                if (!videosById.TryGetValue(videoDto.Id, out var videoEntity))
+                {
+                    continue;
+                }
+
+                videoDto.VideoProgress = VideoProgressHelper.BuildResponse(videoEntity, userId);
+            }
+        }
     }
 
     [ExcludeFromCodeCoverage]
