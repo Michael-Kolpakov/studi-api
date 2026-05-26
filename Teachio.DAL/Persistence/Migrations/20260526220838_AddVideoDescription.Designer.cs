@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Teachio.DAL.Persistence;
 
@@ -11,9 +12,11 @@ using Teachio.DAL.Persistence;
 namespace Teachio.DAL.Persistence.Migrations
 {
     [DbContext(typeof(TeachioDbContext))]
-    partial class TeachioDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260526220838_AddVideoDescription")]
+    partial class AddVideoDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

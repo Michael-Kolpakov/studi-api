@@ -14,6 +14,8 @@ public static class EntityConstants
 
     public const int MaxVideoTitleLength = 60;
 
+    public const int MaxVideoDescriptionLength = 1000;
+
     public const int MaxCourseTitleLength = 60;
 
     public const int MaxCourseDescriptionLength = 1000;

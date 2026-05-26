@@ -1,7 +1,9 @@
 using AutoMapper;
 using Teachio.BLL.DTOs.Courses.Courses.Request;
+using Teachio.BLL.DTOs.Courses.Videos.Videos.Request;
 using Teachio.BLL.Utils.Helpers;
 using Teachio.DAL.Entities.Courses.Courses;
+using Teachio.DAL.Entities.Courses.Videos.Videos;
 
 namespace Teachio.BLL.Utils.MappingResolvers;
 
@@ -13,6 +15,8 @@ public class TrimmedDescriptionResolver : IValueResolver<object, object, string?
         {
             (CourseCreateUpdateRequestDto courseSource, Course) =>
                 TrimAndCapitalizeDescription(courseSource.Description),
+            (VideoCreateUpdateRequestDto videoSource, Video) =>
+                TrimAndCapitalizeDescription(videoSource.Description),
             _ => throw new ArgumentException(
                 $"Unknown source '{source.GetType().Name}' and destination '{destination.GetType().Name}' types combination.")
         };

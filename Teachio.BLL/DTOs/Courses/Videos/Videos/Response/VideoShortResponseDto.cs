@@ -8,6 +8,8 @@ public class VideoShortResponseDto
 
     public string Title { get; set; } = null!;
 
+    public string? Description { get; set; }
+
     public Guid SectionId { get; set; }
 
     public int OrderIndex { get; set; }

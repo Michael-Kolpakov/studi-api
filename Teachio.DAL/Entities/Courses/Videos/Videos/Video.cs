@@ -9,6 +9,8 @@ public class Video
 
     public string Title { get; set; } = null!;
 
+    public string? Description { get; set; }
+
     public Guid SectionId { get; set; }
 
     public Section? Section { get; set; }
