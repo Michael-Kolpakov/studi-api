@@ -1,7 +1,7 @@
-# Teachio API
+# Studi API
 
-A robust, scalable, and maintainable **ASP.NET Code Web API (C#)** for the LMS Teachio platform.  
-This repository contains the backend service responsible for business logic, data access, and external integrations required by Teachio clients.
+A robust, scalable, and maintainable **ASP.NET Code Web API (C#)** for the LMS Studi platform.  
+This repository contains the backend service responsible for business logic, data access, and external integrations required by Studi clients.
 
 > **Status:** Active development
 
@@ -9,7 +9,7 @@ This repository contains the backend service responsible for business logic, dat
 
 ## Overview
 
-**teachio-api** is the backend API layer for the Teachio ecosystem.
+**studi-api** is the backend API layer for the Studi ecosystem.
 It is designed to provide secure, versionable, and testable endpoints for LMS clients.
 
 Typical responsibilities include:
@@ -31,11 +31,11 @@ Typical responsibilities include:
 - DTO mapping and request validation
 - Centralized exception handling and structured logging
 
-# Teachio — Backend (Teachio.WebApi)
+# Studi — Backend (Studi.WebApi)
 
 ## Overview
 
-Teachio is the backend service for an online learning platform. This repository contains the ASP.NET Core Web API (`Teachio.WebApi`), the business logic layer (`Teachio.BLL`), the data access layer (`Teachio.DAL`), and unit/integration tests.
+Studi is the backend service for an online learning platform. This repository contains the ASP.NET Core Web API (`Studi.WebApi`), the business logic layer (`Studi.BLL`), the data access layer (`Studi.DAL`), and unit/integration tests.
 
 ## Purpose
 
@@ -74,8 +74,8 @@ This README provides step-by-step, reproducible instructions for a developer sta
 1. Clone repository
 
 ```bash
-git clone https://github.com/Michael-Kolpakov/teachio-api.git
-cd teachio-api
+git clone https://github.com/Michael-Kolpakov/studi-api.git
+cd studi-api
 ```
 
 2. Verify .NET SDK and install `dotnet-ef` if necessary
@@ -88,12 +88,12 @@ dotnet tool install --global dotnet-ef
 3. Start SQL Server in Docker (recommended)
 
 ```powershell
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=DevPass123!" -p 1433:1433 --name teachio-mssql -d mcr.microsoft.com/mssql/server:2022-latest
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=DevPass123!" -p 1433:1433 --name studi-mssql -d mcr.microsoft.com/mssql/server:2022-latest
 ```
 
 4. Configure local settings
 
-- Open `Teachio.WebApi/appsettings.Local.json` and set required values:
+- Open `Studi.WebApi/appsettings.Local.json` and set required values:
   - `ConnectionStrings:DefaultConnection` — connection string to your SQL Server (example provided uses `localhost` and password `DevPass123!`).
   - `Jwt:SigningKey` — set a secure signing key for JWT tokens.
   - `Smtp` — SMTP host/port/credentials if the application will send email.
@@ -110,13 +110,13 @@ dotnet build -c Debug
 6. Apply EF Core migrations (creates database schema)
 
 ```powershell
-dotnet ef database update --project "Teachio.DAL" --startup-project "Teachio.WebApi"
+dotnet ef database update --project "Studi.DAL" --startup-project "Studi.WebApi"
 ```
 
 7. Run the API
 
 ```powershell
-cd Teachio.WebApi
+cd Studi.WebApi
 dotnet run
 ```
 
@@ -124,7 +124,7 @@ The application will start and print listening URLs. By default, Swagger UI is a
 
 ## Running in Visual Studio
 
-Open `Teachio.sln` in Visual Studio 2022/2023 (with .NET 9 SDK installed) and set `Teachio.WebApi` as the startup project, then run with the debugger.
+Open `Studi.sln` in Visual Studio 2022/2023 (with .NET 9 SDK installed) and set `Studi.WebApi` as the startup project, then run with the debugger.
 
 ## Tests
 
@@ -137,7 +137,7 @@ dotnet test
 Run a single test project (example):
 
 ```powershell
-dotnet test Teachio.XUnitTests/Teachio.XUnitTests.csproj
+dotnet test Studi.XUnitTests/Studi.XUnitTests.csproj
 ```
 
 ## Configuration summary (critical keys)
@@ -148,13 +148,13 @@ dotnet test Teachio.XUnitTests/Teachio.XUnitTests.csproj
 - `GoogleDriveStorage` — OAuth/service account settings for Google Drive integration.
 - `Ffprobe:ExecutablePath` — path or binary name for `ffprobe` used by video processing.
 
-All example values and defaults are present in `Teachio.WebApi/appsettings.Local.json`.
+All example values and defaults are present in `Studi.WebApi/appsettings.Local.json`.
 
 ## Helpful commands
 
 - Restore and build: `dotnet restore && dotnet build`
-- Apply migrations: `dotnet ef database update --project "Teachio.DAL" --startup-project "Teachio.WebApi"`
-- Create migration: `dotnet ef migrations add MyMigration --project "Teachio.DAL" --startup-project "Teachio.WebApi"`
+- Apply migrations: `dotnet ef database update --project "Studi.DAL" --startup-project "Studi.WebApi"`
+- Create migration: `dotnet ef migrations add MyMigration --project "Studi.DAL" --startup-project "Studi.WebApi"`
 - Run SQL Server in Docker: use the `docker run` command above.
 - Verify `ffprobe`: `ffprobe --version`
 
@@ -171,7 +171,7 @@ All example values and defaults are present in `Teachio.WebApi/appsettings.Local
   - A `check-code.ps1` script (in `scripts/`) runs the full code quality gate (restore, build with analyzers, format check, tests).
 - IDE integration and developer workflow:
   - Visual Studio and VS Code (with C# extension) show StyleCop diagnostics inline — fix warnings/errors in the editor.
-  - To run analyzers locally: `dotnet build Teachio.sln` (or use the `check-code.ps1` script for the full gate).
+  - To run analyzers locally: `dotnet build Studi.sln` (or use the `check-code.ps1` script for the full gate).
   - To temporarily bypass analyzer failures for quick experiments, you may build with `-p:RunAnalyzers=false` (not recommended for commits/PRs).
 - Pre-commit and CI:
   - The repository provides a Git hook (`.githooks/pre-commit`) and sets `core.hooksPath=.githooks` to run the build and block commits with analyzer errors.
@@ -188,7 +188,7 @@ This section summarizes StyleCop usage in this repository; see `STYLECOP.md` for
 - "Cannot connect to SQL Server": Ensure the SQL Server instance or Docker container is running, port 1433 is reachable, and `ConnectionStrings:DefaultConnection` is correct.
 - "dotnet-ef not found": Install the tool with `dotnet tool install --global dotnet-ef` and restart your terminal.
 - "ffprobe not found": Install FFmpeg and ensure `ffprobe` is in PATH or set `Ffprobe:ExecutablePath` to the executable path.
-- Migration errors: confirm `--startup-project` is `Teachio.WebApi` and `--project` is `Teachio.DAL` when running EF commands.
+- Migration errors: confirm `--startup-project` is `Studi.WebApi` and `--project` is `Studi.DAL` when running EF commands.
 
 ## Security and secrets
 
@@ -205,6 +205,6 @@ This repository is licensed under the MIT License. See the `LICENSE` file in the
 
 ## Where to look in the code
 
-- API and startup: `Teachio.WebApi`
-- Database context and migrations: `Teachio.DAL/Persistence`
-- Business logic: `Teachio.BLL`
+- API and startup: `Studi.WebApi`
+- Database context and migrations: `Studi.DAL/Persistence`
+- Business logic: `Studi.BLL`

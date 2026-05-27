@@ -11,6 +11,6 @@ if ! git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(cs|csproj)$|
 fi
 
 # Block commit if compilation/analyzers (including StyleCop) fail.
-dotnet build Teachio.sln -p:NuGetAudit=false -p:RunAnalyzers=true -p:RunAnalyzersDuringBuild=true --nologo -v minimal
+dotnet build Studi.sln -p:NuGetAudit=false -p:RunAnalyzers=true -p:RunAnalyzersDuringBuild=true --nologo -v minimal
 
 echo "StyleCop pre-commit checks passed."

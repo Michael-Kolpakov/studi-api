@@ -1,4 +1,4 @@
-# StyleCop in Teachio
+# StyleCop in Studi
 
 This solution uses StyleCop analyzers at the solution level via `Directory.Build.props`.
 
@@ -6,7 +6,7 @@ This solution uses StyleCop analyzers at the solution level via `Directory.Build
 
 - Selected linter: `StyleCop.Analyzers`.
 - Why this linter: it provides strong C# style and readability checks, integrates natively with Roslyn/.NET build, and can be centrally configured for all projects in the solution.
-- Why not project-by-project setup: one shared setup in root files keeps behavior consistent across `Teachio.BLL`, `Teachio.DAL`, `Teachio.WebApi`, and test projects.
+- Why not project-by-project setup: one shared setup in root files keeps behavior consistent across `Studi.BLL`, `Studi.DAL`, `Studi.WebApi`, and test projects.
 
 ## What is configured
 
@@ -43,13 +43,13 @@ This solution uses StyleCop analyzers at the solution level via `Directory.Build
 Run full build with analyzers:
 
 ```powershell
-dotnet build Teachio.sln
+dotnet build Studi.sln
 ```
 
 Run build without NuGet audit blocking (if needed in local environment):
 
 ```powershell
-dotnet build Teachio.sln -p:NuGetAudit=false
+dotnet build Studi.sln -p:NuGetAudit=false
 ```
 
 Run a full code quality gate (restore, build with analyzers/StyleCop, format check, tests):
@@ -72,7 +72,7 @@ To block commits while there are analyzer/build problems, this repository uses a
 
 - Hook file: `.githooks/pre-commit`
 - Git setting: `core.hooksPath=.githooks`
-- Check command: `dotnet build Teachio.sln -p:NuGetAudit=false`
+- Check command: `dotnet build Studi.sln -p:NuGetAudit=false`
 
 If the build fails, the commit is rejected.
 

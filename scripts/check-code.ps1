@@ -30,23 +30,23 @@ Push-Location $repoRoot
 try {
     if (-not $SkipRestore) {
         Invoke-Step -Name "Restore" -Action {
-            dotnet restore Teachio.sln -p:NuGetAudit=false --nologo
+            dotnet restore Studi.sln -p:NuGetAudit=false --nologo
         }
     }
 
     Invoke-Step -Name "Build + StyleCop analyzers" -Action {
-        dotnet build Teachio.sln -c $Configuration -p:NuGetAudit=false -p:RunAnalyzers=true -p:RunAnalyzersDuringBuild=true --nologo -v minimal
+        dotnet build Studi.sln -c $Configuration -p:NuGetAudit=false -p:RunAnalyzers=true -p:RunAnalyzersDuringBuild=true --nologo -v minimal
     }
 
     if (-not $SkipFormatCheck) {
         Invoke-Step -Name "Formatting check (no changes allowed)" -Action {
-            dotnet format Teachio.sln --verify-no-changes --severity error --no-restore --verbosity minimal
+            dotnet format Studi.sln --verify-no-changes --severity error --no-restore --verbosity minimal
         }
     }
 
     if (-not $SkipTests) {
         Invoke-Step -Name "Tests" -Action {
-            dotnet test Teachio.sln -c $Configuration -p:NuGetAudit=false --no-build --nologo -v minimal
+            dotnet test Studi.sln -c $Configuration -p:NuGetAudit=false --no-build --nologo -v minimal
         }
     }
 

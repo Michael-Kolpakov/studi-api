@@ -118,7 +118,7 @@ dotnet_diagnostic.SA1600.severity = none
 generated_code = true
 dotnet_diagnostic.IDE0005.severity = none
 
-[Teachio.WebApi/Controllers/**/*.cs]
+[Studi.WebApi/Controllers/**/*.cs]
 # Enforce high-quality XML docs for Swagger-facing endpoints
 dotnet_diagnostic.SA1600.severity = error
 dotnet_diagnostic.SA1611.severity = error
