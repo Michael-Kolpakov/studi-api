@@ -10,7 +10,6 @@ using Studi.BLL.SharedResource;
 using Studi.DAL.Repositories.Interfaces.Base;
 using Studi.DAL.Repositories.Realizations.Base;
 using Studi.DAL.SharedResource;
-using Studi.WebApi.Services;
 
 namespace Studi.WebApi.Extensions;
 

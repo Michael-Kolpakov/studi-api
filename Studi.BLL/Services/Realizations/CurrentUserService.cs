@@ -1,7 +1,7 @@
+using Microsoft.AspNetCore.Http;
 using Studi.BLL.Services.Interfaces;
-using Studi.BLL.Services.Realizations;
 
-namespace Studi.WebApi.Services;
+namespace Studi.BLL.Services.Realizations;
 
 public class CurrentUserService : ICurrentUserService
 {
