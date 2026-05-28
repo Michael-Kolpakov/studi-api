@@ -1,4 +1,3 @@
-using Google.Apis.Auth;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Studi.BLL.Models.Email.Base;
 using Studi.BLL.Services.Interfaces;
-using Studi.DAL.Entities.Users.Users;
 using Studi.DAL.Persistence;
 using Studi.DAL.Utils.Constants;
 using Studi.DAL.Utils.Database;
@@ -19,35 +17,11 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
 {
     public Mock<IEmailService> EmailServiceMock { get; private set; } = new Mock<IEmailService>();
 
-    public Mock<IGoogleService> GoogleServiceMock { get; private set; } = new Mock<IGoogleService>();
-
     public void SetupMockEmailService(bool success = true)
     {
         EmailServiceMock
             .Setup(es => es.SendEmailAsync(It.IsAny<MessageData>()))
             .ReturnsAsync(success);
-    }
-
-    public void SetupMockGoogleLogin(AppUser user, string? token = null)
-    {
-        if (token is null)
-        {
-            GoogleServiceMock
-                .Setup(gs => gs.ValidateGoogleTokenAsync("invalid_google_id_token"))
-                .ThrowsAsync(new InvalidJwtException("Invalid Google Token"));
-        }
-        else
-        {
-            GoogleServiceMock
-                .Setup(gs => gs.ValidateGoogleTokenAsync(It.IsAny<string>()))
-                .ReturnsAsync(new GoogleJsonWebSignature.Payload()
-                {
-                    Email = user.Email,
-                    GivenName = user.Name,
-                    FamilyName = user.Surname,
-                    Subject = "google-subject-id"
-                });
-        }
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -57,7 +31,6 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
         builder.ConfigureServices(services =>
         {
             ConfigureEmailService(services, EmailServiceMock);
-            ConfigureGoogleService(services, GoogleServiceMock);
             ConfigureDatabase(services);
         });
     }
@@ -72,18 +45,6 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
         }
 
         services.AddSingleton(emailServiceMock.Object);
-    }
-
-    private static void ConfigureGoogleService(IServiceCollection services, Mock<IGoogleService> googleServiceMock)
-    {
-        var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IGoogleService));
-
-        if (descriptor is not null)
-        {
-            services.Remove(descriptor);
-        }
-
-        services.AddSingleton(googleServiceMock.Object);
     }
 
     private static void ConfigureDatabase(IServiceCollection services)
