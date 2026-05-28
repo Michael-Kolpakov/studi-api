@@ -45,4 +45,19 @@
     <data name="RegexName" xml:space="preserve">
         <value>The '{0}' field can contain only latin alphabetic characters, numbers, hyphens and punctuation marks (only dots, commas, !, ?)</value>
     </data>
+    <data name="RegexUserName" xml:space="preserve">
+        <value>The '{0}' field can contain only latin alphabetic characters, spaces and apostrophes</value>
+    </data>
+    <data name="FileEmpty" xml:space="preserve">
+        <value>The '{0}' field must not be empty</value>
+    </data>
+    <data name="FileSizeMax" xml:space="preserve">
+        <value>The '{0}' field must be no larger than {1} MB</value>
+    </data>
+    <data name="FileContentType" xml:space="preserve">
+        <value>The '{0}' field must be one of: {1}</value>
+    </data>
+    <data name="PinCodeInvalid" xml:space="preserve">
+        <value>The '{0}' field must be a {1}-digit numeric code</value>
+    </data>
 </root>

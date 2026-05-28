@@ -85,23 +85,5 @@ namespace Studi.BLL.Resources.SharedResource {
                 return ResourceManager.GetString("UploadVideoRollbackFailed", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Uploaded video file is empty.
-        /// </summary>
-        internal static string UploadedVideoFileIsEmpty {
-            get {
-                return ResourceManager.GetString("UploadedVideoFileIsEmpty", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Uploaded video file size exceeds the maximum allowed value of {0} MB.
-        /// </summary>
-        internal static string UploadedVideoFileSizeExceedsLimit {
-            get {
-                return ResourceManager.GetString("UploadedVideoFileSizeExceedsLimit", resourceCulture);
-            }
-        }
     }
 }

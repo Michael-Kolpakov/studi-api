@@ -18,14 +18,8 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="UploadedAvatarFileIsEmpty" xml:space="preserve">
-        <value>Uploaded avatar file is empty.</value>
-    </data>
     <data name="GeneratedAvatarFileNameTooLong" xml:space="preserve">
         <value>Generated avatar file name exceeds the maximum allowed length of {0} characters.</value>
-    </data>
-    <data name="UploadedAvatarFileSizeExceedsLimit" xml:space="preserve">
-        <value>Uploaded avatar file size exceeds the maximum allowed value of {0} MB.</value>
     </data>
     <data name="UploadAvatarProcessingFailed" xml:space="preserve">
         <value>Failed to process uploaded avatar file.</value>

@@ -51,29 +51,6 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
         var userId = _currentUserService.GetUserId();
         _logger.LogInformation($"Entered '{GetType().Name}' to upload a media file for video with Id: {request.VideoUploadRequestDto.VideoId} by UserId: {userId}");
 
-        if (request.VideoUploadRequestDto.VideoFile.Length == 0)
-        {
-            var errorMessage = _stringLocalizerVideoUpload[
-                nameof(VideoUploadSharedResource_en.UploadedVideoFileIsEmpty)
-            ].Value;
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
-        if (request.VideoUploadRequestDto.VideoFile.Length > EntityConstants.MaxVideoFileSizeBytes)
-        {
-            var maxVideoFileSizeMegabytes = EntityConstants.MaxVideoFileSizeBytes / (1024L * 1024L);
-            var errorMessage = _stringLocalizerVideoUpload[
-                nameof(VideoUploadSharedResource_en.UploadedVideoFileSizeExceedsLimit),
-                maxVideoFileSizeMegabytes
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
         var uploadVideoContext = await _repositoryWrapper.VideosRepository.GetSingleOrDefaultProjectedAsync(
             x => new UploadVideoContext
             {

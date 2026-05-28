@@ -18,12 +18,6 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="UploadedVideoFileIsEmpty" xml:space="preserve">
-        <value>Uploaded video file is empty.</value>
-    </data>
-    <data name="UploadedVideoFileSizeExceedsLimit" xml:space="preserve">
-        <value>Uploaded video file size exceeds the maximum allowed value of {0} MB.</value>
-    </data>
     <data name="GeneratedVideoFileNameTooLong" xml:space="preserve">
         <value>Generated video file name exceeds the maximum allowed length of {0} characters.</value>
     </data>

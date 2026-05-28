@@ -45,21 +45,9 @@ namespace Studi.BLL.Resources.SharedResource {
             }
         }
 
-        internal static string UploadedAvatarFileIsEmpty {
-            get {
-                return ResourceManager.GetString("UploadedAvatarFileIsEmpty", resourceCulture);
-            }
-        }
-
         internal static string GeneratedAvatarFileNameTooLong {
             get {
                 return ResourceManager.GetString("GeneratedAvatarFileNameTooLong", resourceCulture);
-            }
-        }
-
-        internal static string UploadedAvatarFileSizeExceedsLimit {
-            get {
-                return ResourceManager.GetString("UploadedAvatarFileSizeExceedsLimit", resourceCulture);
             }
         }
 

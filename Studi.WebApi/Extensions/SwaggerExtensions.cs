@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.OpenApi.Models;
+using Studi.WebApi.Utils.Swagger;
 
 namespace Studi.WebApi.Extensions;
 
@@ -41,6 +42,8 @@ public static class SwaggerExtensions
             {
                 { jwtSecurityScheme, Array.Empty<string>() }
             });
+
+            options.SchemaFilter<PinCodeSchemaFilter>();
         });
 
         return services;
@@ -49,7 +52,7 @@ public static class SwaggerExtensions
     public static IApplicationBuilder UseCustomSwagger(this IApplicationBuilder app)
     {
         app.UseSwagger();
-        app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "TeachAPI V1"));
+        app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "StudiAPI V1"));
 
         return app;
     }

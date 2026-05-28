@@ -46,29 +46,6 @@ public class UploadAvatarHandler : IRequestHandler<UploadAvatarCommand, Result<A
         var userId = _currentUserService.GetUserId();
         _logger.LogInformation($"Entered '{GetType().Name}' to upload avatar for UserId: {userId}");
 
-        if (request.AvatarUploadRequestDto.AvatarFile.Length == 0)
-        {
-            var errorMessage = _stringLocalizerAvatarUpload[
-                nameof(AvatarUploadSharedResource_en.UploadedAvatarFileIsEmpty)
-            ].Value;
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
-        if (request.AvatarUploadRequestDto.AvatarFile.Length > EntityConstants.MaxAvatarFileSizeBytes)
-        {
-            var maxAvatarFileSizeMegabytes = EntityConstants.MaxAvatarFileSizeBytes / (1024L * 1024L);
-            var errorMessage = _stringLocalizerAvatarUpload[
-                nameof(AvatarUploadSharedResource_en.UploadedAvatarFileSizeExceedsLimit),
-                maxAvatarFileSizeMegabytes
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
         var uploadAvatarContext = await _repositoryWrapper.AppUsersRepository.GetSingleOrDefaultProjectedAsync(
             x => new UploadAvatarContext
             {

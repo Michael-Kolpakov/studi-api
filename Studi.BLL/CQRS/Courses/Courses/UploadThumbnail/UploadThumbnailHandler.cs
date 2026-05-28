@@ -49,29 +49,6 @@ public class UploadThumbnailHandler : IRequestHandler<UploadThumbnailCommand, Re
         var userId = _currentUserService.GetUserId();
         _logger.LogInformation($"Entered '{GetType().Name}' to upload a thumbnail for course with Id: {request.ThumbnailUploadRequestDto.CourseId} by UserId: {userId}");
 
-        if (request.ThumbnailUploadRequestDto.ThumbnailFile.Length == 0)
-        {
-            var errorMessage = _stringLocalizerThumbnailUpload[
-                nameof(ThumbnailUploadSharedResource_en.UploadedThumbnailFileIsEmpty)
-            ].Value;
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
-        if (request.ThumbnailUploadRequestDto.ThumbnailFile.Length > EntityConstants.MaxThumbnailFileSizeBytes)
-        {
-            var maxThumbnailFileSizeMegabytes = EntityConstants.MaxThumbnailFileSizeBytes / (1024L * 1024L);
-            var errorMessage = _stringLocalizerThumbnailUpload[
-                nameof(ThumbnailUploadSharedResource_en.UploadedThumbnailFileSizeExceedsLimit),
-                maxThumbnailFileSizeMegabytes
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
         var uploadThumbnailContext = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultProjectedAsync(
             x => new UploadThumbnailContext
             {

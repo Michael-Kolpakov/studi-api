@@ -69,15 +69,6 @@ namespace Studi.BLL.Resources.SharedResource {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Uploaded thumbnail file size exceeds the maximum allowed value of {0} MB.
-        /// </summary>
-        internal static string UploadedThumbnailFileSizeExceedsLimit {
-            get {
-                return ResourceManager.GetString("UploadedThumbnailFileSizeExceedsLimit", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Failed to process uploaded thumbnail file.
         /// </summary>
         internal static string UploadThumbnailProcessingFailed {
@@ -92,15 +83,6 @@ namespace Studi.BLL.Resources.SharedResource {
         internal static string UploadThumbnailRollbackFailed {
             get {
                 return ResourceManager.GetString("UploadThumbnailRollbackFailed", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Uploaded thumbnail file is empty.
-        /// </summary>
-        internal static string UploadedThumbnailFileIsEmpty {
-            get {
-                return ResourceManager.GetString("UploadedThumbnailFileIsEmpty", resourceCulture);
             }
         }
     }

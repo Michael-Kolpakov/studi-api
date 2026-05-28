@@ -41,17 +41,6 @@ public class VerifyRegistrationPinHandler : IRequestHandler<VerifyRegistrationPi
         var verificationId = request.VerifyRegistrationPinRequestDto.VerificationId;
         _logger.LogInformation($"Entered '{GetType().Name}' to verify registration PIN with Id: {verificationId}");
 
-        if (verificationId is null)
-        {
-            var errorMessage = _stringLocalizerAuth[
-                nameof(AuthSharedResource_en.RegistrationPinInvalid)
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
         var pendingRegistration = await _repositoryWrapper.PendingRegistrationsRepository.GetSingleOrDefaultAsync(
             pr => pr.Id == verificationId,
             cancellationToken: cancellationToken);
@@ -81,8 +70,7 @@ public class VerifyRegistrationPinHandler : IRequestHandler<VerifyRegistrationPi
             return Result.Fail(errorMessage);
         }
 
-        if (!_pinCodeService.IsValidPin(request.VerifyRegistrationPinRequestDto.PinCode)
-            || !_pinCodeService.VerifyPin(request.VerifyRegistrationPinRequestDto.PinCode, pendingRegistration.PinHash))
+        if (!_pinCodeService.VerifyPin(request.VerifyRegistrationPinRequestDto.PinCode, pendingRegistration.PinHash))
         {
             var errorMessage = _stringLocalizerAuth[
                 nameof(AuthSharedResource_en.RegistrationPinInvalid)
