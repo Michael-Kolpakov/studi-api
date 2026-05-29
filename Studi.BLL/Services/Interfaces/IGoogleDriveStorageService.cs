@@ -18,6 +18,11 @@ public interface IGoogleDriveStorageService
         string? rangeHeader,
         CancellationToken cancellationToken = default);
 
+    Task<Result> RenameFolderByPathAsync(
+        IEnumerable<string> folderSegments,
+        string newFolderName,
+        CancellationToken cancellationToken = default);
+
     Task<Result> DeleteFileAsync(string fileId, CancellationToken cancellationToken = default);
 
     Task<Result> DeleteFileByPathAsync(

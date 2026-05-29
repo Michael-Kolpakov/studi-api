@@ -30,6 +30,9 @@
     <data name="FileStreamNotReadable" xml:space="preserve">
         <value>File stream must be readable.</value>
     </data>
+    <data name="FolderNameIsEmpty" xml:space="preserve">
+        <value>Google Drive folder name cannot be null or whitespace.</value>
+    </data>
     <data name="RootFolderIsNotAvailable" xml:space="preserve">
         <value>Google Drive root folder is not available.</value>
     </data>
@@ -50,6 +53,15 @@
     </data>
     <data name="DeleteFileByPathFailed" xml:space="preserve">
         <value>Failed to delete Google Drive file '{0}' by path.</value>
+    </data>
+    <data name="FolderNotFoundByPath" xml:space="preserve">
+        <value>Google Drive folder '{0}' was not found by path.</value>
+    </data>
+    <data name="FolderAlreadyExistsInParent" xml:space="preserve">
+        <value>Google Drive folder named '{0}' already exists in the target folder.</value>
+    </data>
+    <data name="RenameFolderFailed" xml:space="preserve">
+        <value>Failed to rename Google Drive folder '{0}'.</value>
     </data>
     <data name="MultipleFilesWithSameName" xml:space="preserve">
         <value>Multiple Google Drive files named '{0}' were found in the same folder.</value>

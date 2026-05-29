@@ -274,5 +274,41 @@ namespace Studi.BLL.Resources.SharedResource {
                 return ResourceManager.GetString("UploadedFileIdentifierNotReturned", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Google Drive folder name cannot be null or whitespace.
+        /// </summary>
+        internal static string FolderNameIsEmpty {
+            get {
+                return ResourceManager.GetString("FolderNameIsEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Google Drive folder '{0}' was not found by path.
+        /// </summary>
+        internal static string FolderNotFoundByPath {
+            get {
+                return ResourceManager.GetString("FolderNotFoundByPath", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Google Drive folder named '{0}' already exists in the target folder.
+        /// </summary>
+        internal static string FolderAlreadyExistsInParent {
+            get {
+                return ResourceManager.GetString("FolderAlreadyExistsInParent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to rename Google Drive folder '{0}'.
+        /// </summary>
+        internal static string RenameFolderFailed {
+            get {
+                return ResourceManager.GetString("RenameFolderFailed", resourceCulture);
+            }
+        }
     }
 }

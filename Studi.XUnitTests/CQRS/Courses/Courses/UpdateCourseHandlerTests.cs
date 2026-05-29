@@ -18,9 +18,11 @@ public class UpdateCourseHandlerTests
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<ILoggerService> _mockLoggerService;
     private readonly Mock<ICurrentUserService> _mockCurrentUserService;
+    private readonly Mock<IGoogleDriveStorageService> _mockGoogleDriveStorageService;
     private readonly CannotFindLocalizerMock _cannotFindLocalizerMock;
     private readonly NoPermissionsLocalizerMock _noPermissionsLocalizerMock;
     private readonly AlreadyExistsLocalizerMock _alreadyExistsLocalizerMock;
+    private readonly BllLocalizerMock _bllLocalizerMock;
 
     private readonly UpdateCourseHandler _sut;
 
@@ -32,9 +34,11 @@ public class UpdateCourseHandlerTests
         _mockMapper = new Mock<IMapper>();
         _mockLoggerService = new Mock<ILoggerService>();
         _mockCurrentUserService = new Mock<ICurrentUserService>();
+        _mockGoogleDriveStorageService = new Mock<IGoogleDriveStorageService>();
         _cannotFindLocalizerMock = new CannotFindLocalizerMock();
         _noPermissionsLocalizerMock = new NoPermissionsLocalizerMock();
         _alreadyExistsLocalizerMock = new AlreadyExistsLocalizerMock();
+        _bllLocalizerMock = new BllLocalizerMock();
 
         _mockRepository
             .Setup(x => x.CoursesRepository)
@@ -43,11 +47,13 @@ public class UpdateCourseHandlerTests
         _sut = new UpdateCourseHandler(
             _mockMapper.Object,
             _mockRepository.Object,
+            _mockGoogleDriveStorageService.Object,
             _mockLoggerService.Object,
             _mockCurrentUserService.Object,
             _cannotFindLocalizerMock,
             _noPermissionsLocalizerMock,
-            _alreadyExistsLocalizerMock);
+            _alreadyExistsLocalizerMock,
+            _bllLocalizerMock);
     }
 
     [Fact]

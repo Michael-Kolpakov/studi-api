@@ -85,5 +85,23 @@ namespace Studi.BLL.Resources.SharedResource {
                 return ResourceManager.GetString("VideosCountExceedsLimit", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to update course.
+        /// </summary>
+        internal static string CourseUpdateFailed {
+            get {
+                return ResourceManager.GetString("CourseUpdateFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to update section.
+        /// </summary>
+        internal static string SectionUpdateFailed {
+            get {
+                return ResourceManager.GetString("SectionUpdateFailed", resourceCulture);
+            }
+        }
     }
 }

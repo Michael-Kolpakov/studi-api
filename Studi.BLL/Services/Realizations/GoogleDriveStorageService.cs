@@ -150,6 +150,7 @@ public class GoogleDriveStorageService : IGoogleDriveStorageService
                 var errorMessage = _stringLocalizerGoogleDriveStorage[
                     nameof(GoogleDriveStorageSharedResource_en.UploadedFileIdentifierNotReturned)
                 ].Value;
+
                 _logger.LogError(null, errorMessage);
 
                 return Result.Fail(errorMessage);
@@ -166,6 +167,7 @@ public class GoogleDriveStorageService : IGoogleDriveStorageService
             var errorMessage = _stringLocalizerGoogleDriveStorage[
                 nameof(GoogleDriveStorageSharedResource_en.UploadFailed)
             ].Value;
+
             _logger.LogError(null, errorMessage, ex.ToString());
 
             return Result.Fail(errorMessage);
@@ -308,6 +310,7 @@ public class GoogleDriveStorageService : IGoogleDriveStorageService
             var errorMessage = _stringLocalizerGoogleDriveStorage[
                 nameof(GoogleDriveStorageSharedResource_en.DownloadFailed)
             ].Value;
+
             _logger.LogError(null, errorMessage, ex.ToString());
 
             return Result.Fail(errorMessage);
@@ -320,6 +323,101 @@ public class GoogleDriveStorageService : IGoogleDriveStorageService
             {
                 driveService.Dispose();
             }
+        }
+    }
+
+    public async Task<Result> RenameFolderByPathAsync(
+        IEnumerable<string> folderSegments,
+        string newFolderName,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(newFolderName))
+        {
+            var errorMessage = _stringLocalizerGoogleDriveStorage[
+                nameof(GoogleDriveStorageSharedResource_en.FolderNameIsEmpty)
+            ].Value;
+
+            return Result.Fail(errorMessage);
+        }
+
+        var folderSegmentsList = folderSegments
+            .Where(segment => !string.IsNullOrWhiteSpace(segment))
+            .Select(segment => segment.Trim())
+            .ToList();
+
+        var driveServiceResult = TryCreateDriveService();
+
+        if (driveServiceResult.IsFailed)
+        {
+            return Result.Fail(driveServiceResult.Errors[0].Message);
+        }
+
+        try
+        {
+            using var driveService = driveServiceResult.Value;
+
+            var rootFolderId = await GetRootFolderIdAsync(driveService, createIfMissing: false, cancellationToken);
+
+            if (string.IsNullOrWhiteSpace(rootFolderId))
+            {
+                var errorMessage = _stringLocalizerGoogleDriveStorage[
+                    nameof(GoogleDriveStorageSharedResource_en.RootFolderIsNotAvailable)
+                ].Value;
+
+                return Result.Fail(errorMessage);
+            }
+
+            var resolvedFolderResult = await ResolveFolderByPathAsync(
+                driveService,
+                rootFolderId,
+                folderSegmentsList,
+                cancellationToken);
+
+            if (resolvedFolderResult.IsFailed)
+            {
+                return Result.Fail(resolvedFolderResult.Errors[0].Message);
+            }
+
+            var resolvedFolder = resolvedFolderResult.Value;
+
+            var conflictingFolderId = await FindFolderIdAsync(
+                driveService,
+                resolvedFolder.ParentFolderId,
+                newFolderName,
+                cancellationToken);
+
+            if (!string.IsNullOrWhiteSpace(conflictingFolderId) &&
+                !string.Equals(conflictingFolderId, resolvedFolder.FolderId, StringComparison.Ordinal))
+            {
+                var errorMessage = _stringLocalizerGoogleDriveStorage[
+                    nameof(GoogleDriveStorageSharedResource_en.FolderAlreadyExistsInParent),
+                    newFolderName
+                ].Value;
+
+                return Result.Fail(errorMessage);
+            }
+
+            var updateRequest = driveService.Files.Update(
+                new DriveFile { Name = newFolderName },
+                resolvedFolder.FolderId);
+
+            updateRequest.Fields = "id,name";
+            updateRequest.SupportsAllDrives = true;
+
+            await updateRequest.ExecuteAsync(cancellationToken);
+
+            return Result.Ok();
+        }
+        catch (Exception ex)
+        {
+            var errorMessage = _stringLocalizerGoogleDriveStorage[
+                nameof(GoogleDriveStorageSharedResource_en.RenameFolderFailed),
+                newFolderName
+            ].Value;
+
+            _logger.LogError(null, errorMessage, ex.ToString());
+
+            return Result.Fail(errorMessage);
         }
     }
 
@@ -353,6 +451,7 @@ public class GoogleDriveStorageService : IGoogleDriveStorageService
                 nameof(GoogleDriveStorageSharedResource_en.DeleteFileFailed),
                 fileId
             ].Value;
+
             _logger.LogError(null, errorMessage, ex.ToString());
 
             return Result.Fail(errorMessage);
@@ -437,6 +536,7 @@ public class GoogleDriveStorageService : IGoogleDriveStorageService
                 nameof(GoogleDriveStorageSharedResource_en.DeleteFileByPathFailed),
                 fileName
             ].Value;
+
             _logger.LogError(null, errorMessage, ex.ToString());
 
             return Result.Fail(errorMessage);
@@ -498,6 +598,7 @@ public class GoogleDriveStorageService : IGoogleDriveStorageService
             var errorMessage = _stringLocalizerGoogleDriveStorage[
                 nameof(GoogleDriveStorageSharedResource_en.DeleteFileByPathFailed)
             ].Value;
+
             _logger.LogError(null, errorMessage, ex.ToString());
 
             return Result.Fail(errorMessage);
@@ -581,6 +682,42 @@ public class GoogleDriveStorageService : IGoogleDriveStorageService
         return await DeleteFileByIdInternalAsync(driveService, folderId, cancellationToken);
     }
 
+    private async Task<Result<ResolvedFolderPath>> ResolveFolderByPathAsync(
+        DriveService driveService,
+        string rootFolderId,
+        IReadOnlyList<string> folderSegments,
+        CancellationToken cancellationToken)
+    {
+        string? currentFolderId = rootFolderId;
+        string? parentFolderId = null;
+
+        foreach (var folderName in folderSegments)
+        {
+            parentFolderId = currentFolderId;
+            currentFolderId = await FindFolderIdAsync(
+                driveService,
+                currentFolderId,
+                folderName,
+                cancellationToken);
+
+            if (string.IsNullOrWhiteSpace(currentFolderId))
+            {
+                var errorMessage = _stringLocalizerGoogleDriveStorage[
+                    nameof(GoogleDriveStorageSharedResource_en.FolderNotFoundByPath),
+                    string.Join('/', folderSegments)
+                ].Value;
+
+                return Result.Fail(errorMessage);
+            }
+        }
+
+        return Result.Ok(new ResolvedFolderPath
+        {
+            ParentFolderId = parentFolderId,
+            FolderId = currentFolderId
+        });
+    }
+
     private static async Task<Result> DeleteFileByIdInternalAsync(
         DriveService driveService,
         string fileId,
@@ -627,6 +764,7 @@ public class GoogleDriveStorageService : IGoogleDriveStorageService
             var errorMessage = _stringLocalizerGoogleDriveStorage[
                 nameof(GoogleDriveStorageSharedResource_en.InitializeClientFailed)
             ].Value;
+
             _logger.LogError(null, errorMessage, ex.ToString());
 
             return Result.Fail(errorMessage);
@@ -746,6 +884,7 @@ public class GoogleDriveStorageService : IGoogleDriveStorageService
             var errorMessage = _stringLocalizerGoogleDriveStorage[
                 nameof(GoogleDriveStorageSharedResource_en.InitializeCredentialsFailed)
             ].Value;
+
             _logger.LogError(null, errorMessage, ex.ToString());
 
             return Result.Fail(errorMessage);
@@ -863,5 +1002,12 @@ public class GoogleDriveStorageService : IGoogleDriveStorageService
         return existingFolders.Files is { Count: > 0 }
             ? existingFolders.Files[0].Id
             : null;
+    }
+
+    private sealed class ResolvedFolderPath
+    {
+        public string? ParentFolderId { get; set; }
+
+        public string FolderId { get; set; } = null!;
     }
 }

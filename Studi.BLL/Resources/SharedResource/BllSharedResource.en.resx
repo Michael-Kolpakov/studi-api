@@ -27,4 +27,10 @@
     <data name="VideosCountExceedsLimit" xml:space="preserve">
         <value>Section with Id '{0}' already has the maximum allowed number of videos: {1}.</value>
     </data>
+    <data name="CourseUpdateFailed" xml:space="preserve">
+        <value>Failed to update course.</value>
+    </data>
+    <data name="SectionUpdateFailed" xml:space="preserve">
+        <value>Failed to update section.</value>
+    </data>
 </root>
