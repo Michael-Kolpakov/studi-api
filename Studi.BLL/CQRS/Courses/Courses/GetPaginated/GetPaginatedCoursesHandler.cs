@@ -10,10 +10,10 @@ using Studi.BLL.Resources.SharedResource;
 using Studi.BLL.Services.Interfaces;
 using Studi.BLL.SharedResource;
 using Studi.BLL.Utils.Helpers;
+using Studi.DAL.Entities.Courses.Courses;
 using Studi.DAL.Repositories.Interfaces.Base;
 using Studi.DAL.Utils.Constants;
 using Studi.DAL.Utils.Helpers;
-using CourseEntity = Studi.DAL.Entities.Courses.Courses.Course;
 
 namespace Studi.BLL.CQRS.Courses.Courses.GetPaginated;
 
@@ -107,7 +107,7 @@ public class GetPaginatedCoursesHandler : IRequestHandler<GetPaginatedCoursesQue
     }
 
     [ExcludeFromCodeCoverage]
-    private static IIncludableQueryable<CourseEntity, object> IncludeCourseRelatedEntities(IQueryable<CourseEntity> query)
+    private static IIncludableQueryable<Course, object> IncludeCourseRelatedEntities(IQueryable<Course> query)
     {
         return query
             .Include(c => c.OwnerUser)

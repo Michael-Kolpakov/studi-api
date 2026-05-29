@@ -12,7 +12,6 @@ using Studi.BLL.SharedResource;
 using Studi.BLL.Utils.Helpers;
 using Studi.DAL.Entities.Courses.Videos.Videos;
 using Studi.DAL.Repositories.Interfaces.Base;
-using VideoEntity = Studi.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Studi.BLL.CQRS.Courses.Videos.Videos.Delete;
 
@@ -96,7 +95,7 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
         await OrderIndexShiftHelper.ShiftOrderIndexesForDeleteAsync(
             _repositoryWrapper.VideosRepository,
             $"{nameof(Video)}s",
-            nameof(VideoEntity.SectionId),
+            nameof(Video.SectionId),
             video.SectionId,
             video.OrderIndex,
             cancellationToken);
@@ -114,7 +113,7 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
     }
 
     [ExcludeFromCodeCoverage]
-    private static IIncludableQueryable<VideoEntity, object> IncludeVideoRelatedEntities(IQueryable<VideoEntity> query)
+    private static IIncludableQueryable<Video, object> IncludeVideoRelatedEntities(IQueryable<Video> query)
     {
         return query
             .Include(v => v.Section)
@@ -126,7 +125,7 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
 
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]
     private async Task<Result> DeleteVideoFromCDNAsync(
-        VideoEntity video,
+        Video video,
         DeleteVideoCommand request,
         CancellationToken cancellationToken)
     {

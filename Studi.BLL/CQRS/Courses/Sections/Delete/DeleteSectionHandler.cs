@@ -12,7 +12,6 @@ using Studi.BLL.SharedResource;
 using Studi.BLL.Utils.Helpers;
 using Studi.DAL.Entities.Courses.Sections;
 using Studi.DAL.Repositories.Interfaces.Base;
-using SectionEntity = Studi.DAL.Entities.Courses.Sections.Section;
 
 namespace Studi.BLL.CQRS.Courses.Sections.Delete;
 
@@ -102,7 +101,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
         await OrderIndexShiftHelper.ShiftOrderIndexesForDeleteAsync(
             _repositoryWrapper.SectionsRepository,
             $"{nameof(Section)}s",
-            nameof(SectionEntity.CourseId),
+            nameof(Section.CourseId),
             section.CourseId,
             section.OrderIndex,
             cancellationToken);
@@ -120,7 +119,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
     }
 
     [ExcludeFromCodeCoverage]
-    private static IIncludableQueryable<SectionEntity, object> IncludeSectionRelatedEntities(IQueryable<SectionEntity> query)
+    private static IIncludableQueryable<Section, object> IncludeSectionRelatedEntities(IQueryable<Section> query)
     {
         return query
             .Include(s => s.Course)
@@ -133,7 +132,7 @@ public class DeleteSectionHandler : IRequestHandler<DeleteSectionCommand, Result
 
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]
     private async Task<Result> DeleteSectionFolderFromDriveAsync(
-        SectionEntity section,
+        Section section,
         string ownerUserEmail,
         DeleteSectionCommand request,
         CancellationToken cancellationToken)

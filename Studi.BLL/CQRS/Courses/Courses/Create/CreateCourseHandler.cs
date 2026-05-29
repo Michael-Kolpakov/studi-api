@@ -6,8 +6,8 @@ using Studi.BLL.DTOs.Courses.Courses.Response;
 using Studi.BLL.Resources.SharedResource;
 using Studi.BLL.Services.Interfaces;
 using Studi.BLL.SharedResource;
+using Studi.DAL.Entities.Courses.Courses;
 using Studi.DAL.Repositories.Interfaces.Base;
-using CourseEntity = Studi.DAL.Entities.Courses.Courses.Course;
 
 namespace Studi.BLL.CQRS.Courses.Courses.Create;
 
@@ -41,7 +41,7 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
         var userId = _currentUserService.GetUserId();
         _logger.LogInformation($"Entered '{GetType().Name}' to create a new course by UserId: {userId}");
 
-        var newCourse = _mapper.Map<CourseEntity>(
+        var newCourse = _mapper.Map<Course>(
             request.CourseCreateRequestDto,
             opt => opt.Items["OwnerUserId"] = userId);
 
@@ -69,7 +69,7 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
 
             var responseErrorMessage = _stringLocalizerAlreadyExists[
                 nameof(AlreadyExistsSharedResource_en.CourseAlreadyExistsForUser),
-                courseWithSameNameExists.Title
+                courseWithSameNameExists.CourseName
             ].Value;
 
             return Result.Fail(responseErrorMessage);
@@ -85,7 +85,7 @@ public class CreateCourseHandler : IRequestHandler<CreateCourseCommand, Result<C
         return Result.Ok(courseResponseDto);
     }
 
-    private async Task LoadOwnerUserAsync(CourseEntity course, Guid ownerUserId, CancellationToken cancellationToken)
+    private async Task LoadOwnerUserAsync(Course course, Guid ownerUserId, CancellationToken cancellationToken)
     {
         if (course.OwnerUser is not null)
         {

@@ -10,8 +10,8 @@ using Studi.BLL.Resources.SharedResource;
 using Studi.BLL.Services.Interfaces;
 using Studi.BLL.SharedResource;
 using Studi.BLL.Utils.Helpers;
+using Studi.DAL.Entities.Courses.Videos.Videos;
 using Studi.DAL.Repositories.Interfaces.Base;
-using VideoEntity = Studi.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Studi.BLL.CQRS.Courses.Videos.Videos.GetById;
 
@@ -86,7 +86,7 @@ public class GetVideoByIdHandler : IRequestHandler<GetVideoByIdQuery, Result<Vid
     }
 
     [ExcludeFromCodeCoverage]
-    private static IIncludableQueryable<VideoEntity, object> IncludeVideoRelatedEntities(IQueryable<VideoEntity> query)
+    private static IIncludableQueryable<Video, object> IncludeVideoRelatedEntities(IQueryable<Video> query)
     {
         return query
             .Include(v => v.Section)

@@ -9,8 +9,8 @@ using Studi.BLL.DTOs.Courses.Videos.Videos.Response;
 using Studi.BLL.Resources.SharedResource;
 using Studi.BLL.Services.Interfaces;
 using Studi.BLL.SharedResource;
+using Studi.DAL.Entities.Courses.Videos.Videos;
 using Studi.DAL.Repositories.Interfaces.Base;
-using VideoEntity = Studi.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Studi.BLL.CQRS.Courses.Videos.Videos.Update;
 
@@ -95,7 +95,7 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
     }
 
     [ExcludeFromCodeCoverage]
-    private static IIncludableQueryable<VideoEntity, object> IncludeVideoRelatedEntities(IQueryable<VideoEntity> query)
+    private static IIncludableQueryable<Video, object> IncludeVideoRelatedEntities(IQueryable<Video> query)
     {
         return query
             .Include(v => v.VideoFile)

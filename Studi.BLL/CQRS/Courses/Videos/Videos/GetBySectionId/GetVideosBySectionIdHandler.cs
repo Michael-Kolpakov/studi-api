@@ -9,8 +9,8 @@ using Studi.BLL.DTOs.Courses.Videos.Videos.Response;
 using Studi.BLL.Resources.SharedResource;
 using Studi.BLL.Services.Interfaces;
 using Studi.BLL.SharedResource;
+using Studi.DAL.Entities.Courses.Videos.Videos;
 using Studi.DAL.Repositories.Interfaces.Base;
-using VideoEntity = Studi.DAL.Entities.Courses.Videos.Videos.Video;
 
 namespace Studi.BLL.CQRS.Courses.Videos.Videos.GetBySectionId;
 
@@ -20,26 +20,20 @@ public class GetVideosBySectionIdHandler : IRequestHandler<GetVideosBySectionIdQ
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
     private readonly ICurrentUserService _currentUserService;
-    private readonly ICourseAccessService _courseAccessService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
-    private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
 
     public GetVideosBySectionIdHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
         ICurrentUserService currentUserService,
-        ICourseAccessService courseAccessService,
-        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
-        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
+        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
         _currentUserService = currentUserService;
-        _courseAccessService = courseAccessService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
-        _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
     public async Task<Result<SectionVideosResponseDto>> Handle(GetVideosBySectionIdQuery request, CancellationToken cancellationToken)
@@ -56,19 +50,6 @@ public class GetVideosBySectionIdHandler : IRequestHandler<GetVideosBySectionIdQ
         {
             var errorMessage = _stringLocalizerCannotFind[
                 nameof(CannotFindSharedResource_en.CannotFindSectionById),
-                request.SectionId
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
-        var hasAccess = await _courseAccessService.HasAccessToSectionAsync(section.Id, userId, cancellationToken);
-        if (!hasAccess)
-        {
-            var errorMessage = _stringLocalizerNoPermissions[
-                nameof(NoPermissionsSharedResource_en.NoPermissionsToGetSectionForUser),
                 request.SectionId
             ].Value;
 
@@ -95,7 +76,7 @@ public class GetVideosBySectionIdHandler : IRequestHandler<GetVideosBySectionIdQ
     }
 
     [ExcludeFromCodeCoverage]
-    private static IIncludableQueryable<VideoEntity, object> IncludeVideoRelatedEntities(IQueryable<VideoEntity> query)
+    private static IIncludableQueryable<Video, object> IncludeVideoRelatedEntities(IQueryable<Video> query)
     {
         return query
             .Include(v => v.VideoFile!);

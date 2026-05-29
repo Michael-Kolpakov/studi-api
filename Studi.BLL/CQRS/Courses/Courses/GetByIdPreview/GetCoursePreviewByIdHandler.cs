@@ -9,8 +9,8 @@ using Studi.BLL.DTOs.Courses.Courses.Response;
 using Studi.BLL.Resources.SharedResource;
 using Studi.BLL.Services.Interfaces;
 using Studi.BLL.SharedResource;
+using Studi.DAL.Entities.Courses.Courses;
 using Studi.DAL.Repositories.Interfaces.Base;
-using CourseEntity = Studi.DAL.Entities.Courses.Courses.Course;
 
 namespace Studi.BLL.CQRS.Courses.Courses.GetByIdPreview;
 
@@ -67,7 +67,7 @@ public class GetCoursePreviewByIdHandler : IRequestHandler<GetCoursePreviewByIdQ
     }
 
     [ExcludeFromCodeCoverage]
-    private static IIncludableQueryable<CourseEntity, object> IncludeCourseRelatedEntities(IQueryable<CourseEntity> query)
+    private static IIncludableQueryable<Course, object> IncludeCourseRelatedEntities(IQueryable<Course> query)
     {
         return query
             .Include(c => c.OwnerUser)

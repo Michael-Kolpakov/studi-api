@@ -10,8 +10,8 @@ using Studi.BLL.Resources.SharedResource;
 using Studi.BLL.Services.Interfaces;
 using Studi.BLL.SharedResource;
 using Studi.BLL.Utils.Helpers;
+using Studi.DAL.Entities.Courses.Courses;
 using Studi.DAL.Repositories.Interfaces.Base;
-using CourseEntity = Studi.DAL.Entities.Courses.Courses.Course;
 
 namespace Studi.BLL.CQRS.Courses.Courses.Delete;
 
@@ -102,7 +102,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
     }
 
     [ExcludeFromCodeCoverage]
-    private static IIncludableQueryable<CourseEntity, object> IncludeCourseRelatedEntities(IQueryable<CourseEntity> query)
+    private static IIncludableQueryable<Course, object> IncludeCourseRelatedEntities(IQueryable<Course> query)
     {
         return query
             .Include(c => c.OwnerUser)
@@ -116,7 +116,7 @@ public class DeleteCourseHandler : IRequestHandler<DeleteCourseCommand, Result<C
 
     [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "CDN is a constant abbreviation and it's ok to use it in the method name for better readability and understanding of the method's purpose.")]
     private async Task<Result> DeleteCourseFolderFromCDNAsync(
-        CourseEntity course,
+        Course course,
         string ownerUserEmail,
         DeleteCourseCommand request,
         CancellationToken cancellationToken)

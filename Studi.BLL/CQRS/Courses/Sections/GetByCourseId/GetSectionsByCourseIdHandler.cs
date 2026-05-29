@@ -16,26 +16,20 @@ public class GetSectionsByCourseIdHandler : IRequestHandler<GetSectionsByCourseI
     private readonly IRepositoryWrapper _repositoryWrapper;
     private readonly ILoggerService _logger;
     private readonly ICurrentUserService _currentUserService;
-    private readonly ICourseAccessService _courseAccessService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
-    private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
 
     public GetSectionsByCourseIdHandler(
         IMapper mapper,
         IRepositoryWrapper repositoryWrapper,
         ILoggerService logger,
         ICurrentUserService currentUserService,
-        ICourseAccessService courseAccessService,
-        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
-        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
+        IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
         _logger = logger;
         _currentUserService = currentUserService;
-        _courseAccessService = courseAccessService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
-        _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
     }
 
     public async Task<Result<CourseSectionsResponseDto>> Handle(GetSectionsByCourseIdQuery request, CancellationToken cancellationToken)
@@ -52,19 +46,6 @@ public class GetSectionsByCourseIdHandler : IRequestHandler<GetSectionsByCourseI
         {
             var errorMessage = _stringLocalizerCannotFind[
                 nameof(CannotFindSharedResource_en.CannotFindCourseById),
-                request.CourseId
-            ].Value;
-
-            _logger.LogError(request, errorMessage);
-
-            return Result.Fail(errorMessage);
-        }
-
-        var hasAccess = await _courseAccessService.HasAccessToCourseAsync(course.Id, userId, cancellationToken);
-        if (!hasAccess)
-        {
-            var errorMessage = _stringLocalizerNoPermissions[
-                nameof(NoPermissionsSharedResource_en.NoPermissionsToGetCourseForUser),
                 request.CourseId
             ].Value;
 

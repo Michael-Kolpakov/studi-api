@@ -6,9 +6,9 @@ using Studi.BLL.DTOs.Courses.Sections.Response;
 using Studi.BLL.Resources.SharedResource;
 using Studi.BLL.Services.Interfaces;
 using Studi.BLL.SharedResource;
+using Studi.DAL.Entities.Courses.Sections;
 using Studi.DAL.Repositories.Interfaces.Base;
 using Studi.DAL.Utils.Constants;
-using SectionEntity = Studi.DAL.Entities.Courses.Sections.Section;
 
 namespace Studi.BLL.CQRS.Courses.Sections.Create;
 
@@ -48,7 +48,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         var userId = _currentUserService.GetUserId();
         _logger.LogInformation($"Entered '{GetType().Name}' to create a new section by UserId: {userId}");
 
-        var newSection = _mapper.Map<SectionEntity>(request.SectionCreateRequestDto);
+        var newSection = _mapper.Map<Section>(request.SectionCreateRequestDto);
 
         if (newSection is null)
         {
