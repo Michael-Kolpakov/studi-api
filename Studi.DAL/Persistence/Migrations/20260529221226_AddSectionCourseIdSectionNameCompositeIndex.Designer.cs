@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Studi.DAL.Persistence;
 
@@ -11,9 +12,11 @@ using Studi.DAL.Persistence;
 namespace Studi.DAL.Persistence.Migrations
 {
     [DbContext(typeof(StudiDbContext))]
-    partial class StudiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260529221226_AddSectionCourseIdSectionNameCompositeIndex")]
+    partial class AddSectionCourseIdSectionNameCompositeIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

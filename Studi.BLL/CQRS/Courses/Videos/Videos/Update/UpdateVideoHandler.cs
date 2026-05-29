@@ -9,6 +9,8 @@ using Studi.BLL.DTOs.Courses.Videos.Videos.Response;
 using Studi.BLL.Resources.SharedResource;
 using Studi.BLL.Services.Interfaces;
 using Studi.BLL.SharedResource;
+using Studi.BLL.Utils.Helpers;
+using Studi.BLL.Utils.MappingResolvers;
 using Studi.DAL.Entities.Courses.Videos.Videos;
 using Studi.DAL.Repositories.Interfaces.Base;
 
@@ -22,6 +24,7 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
     private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
+    private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
 
     public UpdateVideoHandler(
         IMapper mapper,
@@ -29,7 +32,8 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
         ILoggerService logger,
         ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
-        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions)
+        IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
+        IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists)
     {
         _mapper = mapper;
         _repositoryWrapper = repositoryWrapper;
@@ -37,6 +41,7 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
         _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
+        _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
     }
 
     public async Task<Result<VideoResponseDto>> Handle(UpdateVideoCommand request, CancellationToken cancellationToken)
@@ -82,6 +87,28 @@ public class UpdateVideoHandler : IRequestHandler<UpdateVideoCommand, Result<Vid
             ].Value;
 
             return Result.Fail(responseErrorMessage);
+        }
+
+        var updatedVideoName = NameFromTitleResolver.CreateNameFromTitle(request.VideoUpdateRequestDto.Title);
+        var existingVideoNames = await _repositoryWrapper.VideosRepository.GetProjectedListAsync(
+            v => v.VideoFile == null ? null : v.VideoFile.VideoName,
+            v => v.SectionId == existingVideo.SectionId && v.Id != existingVideo.Id && v.VideoFile != null,
+            cancellationToken: cancellationToken);
+
+        var videoWithSameNameExists = existingVideoNames.FirstOrDefault(
+            existingVideoName => VideoNameHelper.HasSameBaseName(existingVideoName, updatedVideoName));
+
+        if (videoWithSameNameExists is not null)
+        {
+            var errorMessage = _stringLocalizerAlreadyExists[
+                nameof(AlreadyExistsSharedResource_en.VideoAlreadyExistsForSection),
+                updatedVideoName,
+                existingVideo.SectionId
+            ].Value;
+
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
         }
 
         _mapper.Map(request.VideoUpdateRequestDto, existingVideo);

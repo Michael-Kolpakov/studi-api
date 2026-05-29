@@ -134,11 +134,11 @@ public class DeleteVideoHandler : IRequestHandler<DeleteVideoCommand, Result<Vid
             return Result.Ok();
         }
 
-        var ownerUserEmail = video.Section!.Course!.OwnerUser.Email;
+        var ownerUserEmail = video.Section!.Course!.OwnerUser!.Email!;
 
         var deleteGoogleDriveFileResult = await _googleDriveStorageService.DeleteFileByPathAsync(
             StoragePathHelper.BuildSectionFolderSegments(
-                ownerUserEmail!,
+                ownerUserEmail,
                 video.Section.Course.CourseName,
                 video.Section.SectionName),
             video.VideoFile.VideoName,

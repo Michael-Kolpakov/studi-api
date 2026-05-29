@@ -14,6 +14,10 @@ public static class SectionConfiguration
             .HasKey(s => s.Id);
 
         builder.Entity<Section>()
+            .HasIndex(s => new { s.CourseId, s.SectionName })
+            .IsUnique();
+
+        builder.Entity<Section>()
             .HasIndex(s => new { s.CourseId, s.OrderIndex })
             .IsUnique();
 

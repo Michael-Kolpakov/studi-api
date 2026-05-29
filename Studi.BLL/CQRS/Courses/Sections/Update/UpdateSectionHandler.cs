@@ -25,6 +25,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
     private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
+    private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
     private readonly IStringLocalizer<BllSharedResource> _stringLocalizerBll;
 
     public UpdateSectionHandler(
@@ -35,6 +36,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
         ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
+        IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists,
         IStringLocalizer<BllSharedResource> stringLocalizerBll)
     {
         _mapper = mapper;
@@ -44,6 +46,7 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
         _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
+        _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
         _stringLocalizerBll = stringLocalizerBll;
     }
 
@@ -95,6 +98,25 @@ public class UpdateSectionHandler : IRequestHandler<UpdateSectionCommand, Result
 
         var courseName = existingSection.Course.CourseName;
         var shouldRenameSectionFolder = !string.Equals(currentSectionName, updatedSectionName, StringComparison.Ordinal);
+
+        var sectionWithSameNameExists = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
+            s => s.CourseId == existingSection.CourseId
+                 && s.SectionName == updatedSectionName
+                 && s.Id != existingSection.Id,
+            cancellationToken: cancellationToken);
+
+        if (sectionWithSameNameExists is not null)
+        {
+            var errorMessage = _stringLocalizerAlreadyExists[
+                nameof(AlreadyExistsSharedResource_en.SectionAlreadyExistsForCourse),
+                updatedSectionName,
+                existingSection.CourseId
+            ].Value;
+
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
 
         if (shouldRenameSectionFolder)
         {

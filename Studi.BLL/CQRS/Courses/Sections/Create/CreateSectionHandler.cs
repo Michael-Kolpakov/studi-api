@@ -21,6 +21,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
     private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotMapSharedResource> _stringLocalizerFailedToMap;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
+    private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
     private readonly IStringLocalizer<BllSharedResource> _stringLocalizerBll;
 
     public CreateSectionHandler(
@@ -31,6 +32,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         ICurrentUserService currentUserService,
         IStringLocalizer<CannotMapSharedResource> stringLocalizerFailedToMap,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
+        IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists,
         IStringLocalizer<BllSharedResource> stringLocalizerBll)
     {
         _mapper = mapper;
@@ -40,6 +42,7 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
         _currentUserService = currentUserService;
         _stringLocalizerFailedToMap = stringLocalizerFailedToMap;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
+        _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
         _stringLocalizerBll = stringLocalizerBll;
     }
 
@@ -98,6 +101,23 @@ public class CreateSectionHandler : IRequestHandler<CreateSectionCommand, Result
                 nameof(BllSharedResource_en.SectionsCountExceedsLimit),
                 newSection.CourseId,
                 EntityConstants.MaxSectionsPerCourse
+            ].Value;
+
+            _logger.LogError(request, errorMessage);
+
+            return Result.Fail(errorMessage);
+        }
+
+        var sectionWithSameNameExists = await _repositoryWrapper.SectionsRepository.GetSingleOrDefaultAsync(
+            s => s.CourseId == newSection.CourseId && s.SectionName == newSection.SectionName,
+            cancellationToken: cancellationToken);
+
+        if (sectionWithSameNameExists is not null)
+        {
+            var errorMessage = _stringLocalizerAlreadyExists[
+                nameof(AlreadyExistsSharedResource_en.SectionAlreadyExistsForCourse),
+                sectionWithSameNameExists.SectionName,
+                sectionWithSameNameExists.CourseId
             ].Value;
 
             _logger.LogError(request, errorMessage);

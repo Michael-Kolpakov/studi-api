@@ -24,6 +24,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
     private readonly ICurrentUserService _currentUserService;
     private readonly IStringLocalizer<CannotFindSharedResource> _stringLocalizerCannotFind;
     private readonly IStringLocalizer<NoPermissionsSharedResource> _stringLocalizerNoPermissions;
+    private readonly IStringLocalizer<AlreadyExistsSharedResource> _stringLocalizerAlreadyExists;
     private readonly IStringLocalizer<VideoUploadSharedResource> _stringLocalizerVideoUpload;
 
     public UploadVideoHandler(
@@ -34,6 +35,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
         ICurrentUserService currentUserService,
         IStringLocalizer<CannotFindSharedResource> stringLocalizerCannotFind,
         IStringLocalizer<NoPermissionsSharedResource> stringLocalizerNoPermissions,
+        IStringLocalizer<AlreadyExistsSharedResource> stringLocalizerAlreadyExists,
         IStringLocalizer<VideoUploadSharedResource> stringLocalizerVideoUpload)
     {
         _repositoryWrapper = repositoryWrapper;
@@ -43,6 +45,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
         _currentUserService = currentUserService;
         _stringLocalizerCannotFind = stringLocalizerCannotFind;
         _stringLocalizerNoPermissions = stringLocalizerNoPermissions;
+        _stringLocalizerAlreadyExists = stringLocalizerAlreadyExists;
         _stringLocalizerVideoUpload = stringLocalizerVideoUpload;
     }
 
@@ -55,6 +58,7 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
             x => new UploadVideoContext
             {
                 VideoId = x.Id,
+                SectionId = x.SectionId,
                 OwnerUserId = x.Section!.Course!.OwnerUserId,
                 OwnerUserEmail = x.Section.Course.OwnerUser!.Email,
                 CourseName = x.Section.Course.CourseName,
@@ -125,6 +129,29 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
                     nameof(VideoUploadSharedResource_en.GeneratedVideoFileNameTooLong),
                     EntityConstants.MaxVideoFileNameLength
                 ].Value;
+                _logger.LogError(request, errorMessage);
+
+                return Result.Fail(errorMessage);
+            }
+
+            var existingVideoNames = await _repositoryWrapper.VideosRepository.GetProjectedListAsync(
+                x => x.VideoFile == null ? null : x.VideoFile.VideoName,
+                x => x.SectionId == uploadVideoContext.SectionId
+                     && x.Id != uploadVideoContext.VideoId
+                     && x.VideoFile != null,
+                cancellationToken);
+
+            var videoWithSameNameExists = existingVideoNames.FirstOrDefault(
+                existingVideoName => string.Equals(existingVideoName, videoName, StringComparison.OrdinalIgnoreCase));
+
+            if (videoWithSameNameExists is not null)
+            {
+                var errorMessage = _stringLocalizerAlreadyExists[
+                    nameof(AlreadyExistsSharedResource_en.VideoAlreadyExistsForSection),
+                    videoName,
+                    uploadVideoContext.SectionId
+                ].Value;
+
                 _logger.LogError(request, errorMessage);
 
                 return Result.Fail(errorMessage);
@@ -328,6 +355,8 @@ public class UploadVideoHandler : IRequestHandler<UploadVideoCommand, Result<Vid
     private sealed class UploadVideoContext
     {
         public Guid VideoId { get; set; }
+
+        public Guid SectionId { get; set; }
 
         public Guid OwnerUserId { get; set; }
 

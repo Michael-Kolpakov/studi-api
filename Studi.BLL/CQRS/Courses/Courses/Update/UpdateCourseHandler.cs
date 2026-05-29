@@ -90,10 +90,16 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
             return Result.Fail(responseErrorMessage);
         }
 
+        var currentCourseName = existingCourse.CourseName;
+        var updatedCourseName = NameFromTitleResolver.CreateNameFromTitle(request.CourseUpdateRequestDto.Title);
+        var ownerUserEmail = existingCourse.OwnerUser?.Email;
+
+        var shouldRenameCourseFolder = !string.Equals(currentCourseName, updatedCourseName, StringComparison.Ordinal);
+
         var courseWithSameNameExists = await _repositoryWrapper.CoursesRepository.GetSingleOrDefaultAsync(
             c => c.OwnerUserId == existingCourse.OwnerUserId
-                 && c.CourseName == NameFromTitleResolver.CreateNameFromTitle(request.CourseUpdateRequestDto.Title)
-                 && c.Id != request.CourseUpdateRequestDto.Id,
+                 && c.CourseName == updatedCourseName
+                 && c.Id != existingCourse.Id,
             cancellationToken: cancellationToken);
 
         if (courseWithSameNameExists is not null)
@@ -113,12 +119,6 @@ public class UpdateCourseHandler : IRequestHandler<UpdateCourseCommand, Result<C
 
             return Result.Fail(responseErrorMessage);
         }
-
-        var currentCourseName = existingCourse.CourseName;
-        var updatedCourseName = NameFromTitleResolver.CreateNameFromTitle(request.CourseUpdateRequestDto.Title);
-        var ownerUserEmail = existingCourse.OwnerUser?.Email;
-
-        var shouldRenameCourseFolder = !string.Equals(currentCourseName, updatedCourseName, StringComparison.Ordinal);
 
         if (shouldRenameCourseFolder)
         {
