@@ -1,38 +1,15 @@
-# Teachio API
+# Studi API
 
-A robust, scalable, and maintainable **ASP.NET Code Web API (C#)** for the LMS Teachio platform.  
-This repository contains the backend service responsible for business logic, data access, and external integrations required by Teachio clients.
+A robust, scalable, and maintainable **ASP.NET Code Web API (C#)** for the LMS Studi platform.  
+This repository contains the backend service responsible for business logic, data access, and external integrations required by Studi clients.
 
 > **Status:** Active development
 
 ---
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Key Features](#key-features)
-- [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
-  - [Run the API](#run-the-api)
-- [Environment Variables](#environment-variables)
-- [Database](#database)
-- [API Documentation](#api-documentation)
-- [Testing](#testing)
-- [Code Style & Quality](#code-style--quality)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
-
----
-
 ## Overview
 
-**teachio-api** is the backend API layer for the Teachio ecosystem.  
+**studi-api** is the backend API layer for the Studi ecosystem.
 It is designed to provide secure, versionable, and testable endpoints for LMS clients.
 
 Typical responsibilities include:
@@ -53,341 +30,181 @@ Typical responsibilities include:
 - JWT-based authentication & authorization
 - DTO mapping and request validation
 - Centralized exception handling and structured logging
-- Database migrations support
-- OpenAPI/Swagger support
-- Unit and integration testing support
-- Environment-based configuration (Development / Staging / Production)
 
----
+# Studi — Backend (Studi.WebApi)
 
-## Tech Stack
+## Overview
 
-- **Language:** C# 
-- **Framework:** ASP.NET Core
-- **Runtime:** .NET 9 
-- **ORM/Data Access:** Entity Framework Core
-- **DBMS**: MS SQL Server
-- **Requests handling**: MediatR, AutoMapper, FluentResults 
-- **Logging**: Serilog 
-- **Documentation:** Swagger / OpenAPI 
-- **Testing:** xUnit, WebApplicationFatory, Moq, FluetAssertions, RestSharp
+Studi is the backend service for an online learning platform. This repository contains the ASP.NET Core Web API (`Studi.WebApi`), the business logic layer (`Studi.BLL`), the data access layer (`Studi.DAL`), and unit/integration tests.
 
----
+## Purpose
 
-## Architecture
+This README provides step-by-step, reproducible instructions for a developer starting from a clean Windows machine to get the service running locally and to run tests.
 
-The project follows clean and maintainable backend practices:
+## Table of Contents
 
-- **Web API Layer (WebApi)** — Controllers, endpoint definitions, middlewares 
-- **Data Access Layer (DAL)** — Database, models, repositories 
-- **Business Logic Layer (BLL)** — Use cases, application services, DTOs 
+- [Overview](#overview)
+- [Purpose](#purpose)
+- [Requirements](#requirements-clean-windows)
+- [Quick start](#quick-start-recommended-using-docker-for-sql-server)
+- [Configuration](#configure-local-settings)
+- [Database and migrations](#apply-ef-core-migrations-creates-database-schema)
+- [Running the API](#run-the-api)
+- [Tests](#tests)
+- [Configuration summary (critical keys)](#configuration-summary-critical-keys)
+- [Helpful commands](#helpful-commands)
+- [Troubleshooting](#troubleshooting)
+- [Security and secrets](#security-and-secrets)
+- [Contributing](#contributing)
+- [License](#license)
+- [Where to look in the code](#where-to-look-in-the-code)
 
-This separation improves testability, readability, and long-term maintainability.
+## Requirements (clean Windows)
 
----
+- Windows 10/11
+- .NET SDK 9.x — install from https://dotnet.microsoft.com/download/dotnet/9.0
+- Git — https://git-scm.com/
+- MS SQL Server (Developer/Express) or Docker (recommended) with SQL Server image `mcr.microsoft.com/mssql/server:2022-latest`
+- `dotnet-ef` CLI tool for Entity Framework Core migrations: `dotnet tool install --global dotnet-ef`
+- FFmpeg (`ffprobe`) — either in PATH or specify full path in configuration
+- (Optional) Visual Studio 2022/2023 or Visual Studio Code
 
-## Getting Started
+## Quick start (recommended using Docker for SQL Server)
 
-### Prerequisites
-
-- [.NET SDK](https://dotnet.microsoft.com/download) >= 9 (LTS version recommended)
-- A configured database server
-- Git
-
-### Installation
+1. Clone repository
 
 ```bash
-git clone https://github.com/Michael-Kolpakov/teachio-api.git
-cd teachio-api
-dotnet restore
+git clone https://github.com/Michael-Kolpakov/studi-api.git
+cd studi-api
 ```
 
-### Configuration
+2. Verify .NET SDK and install `dotnet-ef` if necessary
 
-1. Create environment-specific configuration:
-   - `appsettings.Development.json`
-   - `appsettings.Staging.json`
-   - `appsettings.Production.json`
+```powershell
+dotnet --version
+dotnet tool install --global dotnet-ef
+```
 
-2. Configure required values:
-   - Connection strings
-   - JWT settings
-   - External service credentials
-   - Logging options
+3. Start SQL Server in Docker (recommended)
 
-3. (Optional) Use environment variables or user secrets for sensitive data.
+```powershell
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=DevPass123!" -p 1433:1433 --name studi-mssql -d mcr.microsoft.com/mssql/server:2022-latest
+```
 
-### Run the API
+4. Configure local settings
 
-```bash
-dotnet build
+- Open `Studi.WebApi/appsettings.Local.json` and set required values:
+  - `ConnectionStrings:DefaultConnection` — connection string to your SQL Server (example provided uses `localhost` and password `DevPass123!`).
+  - `Jwt:SigningKey` — set a secure signing key for JWT tokens.
+  - `Smtp` — SMTP host/port/credentials if the application will send email.
+  - `GoogleDriveStorage` — fill only if Google Drive integration is needed.
+  - `Ffprobe:ExecutablePath` — set either `ffprobe` (if in PATH) or full path to `ffprobe.exe`.
+
+5. Restore packages and build
+
+```powershell
+dotnet restore
+dotnet build -c Debug
+```
+
+6. Apply EF Core migrations (creates database schema)
+
+```powershell
+dotnet ef database update --project "Studi.DAL" --startup-project "Studi.WebApi"
+```
+
+7. Run the API
+
+```powershell
+cd Studi.WebApi
 dotnet run
 ```
 
-By default, the API will start on configured HTTP/HTTPS ports (see launch settings or runtime logs).
+The application will start and print listening URLs. By default, Swagger UI is available at `/swagger` (e.g. `https://localhost:7xxx/swagger`).
 
----
+## Running in Visual Studio
 
-## Environment Variables
+Open `Studi.sln` in Visual Studio 2022/2023 (with .NET 9 SDK installed) and set `Studi.WebApi` as the startup project, then run with the debugger.
 
-Below is an example list of common variables used in ASP.NET APIs:
+## Tests
 
-| Variable | Description | Example |
-|---|---|---|
-| `ASPNETCORE_ENVIRONMENT` | Runtime environment | `Development` |
-| `ConnectionStrings__DefaultConnection` | Primary database connection string | `Server=...;Database=...;` |
-| `Jwt__Issuer` | JWT token issuer | `teachio-api` |
-| `Jwt__Audience` | JWT token audience | `teachio-clients` |
-| `Jwt__Key` | JWT signing key | `your-very-strong-secret` |
-| `Logging__LogLevel__Default` | Default log level | `Information` |
+Run all tests in the solution:
 
----
-
-## Database
-
-Project uses EF Core migrations:
-
-```bash
-dotnet ef database update --project "Teachio.DAL" --startup-project "Teachio.WebApi"
-```
-
-To create a new migration:
-
-```bash
-dotnet ef migrations add <MigrationName> --project "Teachio.DAL" --startup-project "Teachio.WebApi"
-dotnet ef database update --project "Teachio.DAL" --startup-project "Teachio.WebApi"
-```
-
-Make sure the correct startup project and connection string are configured before running commands.
-
----
-
-## API Documentation
-
-For Swagger open:
-
-- `https://localhost:<port>/swagger`
-- or `http://localhost:<port>/swagger`
-
-Use this UI to explore endpoints, request/response schemas, and test operations.
-
----
-
-## Testing
-
-Run all tests:
-
-```bash
+```powershell
 dotnet test
 ```
 
-Recommended test categories:
+Run a single test project (example):
 
-- **Unit tests** for business logic
-- **Integration tests** for API + infrastructure behavior
-
----
-
-## Code Style & Quality
-
-Recommended practices:
-
-- Enabled nullable reference types
-- Use analyzers and treat warnings seriously
-- Keep controllers thin; move logic to services/use-cases
-- Validate incoming DTOs
-- Return standardized error responses (used Results Pattern via FluentResults library + standard error handling middleware)
-- Write tests for critical business paths
-
----
-
-## Project Structure
-
-Example structure (adjust to your actual layout):
-
-```text
-teachio-api/
-├─ Teachio.BLL/
-│  ├─ Dto/
-│  │  ├─ Courses/
-│  │  │  ├─ Courses/
-│  │  │  │  ├─ Request/
-│  │  │  │  │  ├─ Create/
-│  │  │  │  │  └─ Update/
-│  │  │  │  └─ Response/
-│  │  │  ├─ Sections/
-│  │  │  │  ├─ Request/
-│  │  │  │  │  ├─ Create/
-│  │  │  │  │  └─ Update/
-│  │  │  │  └─ Response/
-│  │  │  └─ Videos/
-│  │  │     ├─ VideoProgress/
-│  │  │     │  ├─ Request/
-│  │  │     │  │  └─ Update/
-│  │  │     │  └─ Response/
-│  │  │     └─ Videos/
-│  │  │        ├─ Request/
-│  │  │        │  ├─ Create/
-│  │  │        │  └─ Update/
-│  │  │        └─ Response/
-│  │  ├─ Shared/
-│  │  └─ Users/
-│  │     ├─ Request/
-│  │     │  ├─ Create/
-│  │     │  └─ Update/
-│  │     └─ Response/
-│  ├─ Mapping/
-│  │  ├─ Courses/
-│  │  │  ├─ Course/
-│  │  │  ├─ Section/
-│  │  │  └─ Video/
-│  │  │     ├─ Video/
-│  │  │     └─ VideoProgress/
-│  │  └─ User/
-│  ├─ MediatR/
-│  │  ├─ Courses/
-│  │  │  ├─ Courses/
-│  │  │  │  ├─ Create/
-│  │  │  │  ├─ Delete/
-│  │  │  │  ├─ GetById/
-│  │  │  │  ├─ GetByIdPreview/
-│  │  │  │  ├─ GetPaginated/
-│  │  │  │  ├─ Udpate/
-│  │  │  │  └─ UploadThumbnail/
-│  │  │  ├─ Sections/
-│  │  │  │  ├─ Create/
-│  │  │  │  ├─ Delete/
-│  │  │  │  ├─ GetById/
-│  │  │  │  └─ Udpate/
-│  │  │  └─ Videos/
-│  │  │     ├─ VideoProgress/
-│  │  │     │  └─ Update/
-│  │  │     └─ Videos/
-│  │  │        ├─ Create/
-│  │  │        ├─ Delete/
-│  │  │        ├─ GetById/
-│  │  │        ├─ Update/
-│  │  │        └─ UploadVideo/
-│  │  └─ ResultValidations/
-│  ├─ Models/
-│  ├─ Resources/
-│  ├─ Services/
-│  │  ├─ Interfaces/
-│  │  └─ Realizations/
-│  ├─ SharedResource/
-│  └─ Utils/
-│     ├─ Constants/
-│     └─ MappingResolvers/ 
-├─ Teachio.DAL/
-│  ├─ Entities/
-│  │  ├─ Courses/
-│  │  │  ├─ Courses/
-│  │  │  ├─ Sections/
-│  │  │  └─ Videos/
-│  │  │     ├─ VideoProgress/
-│  │  │     └─ Videos/
-│  │  ├─ Shared/
-│  │  └─ Users/
-│  ├─ Persistence/
-│  │  ├─ Migrations/
-│  │  └─ Seed/
-│  │     └─ Content/
-│  ├─ Repositories/
-│  │  ├─ Interfaces/
-│  │  │  ├─ Base/
-│  │  │  ├─ Courses/
-│  │  │  │  ├─ Courses/
-│  │  │  │  ├─ Sections/
-│  │  │  │  └─ Videos/
-│  │  │  │     ├─ VideoProgress/
-│  │  │  │     └─ Videos/
-│  │  │  └─ Users/
-│  │  └─ Realizations/
-│  │     ├─ Base/
-│  │     ├─ Courses/
-│  │     │  ├─ Courses/
-│  │     │  ├─ Sections/
-│  │     │  └─ Videos/
-│  │     │     ├─ VideoProgress/
-│  │     │     └─ Videos/
-│  │     └─ Users/
-│  ├─ Resources/
-│  ├─ SharedResource/
-│  └─ Utils/
-│     ├─ Constants/
-│     ├─ Database/
-│     ├─ Helpers/
-│     └─ Validators/
-├─ Teachio.WebApi/
-│  ├─ Controllers/
-│  │  └─ Courses/
-│  │     ├─ Courses/
-│  │     ├─ Sections/
-│  │     └─ Videos/
-│  │        ├─ VideoProgress/
-│  │        └─ Videos/
-│  ├─ Extensions/
-│  ├─ Middlewares/
-│  ├─ Properties/
-│  └─ Utils/
-│     └─ RelativeRoutes/
-├─ Teachio.IntegrationTests/
-│  ├─ Base/
-│  ├─ ControllerTests/
-│  ├─ TestData/
-│  └─ Utils/
-│     ├─ BeforeAndAfterAttributes/
-│     │  └─ Courses/
-│     │  ├─ Sections/
-│     │  └─ Videos/
-│     │     ├─ VideoProgress/
-│     │     └─ Videos/
-│     ├─ Clients/
-│     ├─ Extractors/
-│     └─ Helpers/
-└─ Teachio.UnitTests/
-   ├─ MediatR/
-   │  ├─ Courses/
-   │  ├─ Sections/
-   │  └─ Videos/
-   │     ├─ VideoProgress/
-   │     └─ Videos/
-   ├─ Mocks/
-   │  └─ Localizers/
-   ├─ TestData/
-   └─ Verifications/
+```powershell
+dotnet test Studi.XUnitTests/Studi.XUnitTests.csproj
 ```
 
----
+## Configuration summary (critical keys)
+
+- `ConnectionStrings:DefaultConnection` — database connection string used by EF Core.
+- `Jwt:SigningKey` — secret used to sign JWT tokens; keep it secure.
+- `Smtp` — SMTP configuration for sending emails.
+- `GoogleDriveStorage` — OAuth/service account settings for Google Drive integration.
+- `Ffprobe:ExecutablePath` — path or binary name for `ffprobe` used by video processing.
+
+All example values and defaults are present in `Studi.WebApi/appsettings.Local.json`.
+
+## Helpful commands
+
+- Restore and build: `dotnet restore && dotnet build`
+- Apply migrations: `dotnet ef database update --project "Studi.DAL" --startup-project "Studi.WebApi"`
+- Create migration: `dotnet ef migrations add MyMigration --project "Studi.DAL" --startup-project "Studi.WebApi"`
+- Run SQL Server in Docker: use the `docker run` command above.
+- Verify `ffprobe`: `ffprobe --version`
+
+## StyleCop (Code Style and Analyzers)
+
+- Configuration files:
+  - Root StyleCop settings: `stylecop.json` (repository root).
+  - Shared analyzer package and build flags: `Directory.Build.props` (references `StyleCop.Analyzers`, enables `RunAnalyzers` and treats analyzer diagnostics as errors).
+  - Analyzer severities and overrides: `.editorconfig` (repository root).
+- Where to find full guidance: `STYLECOP.md` (detailed team policy and commands).
+- How it is enforced:
+  - StyleCop runs as Roslyn analyzers during `dotnet build` for all projects in the solution.
+  - Build-time flags (`EnforceCodeStyleInBuild`, `RunAnalyzersDuringBuild`, `CodeAnalysisTreatWarningsAsErrors`) promote analyzer diagnostics to errors — CI and local builds fail on violations.
+  - A `check-code.ps1` script (in `scripts/`) runs the full code quality gate (restore, build with analyzers, format check, tests).
+- IDE integration and developer workflow:
+  - Visual Studio and VS Code (with C# extension) show StyleCop diagnostics inline — fix warnings/errors in the editor.
+  - To run analyzers locally: `dotnet build Studi.sln` (or use the `check-code.ps1` script for the full gate).
+  - To temporarily bypass analyzer failures for quick experiments, you may build with `-p:RunAnalyzers=false` (not recommended for commits/PRs).
+- Pre-commit and CI:
+  - The repository provides a Git hook (`.githooks/pre-commit`) and sets `core.hooksPath=.githooks` to run the build and block commits with analyzer errors.
+  - CI pipelines should run `dotnet build` (with analyzers) and `dotnet test` as part of the quality gate.
+- Tuning rules:
+  - Change severity per rule using `.editorconfig` (for example: `dotnet_diagnostic.SA1600.severity = none`).
+  - Change behavioral rules (ordering, layout, documentation options) in `stylecop.json`.
+  - Use `Directory.Build.props` to update analyzer package version or global analyzer settings.
+
+This section summarizes StyleCop usage in this repository; see `STYLECOP.md` for the full policy, examples, and script options.
+
+## Troubleshooting
+
+- "Cannot connect to SQL Server": Ensure the SQL Server instance or Docker container is running, port 1433 is reachable, and `ConnectionStrings:DefaultConnection` is correct.
+- "dotnet-ef not found": Install the tool with `dotnet tool install --global dotnet-ef` and restart your terminal.
+- "ffprobe not found": Install FFmpeg and ensure `ffprobe` is in PATH or set `Ffprobe:ExecutablePath` to the executable path.
+- Migration errors: confirm `--startup-project` is `Studi.WebApi` and `--project` is `Studi.DAL` when running EF commands.
+
+## Security and secrets
+
+- Do not commit secrets. Use `appsettings.Local.json` for local development, environment variables, or `dotnet user-secrets` for per-developer secrets.
+- In production, use a secrets manager (Azure Key Vault, AWS Secrets Manager, etc.).
 
 ## Contributing
 
-Contributions are welcome.
-
-1. Fork the repository
-2. Create a feature branch:
-   ```bash
-   git checkout -b main-feature/your-feature-name
-   ```
-3. Commit changes:
-   ```bash
-   git commit -m "feat: add your feature"
-   ```
-4. Push branch and open a Pull Request
-
-Please follow conventional commits and keep PRs focused.
-
----
+Contributions are welcome. Please fork the repository, create a feature branch, and open a pull request. Follow conventional commits and keep PRs focused.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details..
+This repository is licensed under the MIT License. See the `LICENSE` file in the repository root.
 
----
+## Where to look in the code
 
-## Contact
-
-Maintainer: **Michael-Kolpakov**  
-Repository: https://github.com/Michael-Kolpakov/teachio-api
-
-For support, open an issue in this repository.
+- API and startup: `Studi.WebApi`
+- Database context and migrations: `Studi.DAL/Persistence`
+- Business logic: `Studi.BLL`

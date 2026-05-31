@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Required" xml:space="preserve">
+        <value>The '{0}' field is required</value>
+    </data>
+    <data name="Length" xml:space="preserve">
+        <value>The '{0}' field must be no longer than {1} characters</value>
+    </data>
+    <data name="LengthRange" xml:space="preserve">
+        <value>The '{0}' field must be between {2} and {1} characters</value>
+    </data>
+    <data name="MinLength" xml:space="preserve">
+        <value>The '{0}' field must be at least {1} characters</value>
+    </data>
+    <data name="Email" xml:space="preserve">
+        <value>The '{0}' field is not a valid email address</value>
+    </data>
+    <data name="Range" xml:space="preserve">
+        <value>The '{0}' field must be between {1} and {2}</value>
+    </data>
+    <data name="RegexDescription" xml:space="preserve">
+        <value>The '{0}' field can contain only latin alphabetic characters, numbers, spaces and punctuation marks (except for very weird ones)</value>
+    </data>
+    <data name="RegexTitle" xml:space="preserve">
+        <value>The '{0}' field can contain only latin alphabetic characters, numbers, spaces and punctuation marks (only commas, !, ?, -)</value>
+    </data>
+    <data name="RegexName" xml:space="preserve">
+        <value>The '{0}' field can contain only latin alphabetic characters, numbers, hyphens and punctuation marks (only dots, commas, !, ?)</value>
+    </data>
+    <data name="RegexUserName" xml:space="preserve">
+        <value>The '{0}' field can contain only latin alphabetic characters, spaces and apostrophes</value>
+    </data>
+    <data name="FileEmpty" xml:space="preserve">
+        <value>The '{0}' field must not be empty</value>
+    </data>
+    <data name="FileSizeMax" xml:space="preserve">
+        <value>The '{0}' field must be no larger than {1} MB</value>
+    </data>
+    <data name="FileContentType" xml:space="preserve">
+        <value>The '{0}' field must be one of: {1}</value>
+    </data>
+    <data name="PinCodeInvalid" xml:space="preserve">
+        <value>The '{0}' field must be a {1}-digit numeric code</value>
+    </data>
+</root>

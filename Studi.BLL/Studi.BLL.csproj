@@ -1,0 +1,176 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="CQRS\Users\" />
+      <Folder Include="Utils\Attributes\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="16.1.1" />
+      <PackageReference Include="FluentResults" Version="4.0.0" />
+      <PackageReference Include="Google.Apis.Auth" Version="1.73.0" />
+      <PackageReference Include="Google.Apis.Drive.v3" Version="1.73.0.3987" />
+      <PackageReference Include="MediatR" Version="13.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+      <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.10" />
+      <PackageReference Include="MimeKit" Version="4.15.1" />
+      <PackageReference Include="Serilog" Version="4.3.0" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Studi.DAL\Studi.DAL.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\SharedResource\CannotFindSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>CannotFindSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\CannotMapSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>CannotMapSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\AlreadyExistsSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>AlreadyExistsSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\NoPermissionsSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>NoPermissionsSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\AuthSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>AuthSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\AvatarMetadataSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>AvatarMetadataSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\AvatarUploadSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>AvatarUploadSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\BllSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>BllSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\GoogleDriveStorageSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>GoogleDriveStorageSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\ThumbnailMetadataSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>ThumbnailMetadataSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\ThumbnailStreamSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>ThumbnailStreamSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\ThumbnailUploadSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>ThumbnailUploadSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\VideoMetadataSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>VideoMetadataSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\VideoStreamSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>VideoStreamSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Resources\SharedResource\VideoUploadSharedResource.en.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>VideoUploadSharedResource.en.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Resources\SharedResource\CannotFindSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>CannotFindSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\CannotMapSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>CannotMapSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\AlreadyExistsSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>AlreadyExistsSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\NoPermissionsSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>NoPermissionsSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\AuthSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>AuthSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\AvatarMetadataSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>AvatarMetadataSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\AvatarUploadSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>AvatarUploadSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\BllSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>BllSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\GoogleDriveStorageSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>GoogleDriveStorageSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\ThumbnailMetadataSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ThumbnailMetadataSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\ThumbnailStreamSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ThumbnailStreamSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\ThumbnailUploadSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ThumbnailUploadSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\VideoMetadataSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>VideoMetadataSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\VideoStreamSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>VideoStreamSharedResource.en.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Resources\SharedResource\VideoUploadSharedResource.en.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>VideoUploadSharedResource.en.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+</Project>

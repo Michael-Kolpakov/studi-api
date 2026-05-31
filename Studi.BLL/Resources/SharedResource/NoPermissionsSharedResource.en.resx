@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="NoPermissionsToDeleteCourseForUser" xml:space="preserve">
+        <value>User doesn't have any permission to delete course with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToDeleteCourseForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to delete course with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToGetCourseForUser" xml:space="preserve">
+        <value>User doesn't have any permission to get course with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToGetCourseForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to get course with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToUpdateCourseForUser" xml:space="preserve">
+        <value>User doesn't have any permission to update course with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToUpdateCourseForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to update course with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToCreateSectionForCourseOfAnotherUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to create section for the course with Id {0} of another user with Id '{2}'</value>
+    </data>
+    <data name="NoPermissionsToCreateSectionForCourseOfAnotherUser" xml:space="preserve">
+        <value>User doesn't have any permission to create section for the course of another user</value>
+    </data>
+    <data name="NoPermissionsToDeleteSectionForUser" xml:space="preserve">
+        <value>User doesn't have any permission to delete section with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToDeleteSectionForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to delete section with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToGetSectionForUser" xml:space="preserve">
+        <value>User doesn't have any permission to get section with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToGetSectionForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to get section with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToUpdateSectionForUser" xml:space="preserve">
+        <value>User doesn't have any permission to update section with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToUpdateSectionForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to update section with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToDeleteVideoForUser" xml:space="preserve">
+        <value>User doesn't have any permission to delete video with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToDeleteVideoForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to delete video with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToGetVideoForUser" xml:space="preserve">
+        <value>User doesn't have any permission to get video with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToGetVideoForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to get video with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToCreateVideoForSectionOfCourseOfAnotherUser" xml:space="preserve">
+        <value>User doesn't have any permission to create video for the section of another user's course</value>
+    </data>
+    <data name="NoPermissionsToCreateVideoForSectionOfCourseOfAnotherUserWithId" xml:space="preserve">
+        <value>User with Id '{2}' doesn't have any permission to create video for the section with Id '{0}' of course with Id '{1}' of another user with Id '{3}'</value>
+    </data>
+    <data name="NoPermissionsToUpdateVideoForUser" xml:space="preserve">
+        <value>User doesn't have any permission to update video with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToUpdateVideoForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to update video with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToUpdateVideoProgressForUser" xml:space="preserve">
+        <value>User doesn't have any permission to update video progress with Id '{0}'</value>
+    </data>
+    <data name="NoPermissionsToUpdateVideoProgressForUserWithId" xml:space="preserve">
+        <value>User with Id '{1}' doesn't have any permission to update video progress with Id '{0}'</value>
+    </data>
+</root>

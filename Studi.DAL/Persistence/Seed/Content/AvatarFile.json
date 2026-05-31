@@ -1,0 +1,30 @@
+[
+  {
+    "Id": "4f2c6f2a-9d3a-4f53-9a2e-0f4d3a0e9b1c",
+    "AvatarName": "avatar-teriann.jpg",
+    "ContentType": "image/jpeg",
+    "Resolution": "512x512",
+    "AppUserId": "76bb9fd8-084c-4012-8c94-a2a04f45156f"
+  },
+  {
+    "Id": "2c8a1e7e-5b7f-4d5f-8a55-6b3e2c8a1f5d",
+    "AvatarName": "avatar-guillermo.png",
+    "ContentType": "image/png",
+    "Resolution": "640x640",
+    "AppUserId": "a7d406fd-0ca7-479a-8530-0e5881d32a1e"
+  },
+  {
+    "Id": "9b7d3c1a-0e5f-4c2e-8a4d-7f9b2c1d3e4f",
+    "AvatarName": "avatar-deane.jpg",
+    "ContentType": "image/jpeg",
+    "Resolution": "800x800",
+    "AppUserId": "80710cfd-4216-4a08-97db-dc046a8de248"
+  },
+  {
+    "Id": "b1c2d3e4-5f60-4a7b-8c9d-0e1f2a3b4c5d",
+    "AvatarName": "avatar-elaine.png",
+    "ContentType": "image/png",
+    "Resolution": "1024x1024",
+    "AppUserId": "7ac2df83-f62c-4e89-a36d-3dbe48cb5110"
+  }
+]
